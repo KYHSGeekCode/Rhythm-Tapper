@@ -23,6 +23,8 @@ public interface Graphics {
 
     public void drawImage(Image Image, int x, int y);
 
+    public void drawScaledImage(Image Image, int x, int y, int width, int height, int srcX, int srcY, int srcWidth, int srcHeight);
+
     void drawString(String text, int x, int y, Paint paint);
 
     public int getWidth();

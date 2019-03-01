@@ -19,6 +19,9 @@ import sma.rhythmtapper.framework.Music;
 import sma.rhythmtapper.framework.Screen;
 import sma.rhythmtapper.framework.Input.TouchEvent;
 import sma.rhythmtapper.game.models.Ball;
+import sma.rhythmtapper.game.models.Deck;
+import sma.rhythmtapper.game.models.GameStatusBundle;
+import sma.rhythmtapper.game.models.TestResult;
 import sma.rhythmtapper.models.Difficulty;
 
 public class GameScreen extends Screen {
@@ -34,15 +37,18 @@ public class GameScreen extends Screen {
     private int _gameWidth;
     private Random _rand;
     private Difficulty _difficulty;
-    private int _lifes;
+    //private int _lives;
     private Vibrator _vibrator;
     private boolean _isEnding;
 
     // score
-    private int _score;
-    private int _multiplier;
-    private int _streak;
-    private int _combo;
+    //private int _score;
+    //private int _multiplier;
+    //private int _streak;
+    //private int _combo;
+
+    GameStatusBundle bundle;
+    Deck deck;
 
     // tickers
     private int _tick;
@@ -68,12 +74,12 @@ public class GameScreen extends Screen {
     // difficulty params
     private float _spawnInterval;
     private int _ballSpeed;
-    private final double _spawnChance_normal = 0.26; // TODO dynamic
-    private final double _spawnChance_oneup = _spawnChance_normal + 0.003;
-    private final double _spawnChance_multiplier = _spawnChance_oneup + 0.001;
-    private final double _spawnChance_speeder = _spawnChance_multiplier + 0.003;
-    private final double _spawnChance_bomb = _spawnChance_speeder + 0.0005;
-    private final double _spawnChance_skull = _spawnChance_bomb + 0.014;
+    private final double _spawnChance_normal = 0.10; // TODO dynamic
+    private final double _spawnChance_oneup = _spawnChance_normal;// + 0.003;
+    private final double _spawnChance_multiplier = _spawnChance_oneup;// + 0.001;
+    private final double _spawnChance_speeder = _spawnChance_multiplier;// + 0.003;
+    private final double _spawnChance_bomb = _spawnChance_speeder;// + 0.0005;
+    private final double _spawnChance_skull = _spawnChance_bomb;// + 0.014;
 
     // audio
     private Music _currentTrack;
@@ -101,7 +107,7 @@ public class GameScreen extends Screen {
 
     private GameState state = GameState.Ready;
 
-    GameScreen(Game game, Difficulty difficulty) {
+    GameScreen(Game game, Difficulty difficulty, Deck deck) {
         super(game);
 
         _difficulty = difficulty;
@@ -113,10 +119,10 @@ public class GameScreen extends Screen {
         _gameHeight = game.getGraphics().getHeight();
         _gameWidth = game.getGraphics().getWidth();
         _vibrator = game.getVibrator();
-        _multiplier = 1;
+        //_multiplier = 1;
         _doubleMultiplierTicker = 0;
-        _score = 0;
-        _streak = 0;
+        //_score = 0;
+        //_streak = 0;
         _balls1 = new ArrayList<>();
         _balls2 = new ArrayList<>();
         _balls3 = new ArrayList<>();
@@ -128,7 +134,10 @@ public class GameScreen extends Screen {
         _endTicker = END_TIME / _difficulty.getBallSpeed();
         _currentTime = 0f;
         _explosionTicker = 0;
-        _lifes = 10;
+        ///_lives = 10;
+        this.deck=deck;
+        this.bundle=new GameStatusBundle(deck);
+
         _laneHitAlpha1 = 0;
         _laneHitAlpha2 = 0;
         _laneHitAlpha3 = 0;
@@ -139,7 +148,7 @@ public class GameScreen extends Screen {
 
         // paints for text
         _paintScore = new Paint();
-        _paintScore.setTextSize(30);
+        _paintScore.setTextSize(50);
         _paintScore.setTextAlign(Paint.Align.CENTER);
         _paintScore.setAntiAlias(true);
         _paintScore.setColor(Color.WHITE);
@@ -171,6 +180,7 @@ public class GameScreen extends Screen {
     private void updateReady(List<TouchEvent> touchEvents) {
         if (touchEvents.size() > 0) {
             state = GameState.Running;
+            deck.StartGame(bundle);
             touchEvents.clear();
             _currentTrack.setLooping(false);
             _currentTrack.setVolume(0.25f);
@@ -179,6 +189,7 @@ public class GameScreen extends Screen {
     }
 
     private void updateRunning(List<TouchEvent> touchEvents, float deltaTime) {
+        deck.Update(deltaTime);
         // 1. All touch input is handled here:
         handleTouchEvents(touchEvents);
 
@@ -202,14 +213,16 @@ public class GameScreen extends Screen {
             Ball b = iter.next();
             if (b.y > EXPLOSION_TOP) {
                 iter.remove();
-                _score += 10 * _multiplier
-                        * (_doubleMultiplierTicker > 0 ? 2 : 1);
+                bundle.testResult=TestResult.PERFECT;
+                deck.Apply(bundle);
+                //_score += 10 * _multiplier
+                //        * (_doubleMultiplierTicker > 0 ? 2 : 1);
             }
         }
     }
 
     private void checkDeath() {
-        if (_lifes <= 0) {
+        if (bundle.isDead()) {
             endGame();
         }
     }
@@ -236,9 +249,9 @@ public class GameScreen extends Screen {
                 break;
         }
 
-        if(_score > oldScore) {
+        if(bundle.score > oldScore) {
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putInt(_difficulty.getMode(), _score);
+            editor.putInt(_difficulty.getMode(), bundle.score);
             editor.apply();
         }
     }
@@ -409,7 +422,7 @@ public class GameScreen extends Screen {
             if (lowestBall != null && lowestBall.y > HITBOX_CENTER - HITBOX_HEIGHT / 2 - MISS_ZONE_HEIGHT) {
                 balls.remove(lowestBall);
             }
-            onMiss(null);
+            //onMiss(null);
 
             return false;
         }
@@ -421,44 +434,48 @@ public class GameScreen extends Screen {
             return;
         }
         _vibrator.vibrate(100);
-        _streak = 0;
-        _combo=0;
+        bundle.testResult=TestResult.MISS;
+        deck.Apply(bundle);
+        //_streak = 0;
+        //_combo=0;
         //_score -= Math.min(_score, 50);
-        _multiplier = 1;
-        //--_lifes;
-        updateMultipliers();
+        //_multiplier = 1;
+        //--_lives;
+        //updateMultipliers();
     }
 
     // triggers when a lane gets tapped that currently has a ball in its hitbox
     private void onHit(Ball b) {
-        _streak++;
-        ++_lifes;
-        ++_combo;
+        //_streak++;
+        //++_lives;
+        //++_combo;
+        bundle.testResult= TestResult.PERFECT;
+        deck.Apply(bundle);
         switch(b.type) {
             case OneUp: {
-                ++_lifes;
+                //++_lives;
             } break;
             case Multiplier: {
-                _doubleMultiplierTicker = DOUBLE_MULTIPLIER_TIME;
+                //_doubleMultiplierTicker = DOUBLE_MULTIPLIER_TIME;
             } break;
             case Bomb: {
-                _explosionTicker = EXPLOSION_TIME;
+                //_explosionTicker = EXPLOSION_TIME;
                 Assets.soundExplosion.play(0.7f);
             } break;
             case Skull: {
-                onMiss(null); // hitting a skull counts as a miss
+                //onMiss(null); // hitting a skull counts as a miss
                 Assets.soundCreepyLaugh.play(1);
                 return;
             }
         }
 
-        updateMultipliers();
-        _score += 10 * _multiplier*_combo;
+        //updateMultipliers();
+        //_score += 10 * _multiplier*_combo;
                 //* (_doubleMultiplierTicker > 0 ? 2 : 1);
     }
 
     // triggers after a touch event was handled by hitLane()
-    private void updateMultipliers() {
+    /*private void updateMultipliers() {
         if (_streak > 80) {
             _multiplier = 10;
         }
@@ -477,7 +494,7 @@ public class GameScreen extends Screen {
         else {
             _multiplier = 1;
         }
-    }
+    }*/
 
     private void spawnBalls() {
         float randFloat = _rand.nextFloat();
@@ -563,7 +580,7 @@ public class GameScreen extends Screen {
         // First draw the game elements.
 
         // Example:
-        g.drawImage(Assets.background, 0, 0);
+        g.drawScaledImage(Assets.background, 0, 0,_gameWidth,_gameHeight,0,0,Assets.background.getWidth(),Assets.background.getHeight());
         g.drawRect(0                 , 0, _gameWidth / 5 + 1, _gameHeight, Color.argb(_laneHitAlpha1, 255, 0, 0));
         g.drawRect(_gameWidth / 5    , 0, _gameWidth / 5 + 1, _gameHeight, Color.argb(_laneHitAlpha2, 255, 0, 0));
         g.drawRect(_gameWidth / 5 * 2, 0, _gameWidth / 5 + 1, _gameHeight, Color.argb(_laneHitAlpha3, 255, 0, 0));
@@ -666,13 +683,25 @@ public class GameScreen extends Screen {
         }
 
         g.drawRect(0, 0, _gameWidth, 100, Color.BLACK);
-        g.drawRect(0,0,(int)(_gameWidth*0.4f*_lifes/100),100,Color.GREEN);
-        g.drawRect((int)(_gameWidth*0.5f),0,(int)(_gameWidth*0.5f*_score/10000),100,Color.MAGENTA);
+        float ratioOfLife1=(float)bundle.life/bundle.totalLife;
+        float ratioOfLife2=0;
+        if(ratioOfLife1>1)
+        {
+            ratioOfLife2=ratioOfLife1-1;
+            ratioOfLife1=1;
+        }
+        g.drawRect(0,0,(int)(_gameWidth*0.4f* ratioOfLife1),100,Color.GREEN);
+        g.drawRect(0,0,(int)(_gameWidth*0.4f* ratioOfLife2),100,Color.CYAN);
+        g.drawRect((int)(_gameWidth*0.5f),0,(int)(_gameWidth*0.5f*bundle.score/10000),100,Color.MAGENTA);
         //String s = "Score: " + _score +
         //        "   Multiplier: " + _multiplier * (_doubleMultiplierTicker > 0 ? 2 : 1) + "x" +
-        //        "   Lifes remaining: " + _lifes;
-        g.drawString(""+_score, (int)(_gameWidth*0.52f), 80, _paintScore);
-        g.drawString(_combo+" COMBO",(int)(_gameWidth*0.5f),300,_paintScore);
+        //        "   Lifes remaining: " + _lives;
+        g.drawString(""+bundle.score, (int)(_gameWidth*0.52f), 80, _paintScore);
+        g.drawString(bundle.combo+" COMBO",(int)(_gameWidth*0.5f),300,_paintScore);
+        g.drawString(bundle.testResult.name(),(int)(_gameWidth*0.5f),350,_paintScore);
+        String skills=deck.GetActivatedSkills();
+        g.drawString(skills,(int)(_gameWidth*0.5f),400,_paintScore);
+
     }
 
     private void drawPausedUI() {
@@ -686,7 +715,7 @@ public class GameScreen extends Screen {
         Graphics g = game.getGraphics();
         g.drawARGB(205, 0, 0, 0);
         g.drawImage(Assets.gameover, game.getScreenX()/2-50, game.getScreenY()/2-50);
-        g.drawString("FINAL SCORE: " + _score, game.getScreenX()/2-50, game.getScreenY()/2-25, _paintGameover);
+        g.drawString("FINAL SCORE: " + bundle.score, game.getScreenX()/2-50, game.getScreenY()/2-25, _paintGameover);
     }
 
     @Override

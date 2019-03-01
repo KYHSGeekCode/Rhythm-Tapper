@@ -23,6 +23,6 @@ public class Ball {
     public void update(int speed) {
 		//todo add fake move
         this.y += speed * speedMultiplier;
-		this.x = origx+(int)(50*Math.sin(y));
+		//this.x = origx+(int)(50*Math.sin(y));
     }
 }

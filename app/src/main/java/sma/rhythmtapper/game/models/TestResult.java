@@ -1,9 +1,9 @@
 package sma.rhythmtapper.game.models;
 
 public enum TestResult {
-    PERFECT,
-    GREAT,
-    NICE,
+    MISS,
     BAD,
-    MISS
+    NICE,
+    GREAT,
+    PERFECT
 }

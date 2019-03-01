@@ -1,5 +1,7 @@
 package sma.rhythmtapper.game.models;
 
+import sma.rhythmtapper.game.models.Skill.Skill;
+
 public class Card {
     int vocal;
     int visual;

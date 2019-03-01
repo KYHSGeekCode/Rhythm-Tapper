@@ -1,11 +1,16 @@
 package sma.rhythmtapper.game;
 
-import android.content.res.AssetManager;
-import android.util.Log;
-
 import sma.rhythmtapper.framework.Game;
 import sma.rhythmtapper.framework.Graphics;
 import sma.rhythmtapper.framework.Screen;
+import sma.rhythmtapper.game.models.AppealType;
+import sma.rhythmtapper.game.models.Card;
+import sma.rhythmtapper.game.models.CenterSkill;
+import sma.rhythmtapper.game.models.ColorType;
+import sma.rhythmtapper.game.models.Deck;
+import sma.rhythmtapper.game.models.Skill.Skill;
+import sma.rhythmtapper.game.models.Skill.SkillHeal;
+import sma.rhythmtapper.game.models.Skill.SkillOverload;
 import sma.rhythmtapper.models.Difficulty;
 
 
@@ -44,8 +49,14 @@ public class LoadingScreen extends Screen {
         Assets.soundCreepyLaugh = game.getAudio().createSound(SOUND_EFFECTS_PATH + "sound_creepy_laugh.mp3");
 
         Assets.musicTrack = game.getAudio().createMusic(MUSIC_PATH + _diff.getMusic());
-
-        game.setScreen(new GameScreen(game, _diff));
+        Deck deck=new Deck();
+        deck.SetCard(0,new Card(ColorType.CUTE,5000,5000,5000,30, new CenterSkill(CenterSkill.Condition.ANY,ColorType.CUTE, AppealType.ANY,30), new SkillHeal(7,50,3)));
+        deck.SetCard(1,new Card(ColorType.COOL,5000,5000,5000,30, new CenterSkill(CenterSkill.Condition.ANY,ColorType.CUTE, AppealType.ANY,30), new SkillOverload(7,50,3)));
+        deck.SetCard(2,new Card(ColorType.COOL,5000,5000,5000,30, new CenterSkill(CenterSkill.Condition.TRICOLOR,ColorType.ANY, AppealType.ANY,40), new SkillHeal(7,50,3)));
+        deck.SetCard(3,new Card(ColorType.PASSION,5000,5000,5000,30, new CenterSkill(CenterSkill.Condition.ANY,ColorType.CUTE, AppealType.ANY,30), new SkillHeal(7,50,3)));
+        deck.SetCard(4,new Card(ColorType.PASSION,5000,5000,5000,30, new CenterSkill(CenterSkill.Condition.ANY,ColorType.CUTE, AppealType.ANY,30), new SkillHeal(7,50,3)));
+        deck.ApplyCenterSkill();
+        game.setScreen(new GameScreen(game, _diff,deck));
     }
     @Override
     public void paint(float deltaTime) {

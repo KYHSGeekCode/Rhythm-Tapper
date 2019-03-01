@@ -150,7 +150,7 @@ public class Deck {
                     cards[i].skill.Start(bundle);
                 }
             }
-            if(bSkillOn[i]&&(sec%cards[i].skill.period)==cards[i].skill.duration)
+            if(bSkillOn[i]&&(sec%cards[i].skill.period)==cards[i].skill.duration-1)
             {
                 //finish applying skill
                 bSkillOn[i]=false;
@@ -184,6 +184,7 @@ public class Deck {
         if(bundle.continueCombo==false)
         {
             bundle.combo=0;
+			bundle.continueCombo=true;
         } else {
             bundle.combo++;
         }

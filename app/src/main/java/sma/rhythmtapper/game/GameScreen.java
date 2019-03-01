@@ -423,7 +423,7 @@ public class GameScreen extends Screen {
         _vibrator.vibrate(100);
         _streak = 0;
         _combo=0;
-        _score -= Math.min(_score, 50);
+        //_score -= Math.min(_score, 50);
         _multiplier = 1;
         //--_lifes;
         updateMultipliers();
@@ -655,7 +655,7 @@ public class GameScreen extends Screen {
         Graphics g = game.getGraphics();
 
         g.drawARGB(155, 0, 0, 0);
-        g.drawString("Tap to start!", 540, 500, _paintScore);
+        g.drawString("Tap to start!", game.getScreenX()/2-270, game.getScreenY()/2-250, _paintScore);
     }
 
     private void drawRunningUI() {
@@ -666,25 +666,27 @@ public class GameScreen extends Screen {
         }
 
         g.drawRect(0, 0, _gameWidth, 100, Color.BLACK);
-
-        String s = "Score: " + _score +
-                "   Multiplier: " + _multiplier * (_doubleMultiplierTicker > 0 ? 2 : 1) + "x" +
-                "   Lifes remaining: " + _lifes;
-        g.drawString(s, 600, 80, _paintScore);
+        g.drawRect(0,0,(int)(_gameWidth*0.4f*_lifes/100),100,Color.GREEN);
+        g.drawRect((int)(_gameWidth*0.5f),0,(int)(_gameWidth*0.5f*_score/10000),100,Color.MAGENTA);
+        //String s = "Score: " + _score +
+        //        "   Multiplier: " + _multiplier * (_doubleMultiplierTicker > 0 ? 2 : 1) + "x" +
+        //        "   Lifes remaining: " + _lifes;
+        g.drawString(""+_score, (int)(_gameWidth*0.52f), 80, _paintScore);
+        g.drawString(_combo+" COMBO",(int)(_gameWidth*0.5f),300,_paintScore);
     }
 
     private void drawPausedUI() {
         Graphics g = game.getGraphics();
         g.drawARGB(155, 0, 0, 0);
-        g.drawImage(Assets.pause, 200, 500);
-        g.drawString("TAP TO CONTINUE", 540, 845, _paintGameover);
+        g.drawImage(Assets.pause, game.getScreenX()/2-300, game.getScreenY()/2-300);
+        g.drawString("TAP TO CONTINUE", game.getScreenX()/2, game.getScreenY()/2, _paintGameover);
     }
 
     private void drawGameOverUI() {
         Graphics g = game.getGraphics();
         g.drawARGB(205, 0, 0, 0);
-        g.drawImage(Assets.gameover, 200, 500);
-        g.drawString("FINAL SCORE: " + _score, 540, 845, _paintGameover);
+        g.drawImage(Assets.gameover, game.getScreenX()/2-50, game.getScreenY()/2-50);
+        g.drawString("FINAL SCORE: " + _score, game.getScreenX()/2-50, game.getScreenY()/2-25, _paintGameover);
     }
 
     @Override

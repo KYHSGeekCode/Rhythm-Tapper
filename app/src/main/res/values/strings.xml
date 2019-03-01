@@ -32,4 +32,8 @@
     <string name="about_ball_oneup_content">Erhöht die Anzahl der Leben um 1</string>
     <string name="about_ball_skull_content">Verringert die Anzahl der Leben um 1</string>
 
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
 </resources>

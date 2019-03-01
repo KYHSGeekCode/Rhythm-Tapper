@@ -7,7 +7,9 @@ import java.util.Random;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
+import android.graphics.Shader;
 import android.os.Vibrator;
 import android.util.Log;
 
@@ -86,7 +88,14 @@ public class GameScreen extends Screen {
 
     // ui
     private Paint _paintScore;
+    private Paint _paintScoreShadow;
     private Paint _paintGameover;
+    private Paint _paintScoreS;
+    private Paint _paintScoreA;
+    private Paint _paintScoreB;
+    private Paint _paintScoreC;
+    private Paint _paintScoreD;
+
 
     // constants
     // how far the screen should scroll after the track ends
@@ -148,17 +157,45 @@ public class GameScreen extends Screen {
 
         // paints for text
         _paintScore = new Paint();
-        _paintScore.setTextSize(50);
+        _paintScore.setTextSize(60);
         _paintScore.setTextAlign(Paint.Align.CENTER);
         _paintScore.setAntiAlias(true);
-        _paintScore.setColor(Color.WHITE);
+        _paintScore.setColor(Color.RED);
+        _paintScore.setStrokeWidth(8);
 
+        // paints for text
+        _paintScoreShadow = new Paint();
+        _paintScoreShadow.setTextSize(60);
+        _paintScoreShadow.setStrokeWidth(12);
+        _paintScoreShadow.setStyle(Paint.Style.STROKE);
+        _paintScoreShadow.setTextAlign(Paint.Align.CENTER);
+        _paintScoreShadow.setAntiAlias(true);
+        _paintScoreShadow.setColor(Color.WHITE);
 
         _paintGameover = new Paint();
-        _paintGameover.setTextSize(50);
+        _paintGameover.setTextSize(60);
         _paintGameover.setTextAlign(Paint.Align.CENTER);
         _paintGameover.setAntiAlias(true);
         _paintGameover.setColor(Color.BLACK);
+
+        _paintScoreS=new Paint();
+        _paintScoreS.setAntiAlias(true);
+        int[] colors = { Color.rgb(0xFF,0x7F,00), Color.YELLOW, Color.BLUE, Color.rgb(0xfa,0xb7,0xf7), Color.MAGENTA};
+        float[] pos = { 0.0f, 0.6f, 0.75f, 0.9f, 1.0f };
+        _paintScoreS.setShader(new LinearGradient(_gameWidth*0.5f,0,_gameWidth,0, colors, pos, Shader.TileMode.CLAMP));
+
+        _paintScoreA=new Paint();
+        _paintScoreA.setColor(Color.rgb(0xf8,0x38,0x25));
+
+        _paintScoreB=new Paint();
+        _paintScoreB.setColor(Color.rgb(0xff,0xa5,0x00));
+
+        _paintScoreC=new Paint();
+        _paintScoreC.setColor(Color.YELLOW);
+
+        _paintScoreD=new Paint();
+        _paintScoreD.setColor(Color.rgb(0xc6,0x8a,0x12));
+
 
         HITBOX_CENTER= game.getScreenY()-HITBOX_HEIGHT;
     }
@@ -673,6 +710,7 @@ public class GameScreen extends Screen {
 
         g.drawARGB(155, 0, 0, 0);
         g.drawString("Tap to start!", game.getScreenX()/2-270, game.getScreenY()/2-250, _paintScore);
+
     }
 
     private void drawRunningUI() {
@@ -690,13 +728,16 @@ public class GameScreen extends Screen {
             ratioOfLife2=ratioOfLife1-1;
             ratioOfLife1=1;
         }
-        g.drawRect(0,0,(int)(_gameWidth*0.4f* ratioOfLife1),100,Color.GREEN);
+        g.drawRect(0,0,(int)(_gameWidth*0.4f* ratioOfLife1),100,ratioOfLife1>0.1f? Color.GREEN:Color.RED);
         g.drawRect(0,0,(int)(_gameWidth*0.4f* ratioOfLife2),100,Color.CYAN);
-        g.drawRect((int)(_gameWidth*0.5f),0,(int)(_gameWidth*0.5f*bundle.score/10000),100,Color.MAGENTA);
+        //50-70-85-100
+        float scoreRatio=(float)bundle.score/10000.0f;
+        g.drawRect((int)(_gameWidth*0.5f),0,(int)(_gameWidth*0.5f*Math.min(scoreRatio,1)),100,GetScoreBkPaint(scoreRatio));
         //String s = "Score: " + _score +
         //        "   Multiplier: " + _multiplier * (_doubleMultiplierTicker > 0 ? 2 : 1) + "x" +
         //        "   Lifes remaining: " + _lives;
-        g.drawString(""+bundle.score, (int)(_gameWidth*0.52f), 80, _paintScore);
+        DrawString(g,""+bundle.score, (int)(_gameWidth*0.55f), 80);
+        //g.drawString(""+bundle.score, (int)(_gameWidth*0.52f), 80, _paintScore);
         g.drawString(bundle.combo+" COMBO",(int)(_gameWidth*0.5f),300,_paintScore);
         g.drawString(bundle.testResult.name(),(int)(_gameWidth*0.5f),350,_paintScore);
         String skills=deck.GetActivatedSkills();
@@ -718,6 +759,23 @@ public class GameScreen extends Screen {
         g.drawString("FINAL SCORE: " + bundle.score, game.getScreenX()/2-50, game.getScreenY()/2-25, _paintGameover);
     }
 
+    private void DrawString(Graphics g, String s, int x, int y)
+    {
+        g.drawString(s,x,y,_paintScoreShadow);
+        g.drawString(s,x,y,_paintScore);
+    }
+    private Paint GetScoreBkPaint(float ratio)
+    {
+        if(ratio<0.5f)
+            return _paintScoreD;
+        if(ratio<0.7f)
+            return _paintScoreC;
+        if(ratio<0.85f)
+            return _paintScoreB;
+        if(ratio<1)
+            return _paintScoreA;
+        return _paintScoreS;
+    }
     @Override
     public void pause() {
         if (state == GameState.Running) {

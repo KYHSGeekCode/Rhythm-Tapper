@@ -18,6 +18,8 @@ public interface Graphics {
 
     public void drawRect(int x, int y, int width, int height, int color);
 
+    public void drawRect(int x, int y, int width, int height, Paint paint);
+
     public void drawImage(Image image, int x, int y, int srcX, int srcY,
                           int srcWidth, int srcHeight);
 

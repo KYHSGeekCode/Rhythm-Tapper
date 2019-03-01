@@ -98,6 +98,12 @@ public class RTGraphics implements Graphics {
     }
 
     @Override
+    public void drawRect(int x, int y, int width, int height, Paint paint)
+    {
+        //paint.setStyle(Style.FILL);
+        canvas.drawRect(x, y, x + width - 1, y + height - 1, paint);
+    }
+    @Override
     public void drawARGB(int a, int r, int g, int b) {
         paint.setStyle(Style.FILL);
         canvas.drawARGB(a, r, g, b);

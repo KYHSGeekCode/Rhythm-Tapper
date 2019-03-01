@@ -11,7 +11,7 @@ public class SkillOverload extends Skill {
 
     @Override
     public void Start(GameStatusBundle bundle) {
-        bundle.ApplyDeltaLife(-15);
+        bundle.Damage(15);
     }
 
     @Override

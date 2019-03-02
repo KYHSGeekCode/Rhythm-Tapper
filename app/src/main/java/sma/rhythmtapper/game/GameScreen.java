@@ -107,7 +107,7 @@ public class GameScreen extends Screen {
     private static final int BALL_INITIAL_Y = -50;
     // hitbox is the y-range within a ball can be hit by a press in its lane
     private static  int HITBOX_CENTER = 1760;
-    private static  int HITBOX_HEIGHT = 280;
+    private static  int HITBOX_HEIGHT = 200;
     // if no ball is in the hitbox when pressed, remove the lowest ball in the
     // miss zone right above the hitbox (it still counts as a miss)
     private static  int MISS_ZONE_HEIGHT = 150;
@@ -467,7 +467,7 @@ public class GameScreen extends Screen {
             if (lowestBall != null && lowestBall.y > HITBOX_CENTER - HITBOX_HEIGHT / 2 - MISS_ZONE_HEIGHT) {
                 balls.remove(lowestBall);
             }
-            //onMiss(null);
+            //onMiss(null);//bad hit
 
             return false;
         }
@@ -494,9 +494,32 @@ public class GameScreen extends Screen {
         //_streak++;
         //++_lives;
         //++_combo;
-        bundle.testResult= TestResult.PERFECT;
+		int y=b.y;
+		//bad      10%  HITBox_center-Hitboxheight
+		//nice     15%  hitboxcenter-hitboxheight*0.4/2
+		//great    15%  hitboxcenter-hitboxheight*0.25/2
+		//perfect  20%  hitboxcenter+-hitboxheight*0.1
+		//great    15%
+		//nice     15%
+		//bad      10%
+		int diff=Math.abs(HITBOX_CENTER-y);
+		TestResult tr=TestResult.MISS;
+		if(diff<=HITBOX_HEIGHT*0.1)
+		{
+			tr=TestResult.PERFECT;
+		} else if(diff<=HITBOX_HEIGHT*0.25)
+		{
+			tr=TestResult.GREAT;
+		} else if(diff<=HITBOX_HEIGHT*0.4)
+		{
+			tr=TestResult.NICE;
+		} else if(diff<=HITBOX_HEIGHT/2)
+		{
+			tr=TestResult.BAD;
+		}
+		bundle.testResult=tr;
         deck.Apply(bundle);
-        switch(b.type) {
+       /* switch(b.type) {
             case OneUp: {
                 //++_lives;
             } break;
@@ -512,7 +535,7 @@ public class GameScreen extends Screen {
                 Assets.soundCreepyLaugh.play(1);
                 return;
             }
-        }
+        }*/
 
         //updateMultipliers();
         //_score += 10 * _multiplier*_combo;
@@ -636,7 +659,7 @@ public class GameScreen extends Screen {
         for(int i=0;i<5;i++)
         {
             int n=2*i+1;
-            g.drawImage(Assets.ballHitpoint, dx*n-90, HITBOX_CENTER);
+            g.drawImage(Assets.ballHitpoint, dx*n-90, HITBOX_CENTER-90);
         }
 
         for (Ball b: _balls1) {

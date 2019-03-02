@@ -16,4 +16,9 @@ public class SkillDamageGuard extends Skill {
     public void PreTest(GameStatusBundle bundle) {
         bundle.shouldDamage=false;
     }
+
+    @Override
+    public void Finish(GameStatusBundle bundle) {
+        bundle.shouldDamage=true;
+    }
 }

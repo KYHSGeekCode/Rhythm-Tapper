@@ -26,6 +26,10 @@ public abstract class Skill {
     {
 
     }
+    public void Finish(GameStatusBundle bundle)
+    {
+
+    }
     public static final Skill nullSkill=new Skill(100,0,1){
         @Override
         public String GetName() {

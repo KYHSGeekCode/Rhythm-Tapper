@@ -142,12 +142,13 @@ public class Deck {
             int sec=(int)(periodTimer[i]/100);
             if(sec>cards[i].skill.period&&bSkillCheckedNow[i]==false)
             {
-                bSkillCheckedNow[i]=true;
+                //bSkillCheckedNow[i]=true;
                 if(random.nextInt()%100<chances[i])
                 {
                     //start applying skill
                     bSkillOn[i]=true;
                     cards[i].skill.Start(bundle);
+                    bundle.runningSkills.add(cards[i].skill);
                 }
             }
             if(bSkillOn[i]&&(sec>cards[i].skill.period+cards[i].skill.duration))
@@ -157,6 +158,7 @@ public class Deck {
                 bSkillOn[i]=false;
                 //cards[i].skill.End();
                 bSkillCheckedNow[i]=false;
+                bundle.runningSkills.remove(cards[i].skill);
             }
         }
     }

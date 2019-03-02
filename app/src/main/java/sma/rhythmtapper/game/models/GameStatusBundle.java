@@ -1,5 +1,11 @@
 package sma.rhythmtapper.game.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import sma.rhythmtapper.game.models.Skill.Skill;
+
+//Controlled by the Deck class
 public class GameStatusBundle {
     public int life;
     public int score;
@@ -61,4 +67,6 @@ public class GameStatusBundle {
     {
         return life<=0;
     }
+
+    public List<Skill> runningSkills=new ArrayList<>();
 }

@@ -12,11 +12,19 @@ public class Deck {
     int life;
     Random random;
     GameStatusBundle bundle;
-    //i must be below 5
+
+    GameResult result;
+
+    public void SetResult(GameResult result)
+    {
+        this.result=result;
+    }
+
     public Deck()
     {
         this.random=new Random();
     }
+    //i must be below 5
     public void SetCard(int i, Card card)
     {
         cards[i]=card;
@@ -189,6 +197,7 @@ public class Deck {
         basicScore*=(1+totalBonus/100.0f);
         if(bundle.continueCombo==false)
         {
+            result.maxcombo=Math.max(result.maxcombo,bundle.combo);
             bundle.combo=0;
 			bundle.continueCombo=true;
         } else {
@@ -202,6 +211,27 @@ public class Deck {
             bundle.Damage(15);
         } else if (bundle.testResult==TestResult.MISS)
             bundle.Damage(18);
+        switch (bundle.testResult)
+        {
+            case PERFECT:
+                result.perfect++;
+                break;
+            case GREAT:
+                result.great++;
+                break;
+            case NICE:
+                result.nice++;
+                break;
+            case BAD:
+                result.bad++;
+                break;
+            case MISS:
+                result.miss++;
+                break;
+            default:
+                break;
+        }
+        result.score=bundle.score;
     }
 
     private float GetScoreAmpByTestResult(TestResult testResult) {

@@ -20,6 +20,7 @@ import sma.rhythmtapper.framework.Game;
 import sma.rhythmtapper.framework.Graphics;
 import sma.rhythmtapper.framework.Input;
 import sma.rhythmtapper.framework.Screen;
+import sma.rhythmtapper.game.models.ChooseSongScreen;
 
 public class RTGame extends Activity implements Game {
     RTFastRenderView renderView;
@@ -31,6 +32,8 @@ public class RTGame extends Activity implements Game {
     PowerManager.WakeLock wakeLock;
 
     Point screensize=new Point();
+
+    public ChooseSongScreen chooseSongScreen;
 
     @Override
     public int getScreenX()
@@ -84,6 +87,8 @@ public class RTGame extends Activity implements Game {
 
         PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "RhythmTapper");
+
+        chooseSongScreen=new ChooseSongScreen(this);
     }
 
     @Override

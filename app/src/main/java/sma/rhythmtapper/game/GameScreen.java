@@ -22,7 +22,9 @@ import sma.rhythmtapper.framework.Screen;
 import sma.rhythmtapper.framework.Input.TouchEvent;
 import sma.rhythmtapper.game.models.Ball;
 import sma.rhythmtapper.game.models.Deck;
+import sma.rhythmtapper.game.models.GameResult;
 import sma.rhythmtapper.game.models.GameStatusBundle;
+import sma.rhythmtapper.game.models.ResultScreen;
 import sma.rhythmtapper.game.models.TestResult;
 import sma.rhythmtapper.models.Difficulty;
 
@@ -51,6 +53,7 @@ public class GameScreen extends Screen {
 
     GameStatusBundle bundle;
     Deck deck;
+    GameResult result=new GameResult();
 
     // tickers
     private int _tick;
@@ -145,6 +148,7 @@ public class GameScreen extends Screen {
         _explosionTicker = 0;
         ///_lives = 10;
         this.deck=deck;
+        deck.SetResult(result);
         this.bundle=new GameStatusBundle(deck);
 
         _laneHitAlpha1 = 0;
@@ -290,7 +294,11 @@ public class GameScreen extends Screen {
             SharedPreferences.Editor editor = prefs.edit();
             editor.putInt(_difficulty.getMode(), bundle.score);
             editor.apply();
+            result.highscore=bundle.score;
+        } else {
+            result.highscore=oldScore;
         }
+        game.setScreen(new ResultScreen(game, result));
     }
 
     private void handleTouchEvents(List<TouchEvent> touchEvents) {

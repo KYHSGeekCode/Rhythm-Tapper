@@ -28,13 +28,15 @@ import sma.rhythmtapper.game.models.ResultScreen;
 import sma.rhythmtapper.game.models.TestResult;
 import sma.rhythmtapper.models.Difficulty;
 
-public class GameScreen extends Screen {
+public class GameScreen extends Screen
+{
     private static final String TAG = "GameScreenTag";
 
 
-    enum GameState {
+    enum GameState
+	{
         Ready, Running, Paused, GameOver
-    }
+		}
 
     // game and device
     private int _gameHeight;
@@ -63,13 +65,23 @@ public class GameScreen extends Screen {
     private int _endTicker;
 
     // balls
+	private List<List<Ball>> _balls=new ArrayList<List<Ball>>(5);
     private List<Ball> _balls1;
     private List<Ball> _balls2;
     private List<Ball> _balls3;
     private List<Ball> _balls4;
     private List<Ball> _balls5;
 
+	private boolean _longNote1;
+	private boolean _longNote2;
+	private boolean _longNote3;
+	private boolean _longNote4;
+	private boolean _longNote5;
+
+	//TODO: how to support slide note?
+
     // lane miss indicators
+	private int [] _laneHitAlpha=new int[5];
     private int _laneHitAlpha1;
     private int _laneHitAlpha2;
     private int _laneHitAlpha3;
@@ -119,7 +131,8 @@ public class GameScreen extends Screen {
 
     private GameState state = GameState.Ready;
 
-    GameScreen(Game game, Difficulty difficulty, Deck deck) {
+    GameScreen(Game game, Difficulty difficulty, Deck deck)
+	{
         super(game);
 
         _difficulty = difficulty;
@@ -140,6 +153,17 @@ public class GameScreen extends Screen {
         _balls3 = new ArrayList<>();
         _balls4 = new ArrayList<>();
         _balls5 = new ArrayList<>();
+		_balls.add(0,_balls1);
+		_balls.add(1,_balls2);
+		_balls.add(2,_balls3);
+		_balls.add(3,_balls4);
+		_balls.add(4,_balls5);
+		
+		_longNote1 = false;
+		_longNote2 = false;
+		_longNote3 = false;
+		_longNote4 = false;
+		_longNote5 = false;
 
         _rand = new Random();
         _tick = 0;
@@ -147,15 +171,20 @@ public class GameScreen extends Screen {
         _currentTime = 0f;
         _explosionTicker = 0;
         ///_lives = 10;
-        this.deck=deck;
+        this.deck = deck;
         deck.SetResult(result);
-        this.bundle=new GameStatusBundle(deck);
+        this.bundle = new GameStatusBundle(deck);
 
+		for(int i=0;i<5;i++)
+		{
+			_laneHitAlpha[i]=0;
+		}
+		/*
         _laneHitAlpha1 = 0;
         _laneHitAlpha2 = 0;
         _laneHitAlpha3 = 0;
         _laneHitAlpha4 = 0;
-        _laneHitAlpha5 = 0;
+        _laneHitAlpha5 = 0;*/
         _currentTrack = Assets.musicTrack;
         _isEnding = false;
 
@@ -182,30 +211,31 @@ public class GameScreen extends Screen {
         _paintGameover.setAntiAlias(true);
         _paintGameover.setColor(Color.BLACK);
 
-        _paintScoreS=new Paint();
+        _paintScoreS = new Paint();
         _paintScoreS.setAntiAlias(true);
-        int[] colors = { Color.rgb(0xFF,0x7F,00), Color.YELLOW, Color.BLUE, Color.rgb(0xfa,0xb7,0xf7), Color.MAGENTA};
+        int[] colors = { Color.rgb(0xFF, 0x7F, 00), Color.YELLOW, Color.BLUE, Color.rgb(0xfa, 0xb7, 0xf7), Color.MAGENTA};
         float[] pos = { 0.0f, 0.6f, 0.75f, 0.9f, 1.0f };
-        _paintScoreS.setShader(new LinearGradient(_gameWidth*0.5f,0,_gameWidth,0, colors, pos, Shader.TileMode.CLAMP));
+        _paintScoreS.setShader(new LinearGradient(_gameWidth * 0.5f, 0, _gameWidth, 0, colors, pos, Shader.TileMode.CLAMP));
 
-        _paintScoreA=new Paint();
-        _paintScoreA.setColor(Color.rgb(0xf8,0x38,0x25));
+        _paintScoreA = new Paint();
+        _paintScoreA.setColor(Color.rgb(0xf8, 0x38, 0x25));
 
-        _paintScoreB=new Paint();
-        _paintScoreB.setColor(Color.rgb(0xff,0xa5,0x00));
+        _paintScoreB = new Paint();
+        _paintScoreB.setColor(Color.rgb(0xff, 0xa5, 0x00));
 
-        _paintScoreC=new Paint();
+        _paintScoreC = new Paint();
         _paintScoreC.setColor(Color.YELLOW);
 
-        _paintScoreD=new Paint();
-        _paintScoreD.setColor(Color.rgb(0xc6,0x8a,0x12));
+        _paintScoreD = new Paint();
+        _paintScoreD.setColor(Color.rgb(0xc6, 0x8a, 0x12));
 
 
-        HITBOX_CENTER= game.getScreenY()-HITBOX_HEIGHT;
+        HITBOX_CENTER = game.getScreenY() - HITBOX_HEIGHT;
     }
 
     @Override
-    public void update(float deltaTime) {
+    public void update(float deltaTime)
+	{
         List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
 
         if (state == GameState.Ready)
@@ -218,8 +248,10 @@ public class GameScreen extends Screen {
             updateGameOver(touchEvents);
     }
 
-    private void updateReady(List<TouchEvent> touchEvents) {
-        if (touchEvents.size() > 0) {
+    private void updateReady(List<TouchEvent> touchEvents)
+	{
+        if (touchEvents.size() > 0)
+		{
             state = GameState.Running;
             deck.StartGame(bundle);
             touchEvents.clear();
@@ -229,7 +261,8 @@ public class GameScreen extends Screen {
         }
     }
 
-    private void updateRunning(List<TouchEvent> touchEvents, float deltaTime) {
+    private void updateRunning(List<TouchEvent> touchEvents, float deltaTime)
+	{
         deck.Update(deltaTime);
         // 1. All touch input is handled here:
         handleTouchEvents(touchEvents);
@@ -242,19 +275,24 @@ public class GameScreen extends Screen {
         updateVariables(deltaTime);
     }
 
-    private void checkEnd() {
-        if (_currentTrack.isStopped()) {
+    private void checkEnd()
+	{
+        if (_currentTrack.isStopped())
+		{
             _isEnding = true;
         }
     }
 
-    private void explosion(List<Ball> balls) {
+    private void explosion(List<Ball> balls)
+	{
         Iterator<Ball> iter = balls.iterator();
-        while (iter.hasNext()) {
+        while (iter.hasNext())
+		{
             Ball b = iter.next();
-            if (b.y > EXPLOSION_TOP) {
+            if (b.y > EXPLOSION_TOP)
+			{
                 iter.remove();
-                bundle.testResult=TestResult.PERFECT;
+                bundle.testResult = TestResult.PERFECT;
                 deck.Apply(bundle);
                 //_score += 10 * _multiplier
                 //        * (_doubleMultiplierTicker > 0 ? 2 : 1);
@@ -262,161 +300,319 @@ public class GameScreen extends Screen {
         }
     }
 
-    private void checkDeath() {
-        if (bundle.isDead()) {
+    private void checkDeath()
+	{
+        if (bundle.isDead())
+		{
             endGame();
         }
     }
 
-    private void endGame() {
+    private void endGame()
+	{
         state = GameState.GameOver;
         // update highscore
         FileIO fileIO = game.getFileIO();
         SharedPreferences prefs = fileIO.getSharedPref();
         int oldScore;
 
-        switch(_difficulty.getMode()) {
+        switch (_difficulty.getMode())
+		{
             case Difficulty.EASY_TAG:
-                oldScore = prefs.getInt(Difficulty.EASY_TAG,0);
+                oldScore = prefs.getInt(Difficulty.EASY_TAG, 0);
                 break;
             case Difficulty.MED_TAG:
-                oldScore = prefs.getInt(Difficulty.MED_TAG,0);
+                oldScore = prefs.getInt(Difficulty.MED_TAG, 0);
                 break;
             case Difficulty.HARD_TAG:
-                oldScore = prefs.getInt(Difficulty.HARD_TAG,0);
+                oldScore = prefs.getInt(Difficulty.HARD_TAG, 0);
                 break;
             default:
                 oldScore = 0;
                 break;
         }
 
-        if(bundle.score > oldScore) {
+        if (bundle.score > oldScore)
+		{
             SharedPreferences.Editor editor = prefs.edit();
             editor.putInt(_difficulty.getMode(), bundle.score);
             editor.apply();
-            result.highscore=bundle.score;
-        } else {
-            result.highscore=oldScore;
+            result.highscore = bundle.score;
+        }
+		else
+		{
+            result.highscore = oldScore;
         }
         game.setScreen(new ResultScreen(game, result));
     }
 
-    private void handleTouchEvents(List<TouchEvent> touchEvents) {
+	//For flicks
+	int flickStartX, flickStartY;
+
+	int oldX, oldY;
+	//for slide notes
+	int trackX,trackY;
+	boolean isDown;
+    private void handleTouchEvents(List<TouchEvent> touchEvents)
+	{
         int len = touchEvents.size();
 
-        for (int i = 0; i < len; i++) {
+        for (int i = 0; i < len; i++)
+		{
             TouchEvent event = touchEvents.get(i);
+			//only check flick here
+			if (event.type == TouchEvent.TOUCH_DRAGGED)
+			{
+				trackX = event.x;
+				trackY = event.y;
+				int dx=event.x - oldX;
+				int dy=event.y - oldY;
+				if(dy>dx)//up or left
+				{
+					if(dy>-dx)
+					{
+						//up flick
+					} else {
+						//left flick
+						if(flickStartX>event.x)
+						{
+							int flickStartLane=getFlickStartLaneLeft(flickStartX);
+							int flickEndLane=getFlickEndLaneLeft(event.x);
+							for(int j=flickStartLane;j>=flickEndLane;j--)
+							{
+								hitLane(_balls.get(j),Ball.BallType.FlickLeft);
+							}
+						}
+					}
+				} else { //down or right
+					if(dy>-dx)
+					{
+						//right
+					} else{
+						//down
+					}
+				}	
 
-            if (event.type == TouchEvent.TOUCH_DOWN) {
-                if (event.y > game.getScreenY()*0.5f) {
+			}
+            if (event.type == TouchEvent.TOUCH_DOWN)
+			{
+				oldX = event.x;
+				oldY = event.y;
+				trackX = event.x;
+				trackY = event.y;
+				flickStartY= event.x;
+				flickStartX=event.y;
+				isDown = true;
+                if (event.y > game.getScreenY() * 0.5f)
+				{
                     // ball hit area
-                    if (event.x < _gameWidth / 5) {
-                        if (!hitLane(_balls1)) {
+					for(int j=0;j<5;j++)
+					{
+						if(event.x < _gameWidth / 5 * (j+1))
+						{
+							if (!hitLane(_balls.get(j), Ball.BallType.Normal))
+							{
+								// if no ball was hit
+								_laneHitAlpha[j] = MISS_FLASH_INITIAL_ALPHA;							
+							}
+							break;
+						}
+					}
+					/*
+                    if (event.x < _gameWidth / 5)
+					{
+                        if (!hitLane(_balls1, Ball.BallType.Normal))
+						{
                             // if no ball was hit
                             _laneHitAlpha1 = MISS_FLASH_INITIAL_ALPHA;
                         }
                     }
-                    else if (event.x < _gameWidth / 5 * 2) {
-                        if (!hitLane(_balls2)) {
+                    else if (event.x < _gameWidth / 5 * 2)
+					{
+                        if (!hitLane(_balls2, Ball))
+						{
                             // if no ball was hit
                             _laneHitAlpha2 = MISS_FLASH_INITIAL_ALPHA;
                         }
                     }
-                    else if (event.x < _gameWidth / 5 * 3) {
+                    else if (event.x < _gameWidth / 5 * 3)
+					{
                         if (!hitLane(_balls3))
                         {
                             _laneHitAlpha3 = MISS_FLASH_INITIAL_ALPHA;
                         }
                     }
-                    else if (event.x < _gameWidth / 5 * 4) {
-                        if (!hitLane(_balls4)) {
+                    else if (event.x < _gameWidth / 5 * 4)
+					{
+                        if (!hitLane(_balls4))
+						{
                             // if no ball was hit
                             _laneHitAlpha4 = MISS_FLASH_INITIAL_ALPHA;
                         }
                     }
-                    else {
-                        if (!hitLane(_balls5)) {
+                    else
+					{
+                        if (!hitLane(_balls5))
+						{
                             _laneHitAlpha5 = MISS_FLASH_INITIAL_ALPHA;
                         }
-                    }
+                    }*/
                 }
-                else {
+                else
+				{
                     // pause area
                     touchEvents.clear();
                     pause();
                     break;
                 }
             }
+			else if (event.type == TouchEvent.TOUCH_UP)
+			{
+				isDown = false;
+			}
         }
     }
 
+	private int getFlickStartLaneLeft(int flickStartX)
+	{
+		//lane's middle line
+		int div=_gameWidth/10;
+		int odd=flickStartX/div;
+		boolean ok=odd%2==1;
+		if(ok)
+			return odd/2;
+		else
+			return odd/2-1;
+	}
+	private int getFlickStartLaneRight(int flickStartX)
+	{
+		//lane's middle line
+		int div=_gameWidth/10;
+		int odd=flickStartX/div;
+		boolean ok=odd%2==0;
+		if(ok)
+			return odd/2;
+		else
+			return odd/2+1;
+	}
+	private int getFlickEndLaneLeft(int flickEndX)
+	{
+		//lane's middle line
+		int div=_gameWidth/10;
+		int odd=flickStartX/div;
+		boolean ok=odd%2==0;
+		if(ok)
+			return odd/2;
+		else
+			return odd/2+1;
+	}
+	private int getFlickEndLaneRight(int flickEndX)
+	{
+		//lane's middle line
+		int div=_gameWidth/10;
+		int odd=flickStartX/div;
+		boolean ok=odd%2==1;
+		if(ok)
+			return odd/2;
+		else
+			return odd/2-1;
+	}
     // update all the games variables each tick
-    private void updateVariables(float deltatime) {
+    private void updateVariables(float deltatime)
+	{
         // update timer
         _currentTime += deltatime;
 
         // update ball position
-        for (Ball b: _balls1) {
+        for (Ball b: _balls1)
+		{
             b.update((int) (_ballSpeed * deltatime));
         }
 
-        for (Ball b: _balls2) {
+        for (Ball b: _balls2)
+		{
             b.update((int) (_ballSpeed * deltatime));
         }
 
-        for (Ball b: _balls3) {
+        for (Ball b: _balls3)
+		{
             b.update((int) (_ballSpeed * deltatime));
         }
 
-        for (Ball b: _balls4) {
+        for (Ball b: _balls4)
+		{
             b.update((int) (_ballSpeed * deltatime));
         }
 
-        for (Ball b: _balls5) {
+        for (Ball b: _balls5)
+		{
             b.update((int) (_ballSpeed * deltatime));
         }
 
+		for(int i=0;i<5;i++)
+		{
+			if(removeMissed(_balls.get(i).iterator()))
+			{
+				_laneHitAlpha[i]=MISS_FLASH_INITIAL_ALPHA;
+			}
+			
+		}
         // remove missed balls
-        if (removeMissed(_balls1.iterator())) {
+		/*
+        if (removeMissed(_balls1.iterator()))
+		{
             _laneHitAlpha1 = MISS_FLASH_INITIAL_ALPHA;
         }
 
-        if (removeMissed(_balls2.iterator())) {
+        if (removeMissed(_balls2.iterator()))
+		{
             _laneHitAlpha2 = MISS_FLASH_INITIAL_ALPHA;
         }
 
-        if (removeMissed(_balls3.iterator())) {
+        if (removeMissed(_balls3.iterator()))
+		{
             _laneHitAlpha3 = MISS_FLASH_INITIAL_ALPHA;
         }
 
-        if (removeMissed(_balls4.iterator())) {
+        if (removeMissed(_balls4.iterator()))
+		{
             _laneHitAlpha4 = MISS_FLASH_INITIAL_ALPHA;
         }
 
 
-        if (removeMissed(_balls5.iterator())) {
+        if (removeMissed(_balls5.iterator()))
+		{
             _laneHitAlpha5 = MISS_FLASH_INITIAL_ALPHA;
         }
-
+		*/
         // spawn new balls
-        if (!_isEnding && _currentTime % _spawnInterval <= deltatime) {
+        if (!_isEnding && _currentTime % _spawnInterval <= deltatime)
+		{
             spawnBalls();
         }
 
         // decrease miss flash intensities
+		for(int i=0;i<5;i++)
+		{
+			_laneHitAlpha[i]-=Math.min(_laneHitAlpha[i],10);
+		}
+		/*
         _laneHitAlpha1 -= Math.min(_laneHitAlpha1, 10);
         _laneHitAlpha2 -= Math.min(_laneHitAlpha2, 10);
         _laneHitAlpha3 -= Math.min(_laneHitAlpha3, 10);
         _laneHitAlpha4 -= Math.min(_laneHitAlpha4, 10);
         _laneHitAlpha5 -= Math.min(_laneHitAlpha5, 10);
-
+*/
         // atom explosion ticker
-        if (_explosionTicker > 0) {
-            explosion(_balls1);
+        if (_explosionTicker > 0)
+		{
+			for(List<Ball> bals:_balls)
+				explosion(bals);
+           /* explosion(_balls1);
             explosion(_balls2);
             explosion(_balls3);
             explosion(_balls4);
-            explosion(_balls5);
+            explosion(_balls5);*/
         }
 
         // update tickers
@@ -424,20 +620,25 @@ public class GameScreen extends Screen {
         _explosionTicker -= Math.min(1, _explosionTicker);
         _tick = (_tick + 1) % 100000;
 
-        if (_isEnding) {
+        if (_isEnding)
+		{
             _endTicker -= Math.min(1, _endTicker);
 
-            if (_endTicker <= 0) {
+            if (_endTicker <= 0)
+			{
                 endGame();
             }
         }
     }
 
     // remove the balls from an iterator that have fallen through the hitbox
-    private boolean removeMissed(Iterator<Ball> iterator) {
-        while (iterator.hasNext()) {
+    private boolean removeMissed(Iterator<Ball> iterator)
+	{
+        while (iterator.hasNext())
+		{
             Ball b = iterator.next();
-            if (b.y > HITBOX_CENTER + HITBOX_HEIGHT / 2) {
+            if (b.y > HITBOX_CENTER + HITBOX_HEIGHT / 2)
+			{
                 iterator.remove();
                 Log.d(TAG, "fail press");
                 onMiss(b);
@@ -449,22 +650,29 @@ public class GameScreen extends Screen {
     }
 
     // handles a TouchEvent on a certain lane
-    private boolean hitLane(List<Ball> balls) {
+    private boolean hitLane(List<Ball> balls,Ball.BallType type)
+	{
         Iterator<Ball> iter = balls.iterator();
         Ball lowestBall = null;
-        while (iter.hasNext()) {
+        while (iter.hasNext())
+		{
             Ball b = iter.next();
-            if (lowestBall == null || b.y > lowestBall.y) {
+            if (lowestBall == null || b.y > lowestBall.y)
+			{
                 lowestBall = b;
             }
         }
 
-        if (lowestBall != null && lowestBall.y > HITBOX_CENTER - HITBOX_HEIGHT / 2) {
+        if (lowestBall != null && lowestBall.y > HITBOX_CENTER - HITBOX_HEIGHT / 2)
+		{
             balls.remove(lowestBall);
             onHit(lowestBall);
             return lowestBall.type != Ball.BallType.Skull;
-        } else {
-            if (lowestBall != null && lowestBall.y > HITBOX_CENTER - HITBOX_HEIGHT / 2 - MISS_ZONE_HEIGHT) {
+        }
+		else
+		{
+            if (lowestBall != null && lowestBall.y > HITBOX_CENTER - HITBOX_HEIGHT / 2 - MISS_ZONE_HEIGHT)
+			{
                 balls.remove(lowestBall);
             }
             //onMiss(null);//bad hit
@@ -474,12 +682,14 @@ public class GameScreen extends Screen {
     }
 
     // triggers when a lane gets tapped that has currently no ball in its hitbox
-    private void onMiss(Ball b) {
-        if(b != null && b.type == Ball.BallType.Skull) {
+    private void onMiss(Ball b)
+	{
+        if (b != null && b.type == Ball.BallType.Skull)
+		{
             return;
         }
         _vibrator.vibrate(100);
-        bundle.testResult=TestResult.MISS;
+        bundle.testResult = TestResult.MISS;
         deck.Apply(bundle);
         //_streak = 0;
         //_combo=0;
@@ -490,7 +700,8 @@ public class GameScreen extends Screen {
     }
 
     // triggers when a lane gets tapped that currently has a ball in its hitbox
-    private void onHit(Ball b) {
+    private void onHit(Ball b)
+	{
         //_streak++;
         //++_lives;
         //++_combo;
@@ -502,69 +713,73 @@ public class GameScreen extends Screen {
 		//great    15%
 		//nice     15%
 		//bad      10%
-		int diff=Math.abs(HITBOX_CENTER-y);
+		int diff=Math.abs(HITBOX_CENTER - y);
 		TestResult tr=TestResult.MISS;
-		if(diff<=HITBOX_HEIGHT*0.1)
+		if (diff <= HITBOX_HEIGHT * 0.1)
 		{
-			tr=TestResult.PERFECT;
-		} else if(diff<=HITBOX_HEIGHT*0.25)
-		{
-			tr=TestResult.GREAT;
-		} else if(diff<=HITBOX_HEIGHT*0.4)
-		{
-			tr=TestResult.NICE;
-		} else if(diff<=HITBOX_HEIGHT/2)
-		{
-			tr=TestResult.BAD;
+			tr = TestResult.PERFECT;
 		}
-		bundle.testResult=tr;
+		else if (diff <= HITBOX_HEIGHT * 0.25)
+		{
+			tr = TestResult.GREAT;
+		}
+		else if (diff <= HITBOX_HEIGHT * 0.4)
+		{
+			tr = TestResult.NICE;
+		}
+		else if (diff <= HITBOX_HEIGHT / 2)
+		{
+			tr = TestResult.BAD;
+		}
+		bundle.testResult = tr;
         deck.Apply(bundle);
-       /* switch(b.type) {
-            case OneUp: {
-                //++_lives;
-            } break;
-            case Multiplier: {
-                //_doubleMultiplierTicker = DOUBLE_MULTIPLIER_TIME;
-            } break;
-            case Bomb: {
-                //_explosionTicker = EXPLOSION_TIME;
-                Assets.soundExplosion.play(0.7f);
-            } break;
-            case Skull: {
-                //onMiss(null); // hitting a skull counts as a miss
-                Assets.soundCreepyLaugh.play(1);
-                return;
-            }
-        }*/
+		/* switch(b.type) {
+		 case OneUp: {
+		 //++_lives;
+		 } break;
+		 case Multiplier: {
+		 //_doubleMultiplierTicker = DOUBLE_MULTIPLIER_TIME;
+		 } break;
+		 case Bomb: {
+		 //_explosionTicker = EXPLOSION_TIME;
+		 Assets.soundExplosion.play(0.7f);
+		 } break;
+		 case Skull: {
+		 //onMiss(null); // hitting a skull counts as a miss
+		 Assets.soundCreepyLaugh.play(1);
+		 return;
+		 }
+		 }*/
 
         //updateMultipliers();
         //_score += 10 * _multiplier*_combo;
-                //* (_doubleMultiplierTicker > 0 ? 2 : 1);
+		//* (_doubleMultiplierTicker > 0 ? 2 : 1);
     }
 
     // triggers after a touch event was handled by hitLane()
     /*private void updateMultipliers() {
-        if (_streak > 80) {
-            _multiplier = 10;
-        }
-        else if (_streak > 40) {
-            _multiplier = 5;
-        }
-        else if (_streak > 30) {
-            _multiplier = 4;
-        }
-        else if (_streak > 20) {
-            _multiplier = 3;
-        }
-        else if (_streak > 10) {
-            _multiplier = 2;
-        }
-        else {
-            _multiplier = 1;
-        }
-    }*/
+	 if (_streak > 80) {
+	 _multiplier = 10;
+	 }
+	 else if (_streak > 40) {
+	 _multiplier = 5;
+	 }
+	 else if (_streak > 30) {
+	 _multiplier = 4;
+	 }
+	 else if (_streak > 20) {
+	 _multiplier = 3;
+	 }
+	 else if (_streak > 10) {
+	 _multiplier = 2;
+	 }
+	 else {
+	 _multiplier = 1;
+	 }
+	 }*/
 
-    private void spawnBalls() {
+    private void spawnBalls()
+	{
         float randFloat = _rand.nextFloat();
         final int ballY = BALL_INITIAL_Y;
         int ballX = _gameWidth / 5 / 2;
@@ -572,7 +787,7 @@ public class GameScreen extends Screen {
 
         randFloat = _rand.nextFloat();
         ballX = _gameWidth / 5 / 2 * 3 ;
-        spawnBall(_balls2,randFloat, ballX, ballY);
+        spawnBall(_balls2, randFloat, ballX, ballY);
 
         randFloat = _rand.nextFloat();
         ballX = _gameWidth / 2;
@@ -580,7 +795,7 @@ public class GameScreen extends Screen {
 
         randFloat = _rand.nextFloat();
         ballX =  _gameWidth - _gameWidth / 5 / 2 * 3;
-        spawnBall(_balls4,randFloat, ballX, ballY);
+        spawnBall(_balls4, randFloat, ballX, ballY);
 
         randFloat = _rand.nextFloat();
         ballX = _gameWidth - _gameWidth / 5 / 2 ;
@@ -588,52 +803,75 @@ public class GameScreen extends Screen {
 
     }
 
-    private void spawnBall(List<Ball> balls, float randFloat, int ballX, int ballY) {
-        if (randFloat < _spawnChance_normal) {
+    private void spawnBall(List<Ball> balls, float randFloat, int ballX, int ballY)
+	{
+        if (randFloat < _spawnChance_normal)
+		{
             balls.add(0, new Ball(ballX, ballY, Ball.BallType.Normal));
-        } else if (randFloat < _spawnChance_oneup) {
+        }
+		else if (randFloat < _spawnChance_oneup)
+		{
             balls.add(0, new Ball(ballX, ballY, Ball.BallType.OneUp));
-        } else if (randFloat < _spawnChance_multiplier) {
+        }
+		else if (randFloat < _spawnChance_multiplier)
+		{
             balls.add(0, new Ball(ballX, ballY, Ball.BallType.Multiplier));
-        } else if (randFloat < _spawnChance_speeder) {
+        }
+		else if (randFloat < _spawnChance_speeder)
+		{
             balls.add(0, new Ball(ballX, ballY, Ball.BallType.Speeder));
-        } else if (randFloat < _spawnChance_bomb) {
+        }
+		else if (randFloat < _spawnChance_bomb)
+		{
             balls.add(0, new Ball(ballX, ballY, Ball.BallType.Bomb));
-        } else if (randFloat < _spawnChance_skull) {
+        }
+		else if (randFloat < _spawnChance_skull)
+		{
             balls.add(0, new Ball(ballX, ballY, Ball.BallType.Skull));
         }
     }
 
-    private void updatePaused(List<TouchEvent> touchEvents) {
-        if (_currentTrack.isPlaying()) {
+    private void updatePaused(List<TouchEvent> touchEvents)
+	{
+        if (_currentTrack.isPlaying())
+		{
             _currentTrack.pause();
         }
 
         int len = touchEvents.size();
-        for (int i = 0; i < len; i++) {
+        for (int i = 0; i < len; i++)
+		{
             TouchEvent event = touchEvents.get(i);
-            if (event.type == TouchEvent.TOUCH_DOWN) {
+            if (event.type == TouchEvent.TOUCH_DOWN)
+			{
                 resume();
                 return;
             }
         }
     }
 
-    private void updateGameOver(List<TouchEvent> touchEvents) {
-        if (!_currentTrack.isStopped()) {
+    private void updateGameOver(List<TouchEvent> touchEvents)
+	{
+        if (!_currentTrack.isStopped())
+		{
             _currentTrack.stop();
         }
 
         int len = touchEvents.size();
-        for (int i = 0; i < len; i++) {
+        for (int i = 0; i < len; i++)
+		{
             TouchEvent event = touchEvents.get(i);
-            if (event.type == TouchEvent.TOUCH_UP) {
+            if (event.type == TouchEvent.TOUCH_UP)
+			{
                 if (event.x > 300 && event.x < 540 && event.y > 845
-                        && event.y < 1100) {
+					&& event.y < 1100)
+				{
                     game.goToActivity(MainActivity.class);
                     return;
-                } else if (event.x >= 540 && event.x < 780 && event.y > 845
-                        && event.y < 1100) {
+                }
+				else if (event.x >= 540 && event.x < 780 && event.y > 845
+						 && event.y < 1100)
+				{
                     game.setScreen(new LoadingScreen(game, _difficulty));
                 }
             }
@@ -642,54 +880,68 @@ public class GameScreen extends Screen {
     }
 
     @Override
-    public void paint(float deltaTime) {
+    public void paint(float deltaTime)
+	{
         Graphics g = game.getGraphics();
 
         // First draw the game elements.
 
         // Example:
-        g.drawScaledImage(Assets.background, 0, 0,_gameWidth,_gameHeight,0,0,Assets.background.getWidth(),Assets.background.getHeight());
-        g.drawRect(0                 , 0, _gameWidth / 5 + 1, _gameHeight, Color.argb(_laneHitAlpha1, 255, 0, 0));
-        g.drawRect(_gameWidth / 5    , 0, _gameWidth / 5 + 1, _gameHeight, Color.argb(_laneHitAlpha2, 255, 0, 0));
+        g.drawScaledImage(Assets.background, 0, 0, _gameWidth, _gameHeight, 0, 0, Assets.background.getWidth(), Assets.background.getHeight());
+        for(int i=0;i<5;i++)
+			g.drawRect(_gameWidth / 5 * i                 , 0, _gameWidth / 5 + 1, _gameHeight, Color.argb(_laneHitAlpha[i], 255, 0, 0));
+        /*g.drawRect(_gameWidth / 5    , 0, _gameWidth / 5 + 1, _gameHeight, Color.argb(_laneHitAlpha2, 255, 0, 0));
         g.drawRect(_gameWidth / 5 * 2, 0, _gameWidth / 5 + 1, _gameHeight, Color.argb(_laneHitAlpha3, 255, 0, 0));
         g.drawRect(_gameWidth / 5 * 3, 0, _gameWidth / 5 + 1, _gameHeight, Color.argb(_laneHitAlpha4, 255, 0, 0));
         g.drawRect(_gameWidth / 5 * 4, 0, _gameWidth / 5 + 1, _gameHeight, Color.argb(_laneHitAlpha5, 255, 0, 0));
-
+		*/
         final int dx=_gameWidth / 10;
-        for(int i=0;i<5;i++)
+        for (int i=0;i < 5;i++)
         {
-            int n=2*i+1;
-            g.drawImage(Assets.ballHitpoint, dx*n-90, HITBOX_CENTER-90);
+            int n=2 * i + 1;
+            g.drawImage(Assets.ballHitpoint, dx * n - 90, HITBOX_CENTER - 90);
         }
-
-        for (Ball b: _balls1) {
+		for(List<Ball> bals:_balls)
+		{
+			for (Ball b: bals)
+			{
+				paintBall(g, b);
+			}
+		}
+        
+/*
+        for (Ball b: _balls2)
+		{
             paintBall(g, b);
         }
 
-        for (Ball b: _balls2) {
+        for (Ball b: _balls3)
+		{
             paintBall(g, b);
         }
 
-        for (Ball b: _balls3) {
+        for (Ball b: _balls4)
+		{
             paintBall(g, b);
         }
 
-        for (Ball b: _balls4) {
+        for (Ball b: _balls5)
+		{
             paintBall(g, b);
         }
+*/
 
-        for (Ball b: _balls5) {
-            paintBall(g, b);
-        }
-
-
-        if (_explosionTicker > 0) {
-            if (_rand.nextDouble() > 0.05) {
+        if (_explosionTicker > 0)
+		{
+            if (_rand.nextDouble() > 0.05)
+			{
                 g.drawImage(Assets.explosion, 0, 680);
-            } else {
+            }
+			else
+			{
                 g.drawImage(Assets.explosionBright, 0, 680);
             }
-            g.drawARGB((int)((double)_explosionTicker/EXPLOSION_TIME * 255), 255, 255, 255);
+            g.drawARGB((int)((double)_explosionTicker / EXPLOSION_TIME * 255), 255, 255, 255);
         }
 
         // Secondly, draw the UI above the game elements.
@@ -703,8 +955,10 @@ public class GameScreen extends Screen {
             drawGameOverUI();
     }
 
-    private void paintBall(Graphics g, Ball b) {
-        switch(b.type) {
+    private void paintBall(Graphics g, Ball b)
+	{
+        switch (b.type)
+		{
             case Normal:
                 g.drawImage(Assets.ballNormal, b.x - 90, b.y - 90);
                 break;
@@ -726,7 +980,8 @@ public class GameScreen extends Screen {
         }
     }
 
-    private void nullify() {
+    private void nullify()
+	{
 
         // Set all variables to null. You will be recreating them in the
         // constructor.
@@ -736,80 +991,87 @@ public class GameScreen extends Screen {
         System.gc();
     }
 
-    private void drawReadyUI() {
+    private void drawReadyUI()
+	{
         Graphics g = game.getGraphics();
 
         g.drawARGB(155, 0, 0, 0);
-        g.drawString("Tap to start!", game.getScreenX()/2-270, game.getScreenY()/2-250, _paintScore);
+        g.drawString("Tap to start!", game.getScreenX() / 2 - 270, game.getScreenY() / 2 - 250, _paintScore);
 
     }
 
-    private void drawRunningUI() {
+    private void drawRunningUI()
+	{
         Graphics g = game.getGraphics();
 
-        if (_doubleMultiplierTicker > 0) {
+        if (_doubleMultiplierTicker > 0)
+		{
             g.drawImage(Assets.sirens, 0, 100);
         }
 
         g.drawRect(0, 0, _gameWidth, 100, Color.BLACK);
-        float ratioOfLife1=(float)bundle.life/bundle.totalLife;
+        float ratioOfLife1=(float)bundle.life / bundle.totalLife;
         float ratioOfLife2=0;
-        if(ratioOfLife1>1)
+        if (ratioOfLife1 > 1)
         {
-            ratioOfLife2=ratioOfLife1-1;
-            ratioOfLife1=1;
+            ratioOfLife2 = ratioOfLife1 - 1;
+            ratioOfLife1 = 1;
         }
-        g.drawRect(0,0,(int)(_gameWidth*0.4f* ratioOfLife1),100,ratioOfLife1>0.1f? Color.GREEN:Color.RED);
-        g.drawRect(0,0,(int)(_gameWidth*0.4f* ratioOfLife2),100,Color.CYAN);
+        g.drawRect(0, 0, (int)(_gameWidth * 0.4f * ratioOfLife1), 100, ratioOfLife1 > 0.1f ? Color.GREEN: Color.RED);
+        g.drawRect(0, 0, (int)(_gameWidth * 0.4f * ratioOfLife2), 100, Color.CYAN);
         //50-70-85-100
-        float scoreRatio=(float)bundle.score/10000.0f;
-        g.drawRect((int)(_gameWidth*0.5f),0,(int)(_gameWidth*0.5f*Math.min(scoreRatio,1)),100,GetScoreBkPaint(scoreRatio));
+        float scoreRatio=(float)bundle.score / 10000.0f;
+        g.drawRect((int)(_gameWidth * 0.5f), 0, (int)(_gameWidth * 0.5f * Math.min(scoreRatio, 1)), 100, GetScoreBkPaint(scoreRatio));
         //String s = "Score: " + _score +
         //        "   Multiplier: " + _multiplier * (_doubleMultiplierTicker > 0 ? 2 : 1) + "x" +
         //        "   Lifes remaining: " + _lives;
-        DrawString(g,""+bundle.score, (int)(_gameWidth*0.55f), 80);
+        DrawString(g, "" + bundle.score, (int)(_gameWidth * 0.55f), 80);
         //g.drawString(""+bundle.score, (int)(_gameWidth*0.52f), 80, _paintScore);
-        g.drawString(bundle.combo+" COMBO",(int)(_gameWidth*0.5f),300,_paintScore);
-        g.drawString(bundle.testResult.name(),(int)(_gameWidth*0.5f),350,_paintScore);
+        g.drawString(bundle.combo + " COMBO", (int)(_gameWidth * 0.5f), 300, _paintScore);
+        g.drawString(bundle.testResult.name(), (int)(_gameWidth * 0.5f), 350, _paintScore);
         String skills=deck.GetActivatedSkills();
-        g.drawString(skills,(int)(_gameWidth*0.5f),400,_paintScore);
+        g.drawString(skills, (int)(_gameWidth * 0.5f), 400, _paintScore);
 
     }
 
-    private void drawPausedUI() {
+    private void drawPausedUI()
+	{
         Graphics g = game.getGraphics();
         g.drawARGB(155, 0, 0, 0);
-        g.drawImage(Assets.pause, game.getScreenX()/2-300, game.getScreenY()/2-300);
-        g.drawString("TAP TO CONTINUE", game.getScreenX()/2, game.getScreenY()/2, _paintGameover);
+        g.drawImage(Assets.pause, game.getScreenX() / 2 - 300, game.getScreenY() / 2 - 300);
+        g.drawString("TAP TO CONTINUE", game.getScreenX() / 2, game.getScreenY() / 2, _paintGameover);
     }
 
-    private void drawGameOverUI() {
+    private void drawGameOverUI()
+	{
         Graphics g = game.getGraphics();
         g.drawARGB(205, 0, 0, 0);
-        g.drawImage(Assets.gameover, game.getScreenX()/2-50, game.getScreenY()/2-50);
-        g.drawString("FINAL SCORE: " + bundle.score, game.getScreenX()/2-50, game.getScreenY()/2-25, _paintGameover);
+        g.drawImage(Assets.gameover, game.getScreenX() / 2 - 50, game.getScreenY() / 2 - 50);
+        g.drawString("FINAL SCORE: " + bundle.score, game.getScreenX() / 2 - 50, game.getScreenY() / 2 - 25, _paintGameover);
     }
 
     private void DrawString(Graphics g, String s, int x, int y)
     {
-        g.drawString(s,x,y,_paintScoreShadow);
-        g.drawString(s,x,y,_paintScore);
+        g.drawString(s, x, y, _paintScoreShadow);
+        g.drawString(s, x, y, _paintScore);
     }
     private Paint GetScoreBkPaint(float ratio)
     {
-        if(ratio<0.5f)
+        if (ratio < 0.5f)
             return _paintScoreD;
-        if(ratio<0.7f)
+        if (ratio < 0.7f)
             return _paintScoreC;
-        if(ratio<0.85f)
+        if (ratio < 0.85f)
             return _paintScoreB;
-        if(ratio<1)
+        if (ratio < 1)
             return _paintScoreA;
         return _paintScoreS;
     }
     @Override
-    public void pause() {
-        if (state == GameState.Running) {
+    public void pause()
+	{
+        if (state == GameState.Running)
+		{
             state = GameState.Paused;
             _currentTrack.pause();
         }
@@ -817,22 +1079,27 @@ public class GameScreen extends Screen {
     }
 
     @Override
-    public void resume() {
-        if (state == GameState.Paused) {
+    public void resume()
+	{
+        if (state == GameState.Paused)
+		{
             state = GameState.Running;
             _currentTrack.play();
         }
     }
 
     @Override
-    public void dispose() {
-        if(_currentTrack.isPlaying()) {
+    public void dispose()
+	{
+        if (_currentTrack.isPlaying())
+		{
             _currentTrack.stop();
         }
     }
 
     @Override
-    public void backButton() {
+    public void backButton()
+	{
         dispose();
     }
 }

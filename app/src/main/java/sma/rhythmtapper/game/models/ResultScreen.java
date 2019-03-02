@@ -55,7 +55,7 @@ public class ResultScreen extends Screen {
         paint.setColor(Color.YELLOW);
         g.drawString("NICE : " + result.nice,(int)(sizeX*0.14f),(int)(sizeY*0.32f),paint);
         paint.setColor(Color.BLUE);
-        g.drawString("NICE : " + result.bad,(int)(sizeX*0.14f),(int)(sizeY*0.38f),paint);
+        g.drawString("BAD : " + result.bad,(int)(sizeX*0.14f),(int)(sizeY*0.38f),paint);
         paint.setColor(Color.RED);
         g.drawString("MISS : " + result.miss,(int)(sizeX*0.14f),(int)(sizeY*0.44f),paint);
         paint.setColor(Color.BLACK);

@@ -140,7 +140,7 @@ public class Deck {
         {
             periodTimer[i]+=deltaTime;
             int sec=(int)(periodTimer[i]/100);
-            if((sec%cards[i].skill.period)==0&&bSkillCheckedNow[i]==false)
+            if(sec>cards[i].skill.period&&bSkillCheckedNow[i]==false)
             {
                 bSkillCheckedNow[i]=true;
                 if(random.nextInt()%100<chances[i])
@@ -150,8 +150,9 @@ public class Deck {
                     cards[i].skill.Start(bundle);
                 }
             }
-            if(bSkillOn[i]&&(sec%cards[i].skill.period)==cards[i].skill.duration-1)
+            if(bSkillOn[i]&&(sec>cards[i].skill.period+cards[i].skill.duration))
             {
+                periodTimer[i]=0;
                 //finish applying skill
                 bSkillOn[i]=false;
                 //cards[i].skill.End();
@@ -166,6 +167,9 @@ public class Deck {
         int basicScore=totalAppeal/100;
         if(bundle.testResult.compareTo(TestResult.NICE)<=0)
             bundle.continueCombo=false;
+        else
+            bundle.continueCombo=true;
+
         if(bundle.testResult.compareTo(TestResult.BAD)<=0)
             bundle.shouldDamage=true;
         for(int i=0;i<5;i++)
@@ -179,7 +183,7 @@ public class Deck {
                 cards[i].skill.PostTest(bundle);
         }
         basicScore*=GetScoreAmpByTestResult(bundle.testResult);
-        int totalBonus=bundle.scoreBonus+bundle.comboBonus+bundle.combo/25;
+        int totalBonus=bundle.scoreBonus+bundle.comboBonus*bundle.combo/50;
         basicScore*=(1+totalBonus/100.0f);
         if(bundle.continueCombo==false)
         {
@@ -190,6 +194,7 @@ public class Deck {
         }
         bundle.score+=basicScore;
         bundle.Damage(-bundle.deltaLife);
+        bundle.deltaLife=0;
         if(bundle.testResult==TestResult.BAD)
         {
             bundle.Damage(15);

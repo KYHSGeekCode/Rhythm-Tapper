@@ -20,12 +20,14 @@ import sma.rhythmtapper.framework.Game;
 import sma.rhythmtapper.framework.Graphics;
 import sma.rhythmtapper.framework.Input;
 import sma.rhythmtapper.framework.Screen;
-import sma.rhythmtapper.game.models.ChooseSongScreen;
+import sma.rhythmtapper.game.ChooseSongScreen;
+
 
 public class RTGame extends Activity implements Game {
     RTFastRenderView renderView;
     Graphics graphics;
     Audio audio;
+    Audio fileAudio;
     Input input;
     FileIO fileIO;
     Screen screen;
@@ -81,6 +83,7 @@ public class RTGame extends Activity implements Game {
         graphics = new RTGraphics(getAssets(), frameBuffer);
         fileIO = new RTFileIO(this);
         audio = new RTAudio(this);
+        fileAudio = new RTFileAudio(this);
         input = new RTInput(this, renderView, scaleX, scaleY);
         screen = getInitScreen();
         setContentView(renderView);
@@ -133,6 +136,11 @@ public class RTGame extends Activity implements Game {
     @Override
     public Audio getAudio() {
         return audio;
+    }
+
+    @Override
+    public Audio getFileAudio() {
+        return fileAudio;
     }
 
     @Override

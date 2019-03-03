@@ -9,6 +9,8 @@ import android.os.Vibrator;
 public interface Game {
     public Audio getAudio();
 
+    public Audio getFileAudio();
+
     public Input getInput();
 
     public FileIO getFileIO();

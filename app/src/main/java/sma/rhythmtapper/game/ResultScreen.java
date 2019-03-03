@@ -1,4 +1,4 @@
-package sma.rhythmtapper.game.models;
+package sma.rhythmtapper.game;
 
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -10,6 +10,7 @@ import sma.rhythmtapper.framework.Graphics;
 import sma.rhythmtapper.framework.Impl.RTGame;
 import sma.rhythmtapper.framework.Input;
 import sma.rhythmtapper.framework.Screen;
+import sma.rhythmtapper.game.models.GameResult;
 
 public class ResultScreen extends Screen {
     int sizeX;

@@ -1,6 +1,8 @@
 package sma.rhythmtapper.framework.Impl;
 
 
+import java.io.File;
+import java.io.FileDescriptor;
 import java.io.IOException;
 
 import android.content.res.AssetFileDescriptor;
@@ -16,24 +18,43 @@ public class RTMusic implements Music, OnCompletionListener, OnSeekCompleteListe
     private MediaPlayer mediaPlayer;
     private boolean isPrepared = false;
 
-    public RTMusic(AssetFileDescriptor assetDescriptor) {
+    public RTMusic(File file) {
+        mediaPlayer = new MediaPlayer();
+        try {
+            mediaPlayer.setDataSource(file.getPath());
+            Constructor();;
+        } catch (IOException e)
+        {
+            throw new RuntimeException("Couldn't load music");
+        }
+    }
+
+    public RTMusic(AssetFileDescriptor assetDescriptor)
+    {
         mediaPlayer = new MediaPlayer();
         try {
             mediaPlayer.setDataSource(assetDescriptor.getFileDescriptor(),
                     assetDescriptor.getStartOffset(),
                     assetDescriptor.getLength());
+            Constructor();
+        } catch (Exception e) {
+            throw new RuntimeException("Couldn't load music");
+        }
+    }
+
+    private void Constructor()
+    {
+        try {
             mediaPlayer.prepare();
             isPrepared = true;
             mediaPlayer.setOnCompletionListener(this);
             mediaPlayer.setOnSeekCompleteListener(this);
             mediaPlayer.setOnPreparedListener(this);
             mediaPlayer.setOnVideoSizeChangedListener(this);
-
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new RuntimeException("Couldn't load music");
         }
     }
-
     @Override
     public void dispose() {
 

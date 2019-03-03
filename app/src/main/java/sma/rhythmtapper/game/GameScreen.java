@@ -24,7 +24,6 @@ import sma.rhythmtapper.game.models.Ball;
 import sma.rhythmtapper.game.models.Deck;
 import sma.rhythmtapper.game.models.GameResult;
 import sma.rhythmtapper.game.models.GameStatusBundle;
-import sma.rhythmtapper.game.models.ResultScreen;
 import sma.rhythmtapper.game.models.TestResult;
 import sma.rhythmtapper.models.Difficulty;
 
@@ -119,7 +118,7 @@ public class GameScreen extends Screen
     private static final int BALL_INITIAL_Y = -50;
     // hitbox is the y-range within a ball can be hit by a press in its lane
     private static  int HITBOX_CENTER = 1760;
-    private static  int HITBOX_HEIGHT = 200;
+    private static  int HITBOX_HEIGHT = 240;
     // if no ball is in the hitbox when pressed, remove the lowest ball in the
     // miss zone right above the hitbox (it still counts as a miss)
     private static  int MISS_ZONE_HEIGHT = 150;
@@ -709,7 +708,7 @@ public class GameScreen extends Screen
 		//bad      10%  HITBox_center-Hitboxheight
 		//nice     15%  hitboxcenter-hitboxheight*0.4/2
 		//great    15%  hitboxcenter-hitboxheight*0.25/2
-		//perfect  20%  hitboxcenter+-hitboxheight*0.1
+		//perfect  20%  hitboxcenter+-hitboxheight*0.15
 		//great    15%
 		//nice     15%
 		//bad      10%

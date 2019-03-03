@@ -1,7 +1,6 @@
-package sma.rhythmtapper.game.models;
+package sma.rhythmtapper.game;
 
 import sma.rhythmtapper.framework.Game;
-import sma.rhythmtapper.framework.Graphics;
 import sma.rhythmtapper.framework.Screen;
 
 public class ChooseSongScreen extends Screen {
@@ -16,7 +15,6 @@ public class ChooseSongScreen extends Screen {
 
     @Override
     public void paint(float deltaTime) {
-        Graphics g=game.getGraphics();
 
     }
 

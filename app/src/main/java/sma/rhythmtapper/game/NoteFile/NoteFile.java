@@ -3,7 +3,6 @@ package sma.rhythmtapper.game.NoteFile;
 import java.io.*;
 import java.util.*;
 import sma.rhythmtapper.game.models.*;
-import sma.rhythmtapper.models.Difficulty;
 
 public class NoteFile
 {
@@ -32,6 +31,60 @@ public class NoteFile
 		}
 		File infoFile=new File(dir,"info.txt");
 		//parse info.txt
+        String songName;
+        String artist;
+        int difficulties[]=new int[5];
+
+        try
+        {
+            BufferedReader br= new BufferedReader(new FileReader(infoFile));
+            String line=br.readLine();
+            while(line !=null)
+            {
+                if(line.startsWith("#title"))
+                {
+                    line=line.replace("#title ","").trim();
+                    songName=line;
+                    continue;
+                }
+                if(line.startsWith("#artist"))
+                {
+                    line=line.replace("#artist ","").trim();
+                    artist=line;
+                    continue;
+                }
+                if(line.startsWith("#easy"))
+                {
+                    difficulties[0] = Integer.parseInt(line.replace("#easy ","").trim());
+                    continue;
+                }
+                if(line.startsWith("#normal"))
+                {
+                    difficulties[1] = Integer.parseInt(line.replace("#normal ","").trim());
+                    continue;
+                }
+                if(line.startsWith("#hard"))
+                {
+                    difficulties[2] = Integer.parseInt(line.replace("#hard ","").trim());
+                    continue;
+                }
+                if(line.startsWith("#master"))
+                {
+                    difficulties[3] = Integer.parseInt(line.replace("#master ","").trim());
+                    continue;
+                }
+                if(line.startsWith("#apex"))
+                {
+                    difficulties[4] = Integer.parseInt(line.replace("#apex ","").trim());
+                    continue;
+                }
+                line=br.readLine();
+            }
+        } catch (IOException | NumberFormatException e)
+        {
+            throw new RuntimeException(e);
+        }
+        //info.txt parse done.
 	}
 
 	public void Load(Difficulties difficulty)
@@ -60,8 +113,7 @@ public class NoteFile
 						for(int i=0;i<notes.length;i++){
 							notesProcessed[i]=getNote(notes[i]);
 						}
-						
-//                      blocks.get(blocks.size()-1).AddBall(ball,lane);
+                       blocks.get(blocks.size()-1).AddBalls(notesProcessed);
                     } else if(line.startsWith("#startframe"))
                     {
                         lastWasBlock=false;
@@ -82,7 +134,7 @@ public class NoteFile
                         {
                             throw new RuntimeException("#block error");
                         }
-                        blocks.add(new Block());
+                        blocks.add(new Block(block));
                     } else if (line.startsWith("#setbpm"))
                     {
                         if(!lastWasBlock)

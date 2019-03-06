@@ -96,12 +96,12 @@ public class NoteFile
                 //String everything = sb.toString();
             } catch(IOException e) {
 
-            }   finally
+            }finally
             {
                 br.close();
             }
 
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

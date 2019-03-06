@@ -3,9 +3,10 @@ import java.util.*;
 
 public class Ball {
     public enum BallType {
-        Normal, OneUp, Multiplier, Speeder, Bomb, Skull,LongDown,LongUp,FlickLeft,FlickRight
+        Normal, OneUp, Multiplier, Speeder, Bomb, Skull,
+		LongDown,LongUp,FlickLeft,FlickRight,Slide;
     }
-
+	public boolean startOfFlick;
     public int x;
     public int y;
 	int origx;

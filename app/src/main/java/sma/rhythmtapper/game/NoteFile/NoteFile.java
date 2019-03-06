@@ -54,7 +54,14 @@ public class NoteFile
                             throw new RuntimeException("#bpm must be specified at least once in the first block");
                         lastWasBlock=false;
                         line=line.replaceAll("# ","").trim();
-//                        blocks.get(blocks.size()-1).AddBall(ball,lane);
+						//[종류][시작 라인][플릭][다음 라인]
+						String [] notes = line.split("\\s");
+						Ball [] notesProcessed=new Ball[5];
+						for(int i=0;i<notes.length;i++){
+							notesProcessed[i]=getNote(notes[i]);
+						}
+						
+//                      blocks.get(blocks.size()-1).AddBall(ball,lane);
                     } else if(line.startsWith("#startframe"))
                     {
                         lastWasBlock=false;
@@ -105,6 +112,59 @@ public class NoteFile
             e.printStackTrace();
         }
     }
+
+	private Ball getNote(String notes)
+	{
+		char[] chars=notes.toCharArray();
+		Ball.BallType ballTyoe;
+		int startLine;
+		int nextLine;
+		switch(chars[0])
+		{
+			case '-':
+				return new Ball(0,0,/*null*/Ball.BallType.Bomb);
+			case '1':
+				ballTyoe=Ball.BallType.Normal;
+				break;
+			case '2':
+				ballTyoe=Ball.BallType.LongDown;
+				break;
+			case '3':
+				ballTyoe=Ball.BallType.Slide;
+				break;
+			default:
+				//???
+				throw new RuntimeException();
+				//break;
+		}
+		startLine=Character.getNumericValue(chars[1]);
+		nextLine=Character.getNumericValue(chars[3]);
+		boolean startOfFlick=false;
+		switch(chars[2])
+		{
+			case '0':
+				break;
+			case '1':
+				startOfFlick=true;
+				ballTyoe=Ball.BallType.FlickLeft;
+				break;
+			case '2':
+				startOfFlick=false;
+				ballTyoe=Ball.BallType.FlickLeft;
+				break;
+			case '3':
+				startOfFlick=true;
+				ballTyoe=Ball.BallType.FlickRight;
+				break;
+			case '4':
+				startOfFlick=false;
+				ballTyoe=Ball.BallType.FlickRight;
+				break;
+		}
+		Ball ball=new Ball(0,0,ballTyoe);
+		ball.startOfFlick=startOfFlick;
+		return ball;
+	}
     int startframe;
 	List<Block> blocks=new ArrayList<>();
 	//note form: list of balls?

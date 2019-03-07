@@ -81,21 +81,23 @@ public class GameScreen extends Screen
 
     // lane miss indicators
 	private int [] _laneHitAlpha=new int[5];
-    private int _laneHitAlpha1;
+    /*private int _laneHitAlpha1;
     private int _laneHitAlpha2;
     private int _laneHitAlpha3;
     private int _laneHitAlpha4;
-    private int _laneHitAlpha5;
+    private int _laneHitAlpha5;*/
 
     // difficulty params
     private float _spawnInterval;
     private int _ballSpeed;
     private final double _spawnChance_normal = 0.10; // TODO dynamic
-    private final double _spawnChance_oneup = _spawnChance_normal;// + 0.003;
+	private final double _spawnChance_LeftFlick = _spawnChance_normal+0.003;
+	private final double _spawnChance_RightFlick = _spawnChance_LeftFlick+0.003;
+    /*private final double _spawnChance_oneup = _spawnChance_LeftFlick;// + 0.003;
     private final double _spawnChance_multiplier = _spawnChance_oneup;// + 0.001;
     private final double _spawnChance_speeder = _spawnChance_multiplier;// + 0.003;
     private final double _spawnChance_bomb = _spawnChance_speeder;// + 0.0005;
-    private final double _spawnChance_skull = _spawnChance_bomb;// + 0.014;
+    private final double _spawnChance_skull = _spawnChance_bomb;// + 0.014;*/
 
     // audio
     private Music _currentTrack;
@@ -664,8 +666,20 @@ public class GameScreen extends Screen
 
         if (lowestBall != null && lowestBall.y > HITBOX_CENTER - HITBOX_HEIGHT / 2)
 		{
-            balls.remove(lowestBall);
-            onHit(lowestBall);
+			if(lowestBall.type!=Ball.BallType.Normal)
+			{
+				if(lowestBall.type==type)
+				{
+					balls.remove(lowestBall);
+					onHit(lowestBall);
+				} else {
+					onMiss(lowestBall);
+				}
+			} else {
+				balls.remove(lowestBall);
+				onHit(lowestBall);
+			}
+            
             return lowestBall.type != Ball.BallType.Skull;
         }
 		else
@@ -808,15 +822,15 @@ public class GameScreen extends Screen
 		{
             balls.add(0, new Ball(ballX, ballY, Ball.BallType.Normal));
         }
-		else if (randFloat < _spawnChance_oneup)
+		else if (randFloat < _spawnChance_LeftFlick)
 		{
-            balls.add(0, new Ball(ballX, ballY, Ball.BallType.OneUp));
+            balls.add(0, new Ball(ballX, ballY, Ball.BallType.FlickLeft));
         }
-		else if (randFloat < _spawnChance_multiplier)
+		else if (randFloat < _spawnChance_RightFlick)
 		{
-            balls.add(0, new Ball(ballX, ballY, Ball.BallType.Multiplier));
+            balls.add(0, new Ball(ballX, ballY, Ball.BallType.FlickRight));
         }
-		else if (randFloat < _spawnChance_speeder)
+		/*else if (randFloat < _spawnChance_speeder)
 		{
             balls.add(0, new Ball(ballX, ballY, Ball.BallType.Speeder));
         }
@@ -827,7 +841,7 @@ public class GameScreen extends Screen
 		else if (randFloat < _spawnChance_skull)
 		{
             balls.add(0, new Ball(ballX, ballY, Ball.BallType.Skull));
-        }
+        }*/
     }
 
     private void updatePaused(List<TouchEvent> touchEvents)

@@ -346,8 +346,30 @@ public class GameScreen extends Screen {
             if (event.type == TouchEvent.TOUCH_DRAGGED) {
                 trackX = event.x;
                 trackY = event.y;
-                int dx = event.x - oldX;
-                int dy = event.y - oldY;
+                //int dx = event.x - oldX;
+                //int dy = event.y - oldY;
+                //get the lanes between the two points: first and now
+                //then later reset the first
+                for(int j=0;j<5;j++)
+                {
+                    int midline=_gameWidth/10*(2*j-1);
+                    int dsx=flickStartX-midline;
+                    int dnx=trackX-midline;
+                    if(dsx*dnx<0)
+                    {
+                        //flick occured
+                        if(flickStartX>trackX)
+                        {
+                            //left flick
+                            hitLane(_balls.get(i), Ball.BallType.FlickLeft);
+                            flickStartX=trackX;
+                        } else {
+                            hitLane(_balls.get(i), Ball.BallType.FlickRight);
+                            flickStartX=trackX;
+                        }
+                    }
+                }
+                /*if(trackX)
                 if (dy > dx)//up or left
                 {
                     if (dy > -dx) {
@@ -376,7 +398,7 @@ public class GameScreen extends Screen {
                         //down
                     }
                 }
-
+*/
             }
             if (event.type == TouchEvent.TOUCH_DOWN) {
                 oldX = event.x;

@@ -365,6 +365,13 @@ public class GameScreen extends Screen {
                 } else { //down or right
                     if (dy > -dx) {
                         //right
+                        if (flickStartX < event.x) {
+                            int flickStartLane = getFlickStartLaneRight(flickStartX);
+                            int flickEndLane = getFlickEndLaneRight(event.x);
+                            for (int j = flickStartLane; j <= flickEndLane; j++) {
+                                hitLane(_balls.get(j), Ball.BallType.FlickRight);
+                            }
+                        }
                     } else {
                         //down
                     }
@@ -618,7 +625,7 @@ public class GameScreen extends Screen {
                     balls.remove(lowestBall);
                     onHit(lowestBall);
                 } else {
-                    onMiss(lowestBall);
+                    //onMiss(lowestBall);
                 }
             } else {
                 balls.remove(lowestBall);
@@ -641,6 +648,7 @@ public class GameScreen extends Screen {
         if (b != null && b.type == Ball.BallType.Skull) {
             return;
         }
+        Assets.soundMiss.play(1);
         _vibrator.vibrate(100);
         bundle.testResult = TestResult.MISS;
         deck.Apply(bundle);
@@ -678,12 +686,14 @@ public class GameScreen extends Screen {
         }
         bundle.testResult = tr;
         deck.Apply(bundle);
-        if(tr.compareTo(TestResult.MISS)>=0) {
+        if(tr.compareTo(TestResult.BAD)>=0) {
             if (b.type == Ball.BallType.FlickLeft || b.type == Ball.BallType.FlickRight) {
                 Assets.soundFlickOK.play(1);
             } else {
                 Assets.soundClick.play(1);
             }
+        } else {
+            Assets.soundMiss.play(1);
         }
 		/* switch(b.type) {
 		 case OneUp: {

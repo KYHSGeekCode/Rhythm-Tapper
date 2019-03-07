@@ -58,7 +58,7 @@ public class LoadingScreen extends Screen {
         Assets.soundExplosion = game.getAudio().createSound(SOUND_EFFECTS_PATH + "sound_explosion.ogg");
         Assets.soundCreepyLaugh = game.getAudio().createSound(SOUND_EFFECTS_PATH + "sound_creepy_laugh.mp3");
         Assets.soundFlickOK= game.getAudio().createSound(SOUND_EFFECTS_PATH + "sound_flick_ok.ogg");
-
+        Assets.soundMiss = game.getAudio().createSound(SOUND_EFFECTS_PATH + "sound_miss.ogg");
         Assets.musicTrack = game.getAudio().createMusic(MUSIC_PATH + _diff.getMusic());
         Deck deck=new Deck();
         deck.SetCard(0,new Card(ColorType.CUTE,5000,5000,5000,30, new CenterSkill(CenterSkill.Condition.ANY,ColorType.CUTE, AppealType.ANY,30), new SkillHeal(7,90,6)));

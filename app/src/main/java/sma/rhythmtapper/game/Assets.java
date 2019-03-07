@@ -26,6 +26,7 @@ class Assets {
     static Sound soundClick;
     static Sound soundExplosion;
     static Sound soundCreepyLaugh;
+    static Sound soundFlickOK;
 
     static Music musicTrack;
 }

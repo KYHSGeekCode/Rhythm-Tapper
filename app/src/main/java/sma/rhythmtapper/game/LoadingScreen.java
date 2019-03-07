@@ -1,5 +1,7 @@
 package sma.rhythmtapper.game;
 
+import android.content.res.AssetFileDescriptor;
+
 import sma.rhythmtapper.framework.Game;
 import sma.rhythmtapper.framework.Graphics;
 import sma.rhythmtapper.framework.Screen;
@@ -55,6 +57,7 @@ public class LoadingScreen extends Screen {
         Assets.soundClick = game.getAudio().createSound(SOUND_EFFECTS_PATH + "sound_guiclick.ogg");
         Assets.soundExplosion = game.getAudio().createSound(SOUND_EFFECTS_PATH + "sound_explosion.ogg");
         Assets.soundCreepyLaugh = game.getAudio().createSound(SOUND_EFFECTS_PATH + "sound_creepy_laugh.mp3");
+        Assets.soundFlickOK= game.getAudio().createSound(SOUND_EFFECTS_PATH + "sound_flick_ok.ogg");
 
         Assets.musicTrack = game.getAudio().createMusic(MUSIC_PATH + _diff.getMusic());
         Deck deck=new Deck();

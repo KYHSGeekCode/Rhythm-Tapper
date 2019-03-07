@@ -13,6 +13,8 @@ import android.graphics.Shader;
 import android.os.Vibrator;
 import android.util.Log;
 
+import junit.framework.Test;
+
 import sma.rhythmtapper.MainActivity;
 import sma.rhythmtapper.framework.FileIO;
 import sma.rhythmtapper.framework.Game;
@@ -89,8 +91,8 @@ public class GameScreen extends Screen {
     private float _spawnInterval;
     private int _ballSpeed;
     private final double _spawnChance_normal = 0.10; // TODO dynamic
-    private final double _spawnChance_LeftFlick = _spawnChance_normal + 0.003;
-    private final double _spawnChance_RightFlick = _spawnChance_LeftFlick + 0.003;
+    private final double _spawnChance_LeftFlick = _spawnChance_normal + 0.03;
+    private final double _spawnChance_RightFlick = _spawnChance_LeftFlick + 0.03;
     /*private final double _spawnChance_oneup = _spawnChance_LeftFlick;// + 0.003;
     private final double _spawnChance_multiplier = _spawnChance_oneup;// + 0.001;
     private final double _spawnChance_speeder = _spawnChance_multiplier;// + 0.003;
@@ -676,6 +678,13 @@ public class GameScreen extends Screen {
         }
         bundle.testResult = tr;
         deck.Apply(bundle);
+        if(tr.compareTo(TestResult.MISS)>=0) {
+            if (b.type == Ball.BallType.FlickLeft || b.type == Ball.BallType.FlickRight) {
+                Assets.soundFlickOK.play(1);
+            } else {
+                Assets.soundClick.play(1);
+            }
+        }
 		/* switch(b.type) {
 		 case OneUp: {
 		 //++_lives;

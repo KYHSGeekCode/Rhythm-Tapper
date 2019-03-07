@@ -20,6 +20,7 @@ public class SkillPerfectSupport extends Skill {
         if(bundle.testResult.compareTo(TestResult.BAD)>=0)
         {
             bundle.testResult=TestResult.PERFECT;
+            bundle.continueCombo=true;
         }
     }
 }

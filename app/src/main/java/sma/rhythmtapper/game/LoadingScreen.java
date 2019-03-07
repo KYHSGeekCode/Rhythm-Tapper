@@ -49,6 +49,9 @@ public class LoadingScreen extends Screen {
         Assets.ballSkull = g.newImage(IMAGE_PATH + "skull-ball-icon.png", Graphics.ImageFormat.RGB565);
         Assets.sirens = g.newImage(IMAGE_PATH + "sirens.png", Graphics.ImageFormat.RGB565);
         Assets.ballHitpoint = g.newImage(IMAGE_PATH + "ball_hitpoint.png",Graphics.ImageFormat.RGB565);
+        Assets.ballFlickLeft = g.newImage(IMAGE_PATH + "ball_flickleft.png",Graphics.ImageFormat.RGB565);
+        Assets.ballFlickRight = g.newImage(IMAGE_PATH + "ball_flickright.png",Graphics.ImageFormat.RGB565);
+
         Assets.soundClick = game.getAudio().createSound(SOUND_EFFECTS_PATH + "sound_guiclick.ogg");
         Assets.soundExplosion = game.getAudio().createSound(SOUND_EFFECTS_PATH + "sound_explosion.ogg");
         Assets.soundCreepyLaugh = game.getAudio().createSound(SOUND_EFFECTS_PATH + "sound_creepy_laugh.mp3");

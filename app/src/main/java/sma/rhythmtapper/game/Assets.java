@@ -20,6 +20,8 @@ class Assets {
     static Image sirens;
     static Image ballHitpoint;
 
+    static Image ballFlickLeft;
+    static Image ballFlickRight;
     // Audio
     static Sound soundClick;
     static Sound soundExplosion;

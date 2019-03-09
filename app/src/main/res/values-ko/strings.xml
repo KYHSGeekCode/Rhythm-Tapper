@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RhythmTapper</string>
+    <string name="main_btn_start">게임 시작</string>
+    <string name="main_btn_highscore">Highscore</string>
+    <string name="main_btn_difficulty">Highscore</string>
+    <string name="main_btn_about">정보</string>
+    <string name="title_activity_game">GameActivity</string>
+    <string name="diff_radio_easy">보통</string>
+    <string name="diff_radio_mid">어려움</string>
+    <string name="diff_radio_hard">매우 어려움</string>
+    <string name="highscore_mode">모드</string>
+    <string name="highscore_score">점수</string>
+    <string name="highscore_txt_easy">보통</string>
+    <string name="highscore_txt_mid">어려움</string>
+    <string name="highscore_txt_hard">매우 어려움</string>
+    <string name="about_us">\"RhythmTapper - a game brought to you from Peter Schmidbauer and Andreas Lobmaier with love. xoxo\"를 기반으로 만든 게임입니다. By KYHSGeekCode</string>
+</resources>

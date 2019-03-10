@@ -1,11 +1,13 @@
 package sma.rhythmtapper.game;
 
-import sma.rhythmtapper.framework.Game;
-import sma.rhythmtapper.framework.Screen;
+import android.view.*;
+import sma.rhythmtapper.framework.*;
 
 public class ChooseSongScreen extends Screen {
-    public ChooseSongScreen(Game game) {
+    View rootView;
+	public ChooseSongScreen(Game game) {
         super(game);
+		
     }
 
     @Override

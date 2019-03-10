@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.RadioGroup;
 
 import sma.rhythmtapper.models.Difficulty;
+import android.widget.*;
 
 
 public class DifficultySelectionActivity extends Activity implements View.OnClickListener{
@@ -16,7 +17,8 @@ public class DifficultySelectionActivity extends Activity implements View.OnClic
     private Button btnEasy;
     private Button btnMid;
     private Button btnHard;
-
+	
+	private ListView lvSongs;
     private final Difficulty _diffEasy =
             new Difficulty(Difficulty.EASY_TAG, "Spyro_Year_of_the_Dragon_Acoustic_Fields_OC_ReMix.mp3", 115f/2, 8);
     private final Difficulty _diffMid =
@@ -35,6 +37,8 @@ public class DifficultySelectionActivity extends Activity implements View.OnClic
         this.btnMid.setOnClickListener(this);
         this.btnHard = (Button)this.findViewById(R.id.diff_btn_hard);
         this.btnHard.setOnClickListener(this);
+		lvSongs=findViewById(R.id.listviewSongs);
+		lvSongs.setAdapter(new SongListViewAdapter());
     }
 
     @Override

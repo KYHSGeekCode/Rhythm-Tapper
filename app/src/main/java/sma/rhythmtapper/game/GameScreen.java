@@ -445,8 +445,12 @@ public class GameScreen extends Screen
                             if (!hitLane(_balls.get(j), Ball.BallType.Normal))
 							{
                                 // if no ball was hit
-                                _laneHitAlpha[j] = MISS_FLASH_INITIAL_ALPHA;
+                                //_laneHitAlpha[j] = MISS_FLASH_INITIAL_ALPHA;
                             }
+							else if(hitLane(_balls.get(j), Ball.BallType.LongDown)
+							{
+								finger.shouldHold=true;
+							}
                             break;
                         }
                     }
@@ -462,8 +466,27 @@ public class GameScreen extends Screen
             }
 			else if (event.type == TouchEvent.TOUCH_UP)
 			{
+				Finger finger=findFinger(event.pointer);
                 //isDown = false;
-				fingers.remove(findFinger(event.pointer));
+				if (event.y > game.getScreenY() * 0.5f)
+				{
+                    // ball hit area
+                    for (int j = 0; j < 5; j++)
+					{
+                        if (event.x < _gameWidth / 5 * (j + 1))
+						{
+                            if (!hitLane(_balls.get(j), Ball.BallType.LongUp)&&finger.shouldHold)
+							{
+								onMiss(LowestBall(_balls.get(i)));
+                                // if no ball was hit
+                                //_laneHitAlpha[j] = MISS_FLASH_INITIAL_ALPHA;
+                            }
+                            break;
+                        }
+                    }
+
+                }
+				fingers.remove(finger);
             }
         }
     }
@@ -659,7 +682,7 @@ public class GameScreen extends Screen
             Ball b = iterator.next();
 			if (b.type == Ball.BallType.FlickLeft || b.type == Ball.BallType.FlickRight)
 			{
-				if (b.y > HITBOX_CENTER + HITBOX_HEIGHT*2)
+				if (b.y > HITBOX_CENTER + HITBOX_HEIGHT)
 				{
 					iterator.remove();
 					Log.d(TAG, "fail press");
@@ -686,7 +709,7 @@ public class GameScreen extends Screen
 	{
 		if(b.type==Ball.BallType.FlickLeft||b.type==Ball.BallType.FlickRight)
 		{
-			return b.y>HITBOX_CENTER+HITBOX_HEIGHT*2;
+			return b.y>HITBOX_CENTER+HITBOX_HEIGHT;
 		} else {
 			return b.y>HITBOX_CENTER+HITBOX_HEIGHT/2;
 		}
@@ -696,15 +719,14 @@ public class GameScreen extends Screen
 	{
 		if(b.type==Ball.BallType.FlickLeft||b.type==Ball.BallType.FlickRight)
 		{
-			return b.y<HITBOX_CENTER+HITBOX_HEIGHT*2&&b.y>HITBOX_CENTER-HITBOX_HEIGHT*2;
+			return b.y<HITBOX_CENTER+HITBOX_HEIGHT&&b.y>HITBOX_CENTER-HITBOX_HEIGHT;
 		} else {
 			return b.y<HITBOX_CENTER+HITBOX_HEIGHT/2&&b.y>HITBOX_CENTER-HITBOX_HEIGHT/2; 
 		}
 	}
-    // handles a TouchEvent on a certain lane
-    private boolean hitLane(List<Ball> balls, Ball.BallType type)
+	Ball LowestBall(List<Ball> balls)
 	{
-        Iterator<Ball> iter = balls.iterator();
+		Iterator<Ball> iter = balls.iterator();
         Ball lowestBall = null;
         while (iter.hasNext())
 		{
@@ -714,7 +736,12 @@ public class GameScreen extends Screen
                 lowestBall = b;
             }
         }
-
+		return lowestBall;
+	}
+    // handles a TouchEvent on a certain lane
+    private boolean hitLane(List<Ball> balls, Ball.BallType type)
+	{    
+		Ball lowestBall=LowestBall(balls);
         if (lowestBall != null && isHitable(lowestBall))
 		{
             if (lowestBall.type != Ball.BallType.Normal)
@@ -787,7 +814,7 @@ public class GameScreen extends Screen
         //nice     15%
         //bad      10%
 		if(isFlick(b))
-			HITBOX_HEIGHT*=4;
+			HITBOX_HEIGHT*=2;
         int diff = Math.abs(HITBOX_CENTER - y);
         TestResult tr = TestResult.MISS;
         if (diff <= HITBOX_HEIGHT * 0.1)
@@ -807,7 +834,7 @@ public class GameScreen extends Screen
             tr = TestResult.BAD;
         }
 		if(isFlick(b))
-			HITBOX_HEIGHT/=4;
+			HITBOX_HEIGHT/=2;
         bundle.testResult = tr;
         deck.Apply(bundle);
         if (tr.compareTo(TestResult.BAD) >= 0)

@@ -5,6 +5,7 @@ public class Finger
 	public int x, y;
 	public int vx, vy;
 	public int pointerid;
+	public boolean shouldHold;
 	public Finger(int x, int y,int id)
 	{
 		this.x=x;

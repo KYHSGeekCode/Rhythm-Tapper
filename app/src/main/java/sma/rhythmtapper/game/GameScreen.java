@@ -299,27 +299,12 @@ public class GameScreen extends Screen
         FileIO fileIO = game.getFileIO();
         SharedPreferences prefs = fileIO.getSharedPref();
         int oldScore;
-
-        switch (_difficulty.getMode())
-		{
-            case Difficulty.EASY_TAG:
-                oldScore = prefs.getInt(Difficulty.EASY_TAG, 0);
-                break;
-            case Difficulty.MED_TAG:
-                oldScore = prefs.getInt(Difficulty.MED_TAG, 0);
-                break;
-            case Difficulty.HARD_TAG:
-                oldScore = prefs.getInt(Difficulty.HARD_TAG, 0);
-                break;
-            default:
-                oldScore = 0;
-                break;
-        }
+        oldScore=prefs.getInt(_difficulty.getMode().name(),0);
 
         if (bundle.score > oldScore)
 		{
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putInt(_difficulty.getMode(), bundle.score);
+            editor.putInt(_difficulty.getMode().name(), bundle.score);
             editor.apply();
             result.highscore = bundle.score;
         }
@@ -447,7 +432,7 @@ public class GameScreen extends Screen
                                 // if no ball was hit
                                 //_laneHitAlpha[j] = MISS_FLASH_INITIAL_ALPHA;
                             }
-							else if(hitLane(_balls.get(j), Ball.BallType.LongDown)
+							else if(hitLane(_balls.get(j), Ball.BallType.LongDown))
 							{
 								finger.shouldHold=true;
 							}
@@ -467,6 +452,8 @@ public class GameScreen extends Screen
 			else if (event.type == TouchEvent.TOUCH_UP)
 			{
 				Finger finger=findFinger(event.pointer);
+				if(finger==null)
+				    return;
                 //isDown = false;
 				if (event.y > game.getScreenY() * 0.5f)
 				{

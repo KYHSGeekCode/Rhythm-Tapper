@@ -1,5 +1,2 @@
-# Rhythm-Tapper
-A funky Android rhythm game.
-
-## Demo Video
-https://youtu.be/9Df-q28YHL0
+# DelesteSimulator&Editor
+A funky Android rhythm game based on Rhythm-Tapper by Peter-Schumidbauer.

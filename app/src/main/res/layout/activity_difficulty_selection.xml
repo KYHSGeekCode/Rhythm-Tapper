@@ -12,7 +12,7 @@
 	tools:context="sma.rhythmtapper.DifficultySelectionActivity"
 	android:orientation="vertical">
 
-	<LinearLayout
+	<!--LinearLayout
 		android:orientation="vertical"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
@@ -45,12 +45,11 @@
 			style="@style/Widget.AppCompat.Button.Colored"
 			android:background="@android:color/holo_red_dark"/>
 
-	</LinearLayout>
+	</LinearLayout-->
 
 	<ListView
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:layout_toRightOf="@id/activitydifficultyselectionLinearLayout1"
 		android:id="@+id/listViewSongs"/>
 
 </LinearLayout>

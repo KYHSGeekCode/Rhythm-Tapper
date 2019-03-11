@@ -22,7 +22,7 @@ public class ChooseDeckActivity extends Activity {
         setContentView(R.layout.activity_choose_deck);
         btStart= (Button) findViewById(R.id.chooseDeckBtStart);
         Intent intent=getIntent();
-        final String name = intent.getStringExtra("Name");
+        final String path = intent.getStringExtra("Name");
         final String difficulty = intent.getStringExtra("Difficulty");
         btStart.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -37,7 +37,7 @@ public class ChooseDeckActivity extends Activity {
                     @Override
                     public void onClick(View view) {
                         Intent i = new Intent(ChooseDeckActivity.this, GameActivity.class);
-                        Difficulty difff=new Difficulty(Difficulties.valueOf(difficulty),name,100,np.getValue());
+                        Difficulty difff=new Difficulty(Difficulties.valueOf(difficulty),path,100,np.getValue());
                         i.putExtra("difficulty",difff);
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(i);

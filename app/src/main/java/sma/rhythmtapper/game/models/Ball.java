@@ -1,7 +1,8 @@
 package sma.rhythmtapper.game.models;
 import java.util.*;
+import java.io.*;
 
-public class Ball {
+public class Ball implements Serializable{
     public enum BallType {
         Normal, OneUp, Multiplier, Speeder, Bomb, Skull,
 		LongDown,LongUp,FlickLeft,FlickRight,Slide;
@@ -12,7 +13,7 @@ public class Ball {
 	int origx;
     public BallType type;
     private double speedMultiplier;
-	Random random=new Random();
+	static Random random=new Random();
     public Ball(int x, int y, BallType type){
         this.x = x;
         this.y = y;

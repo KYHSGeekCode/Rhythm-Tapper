@@ -1,24 +1,11 @@
 package sma.rhythmtapper.game;
 
-import android.content.res.AssetFileDescriptor;
-
-import sma.rhythmtapper.framework.Game;
-import sma.rhythmtapper.framework.Graphics;
-import sma.rhythmtapper.framework.Screen;
-import sma.rhythmtapper.game.models.AppealType;
-import sma.rhythmtapper.game.models.Card;
-import sma.rhythmtapper.game.models.CenterSkill;
-import sma.rhythmtapper.game.models.ColorType;
-import sma.rhythmtapper.game.models.Deck;
-import sma.rhythmtapper.game.models.Skill.Skill;
-import sma.rhythmtapper.game.models.Skill.SkillBoost;
-import sma.rhythmtapper.game.models.Skill.SkillComboUp;
-import sma.rhythmtapper.game.models.Skill.SkillDamageGuard;
-import sma.rhythmtapper.game.models.Skill.SkillHeal;
-import sma.rhythmtapper.game.models.Skill.SkillOverload;
-import sma.rhythmtapper.game.models.Skill.SkillPerfectSupport;
-import sma.rhythmtapper.game.models.Skill.SkillScoreUp;
-import sma.rhythmtapper.models.Difficulty;
+import android.os.*;
+import java.io.*;
+import sma.rhythmtapper.framework.*;
+import sma.rhythmtapper.game.models.*;
+import sma.rhythmtapper.game.models.Skill.*;
+import sma.rhythmtapper.models.*;
 
 
 public class LoadingScreen extends Screen {
@@ -59,7 +46,7 @@ public class LoadingScreen extends Screen {
         Assets.soundCreepyLaugh = game.getAudio().createSound(SOUND_EFFECTS_PATH + "sound_creepy_laugh.mp3");
         Assets.soundFlickOK= game.getAudio().createSound(SOUND_EFFECTS_PATH + "sound_flick_ok.ogg");
         Assets.soundMiss = game.getAudio().createSound(SOUND_EFFECTS_PATH + "sound_miss.ogg");
-        Assets.musicTrack = game.getAudio().createMusic(MUSIC_PATH + _diff.getMusic());
+        Assets.musicTrack = game.getFileAudio().createMusic(new File(Environment.getExternalStorageDirectory(),"TempestWave/Songs/").getPath()+"/"+_diff.getMusic()+"/"+_diff.getMusic()+".wav");
         Deck deck=new Deck();
         deck.SetCard(0,new Card(ColorType.CUTE,5000,5000,5000,30, new CenterSkill(CenterSkill.Condition.ANY,ColorType.CUTE, AppealType.ANY,30), new SkillHeal(7,90,6)));
         deck.SetCard(1,new Card(ColorType.COOL,5000,5000,5000,30, new CenterSkill(CenterSkill.Condition.ANY,ColorType.CUTE, AppealType.ANY,30), new SkillPerfectSupport(8,99,8)));

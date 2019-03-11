@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sma.rhythmtapper.game.models.Ball;
+import java.io.*;
 
-public class Block {
+public class Block implements Serializable{
 
     int bits;
     List<List<Ball>> balls=new ArrayList<>();

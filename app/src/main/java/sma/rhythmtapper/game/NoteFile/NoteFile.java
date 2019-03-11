@@ -7,7 +7,7 @@ import java.util.*;
 
 import sma.rhythmtapper.game.models.*;
 
-public class NoteFile //implements Serializable
+public class NoteFile implements Serializable
 {
     final String TAG = "NoteFile";
 
@@ -241,4 +241,8 @@ public class NoteFile //implements Serializable
     public String getName() {
         return songName;
     }
+	public String getPath()
+	{
+		return musicFile.getPath();
+	}
 }

@@ -75,11 +75,11 @@ public class SongListViewAdapter extends BaseAdapter implements View.OnClickList
 		btMaster.setOnClickListener(this);
 		btApex.setOnClickListener(this);
 		
-		btEasy.setTag(item.getName());
-		btNormal.setTag(item.getName());
-		btHard.setTag(item.getName());
-		btMaster.setTag(item.getName());
-		btApex.setTag(item.getName());
+		btEasy.setTag(item/*.getName()*/);
+		btNormal.setTag(item/*.getName()*/);
+		btHard.setTag(item/*.getName()*/);
+		btMaster.setTag(item/*.getName()*/);
+		btApex.setTag(item/*.getName()*/);
         //listViewItemList/*[position];*/.get(position);
 
         //  iconImageView.setImageDrawable(listViewItem.getIcon());
@@ -154,8 +154,9 @@ public class SongListViewAdapter extends BaseAdapter implements View.OnClickList
         // add flag, when activity already runs,
         // use it instead of launching a new instance
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		i.putExtra("notefile",(NoteFile)view.getTag());
         i.putExtra("Difficulty", diff.name());
-        i.putExtra("Name", (String) view.getTag());
+        //i.putExtra("Name", (String) view.getTag());
         //i.putExtra("bpm",(String));
         context.startActivity(i);
     }

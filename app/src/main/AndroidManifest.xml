@@ -13,8 +13,10 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ChooseDeckActivity"></activity>
-        <activity android:name=".ChooseGuestActivity" />
+        <activity android:name=".ChooseDeckActivity"
+			android:screenOrientation="landscape"></activity>
+        <activity android:name=".ChooseGuestActivity"
+			android:screenOrientation="landscape"/>
         <activity
             android:name=".MainActivity"
             android:screenOrientation="landscape">

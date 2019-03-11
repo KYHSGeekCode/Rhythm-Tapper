@@ -23,6 +23,11 @@ public class NoteFile //implements Serializable
         //file/master.notemap2
         //file/master+.notemap2
         File[] files = dir.listFiles();
+		if(files==null)
+		{
+			Log.v(TAG,"Error "+dir.getPath());
+			return;
+		}
         for (File file : files) {
             String filename = file.getName();
             String extension = filename.substring(filename.lastIndexOf("."));
@@ -74,16 +79,21 @@ public class NoteFile //implements Serializable
                     line = line.replace("#artist ", "").trim();
                     artist = line;
                 } else if (line.startsWith("#easy")) {
+					line=line.replaceAll("[^0-9]","");
                     difficulties[0] = Integer.parseInt(line.replace("#easy ", "").trim());
-
+					
                 } else if (line.startsWith("#normal")) {
+					line=line.replaceAll("[^0-9]","");
                     difficulties[1] = Integer.parseInt(line.replace("#normal ", "").trim());
 
                 } else if (line.startsWith("#hard")) {
+					line=line.replaceAll("[^0-9]","");
                     difficulties[2] = Integer.parseInt(line.replace("#hard ", "").trim());
                 } else if (line.startsWith("#master")) {
+					line=line.replaceAll("[^0-9]","");
                     difficulties[3] = Integer.parseInt(line.replace("#master ", "").trim());
                 } else if (line.startsWith("#apex")) {
+					line=line.replaceAll("[^0-9]","");
                     difficulties[4] = Integer.parseInt(line.replace("#apex ", "").trim());
                 }
                 line = br.readLine();

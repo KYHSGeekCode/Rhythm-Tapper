@@ -70,7 +70,16 @@ public class SongListViewAdapter extends BaseAdapter implements View.OnClickList
         NoteFile item = (NoteFile) getItem(position);
         tvTitle.setText(item.getName());
         btEasy.setOnClickListener(this);
-
+		btNormal.setOnClickListener(this);
+		btHard.setOnClickListener(this);
+		btMaster.setOnClickListener(this);
+		btApex.setOnClickListener(this);
+		
+		btEasy.setTag(item.getName());
+		btNormal.setTag(item.getName());
+		btHard.setTag(item.getName());
+		btMaster.setTag(item.getName());
+		btApex.setTag(item.getName());
         //listViewItemList/*[position];*/.get(position);
 
         //  iconImageView.setImageDrawable(listViewItem.getIcon());

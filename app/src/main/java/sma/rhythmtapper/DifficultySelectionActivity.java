@@ -58,8 +58,9 @@ public class DifficultySelectionActivity extends Activity implements View.OnClic
 
         } else {
             for (File song : songs) {
-                noteFiles.add(new NoteFile(song));
-                Toast.makeText(this,song.getName(),Toast.LENGTH_SHORT).show();
+				if(song.isDirectory())
+                	noteFiles.add(new NoteFile(song));
+                //Toast.makeText(this,song.getName(),Toast.LENGTH_SHORT).show();
             }
         }
         adapter.addAll(noteFiles);

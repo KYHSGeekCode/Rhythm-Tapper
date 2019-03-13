@@ -1,6 +1,7 @@
 package sma.rhythmtapper.game.models;
+import java.io.*;
 
-public class CenterSkill {
+public class CenterSkill implements Serializable {
     ColorType targetType;
     AppealType targetAppeal;
     public enum Condition

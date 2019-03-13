@@ -1,26 +1,15 @@
 package sma.rhythmtapper.framework.Impl;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
-import android.graphics.Point;
-import android.os.Bundle;
-import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
-import android.os.Vibrator;
-import android.view.Window;
-import android.view.WindowManager;
-
-import sma.rhythmtapper.framework.Audio;
-import sma.rhythmtapper.framework.FileIO;
-import sma.rhythmtapper.framework.Game;
-import sma.rhythmtapper.framework.Graphics;
-import sma.rhythmtapper.framework.Input;
-import sma.rhythmtapper.framework.Screen;
-import sma.rhythmtapper.game.ChooseSongScreen;
+import android.app.*;
+import android.content.*;
+import android.content.res.*;
+import android.graphics.*;
+import android.os.*;
+import android.view.*;
+import sma.rhythmtapper.framework.*;
+import sma.rhythmtapper.game.*;
+import sma.rhythmtapper.game.NoteFile.*;
+import sma.rhythmtapper.game.models.*;
 
 
 public class RTGame extends Activity implements Game {
@@ -37,6 +26,43 @@ public class RTGame extends Activity implements Game {
 
     public ChooseSongScreen chooseSongScreen;
 
+	int ballspeed;
+	NoteFile noteFile;
+	Deck deck;
+
+	public void setBallspeed(int ballspeed)
+	{
+		this.ballspeed = ballspeed;
+	}
+
+	public int getBallspeed()
+	{
+		return ballspeed;
+	}
+
+	public void setNoteFile(NoteFile noteFile)
+	{
+		this.noteFile = noteFile;
+	}
+
+	public NoteFile getNoteFile()
+	{
+		return noteFile;
+	}
+
+	public void setDeck(Deck deck)
+	{
+		this.deck = deck;
+	}
+
+	public Deck getDeck()
+	{
+		return deck;
+	}
+	
+	//difficulty notefild deck speed
+	
+	
     @Override
     public int getScreenX()
     {

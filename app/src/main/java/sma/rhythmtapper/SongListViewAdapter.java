@@ -150,11 +150,13 @@ public class SongListViewAdapter extends BaseAdapter implements View.OnClickList
                 break;
             //game.setScreen(new LoadingScreen(game, new Difficulty(Difficulties.EASY,(String)view.getTag(),0,0)));
         }
+		NoteFile nf=(NoteFile)view.getTag();
+		nf.Load(diff);
         Intent i = new Intent(context, ChooseGuestActivity.class);
         // add flag, when activity already runs,
         // use it instead of launching a new instance
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		i.putExtra("notefile",(NoteFile)view.getTag());
+		i.putExtra("notefile",nf);
         i.putExtra("Difficulty", diff.name());
         //i.putExtra("Name", (String) view.getTag());
         //i.putExtra("bpm",(String));

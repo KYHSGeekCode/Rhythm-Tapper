@@ -7,9 +7,11 @@ import android.util.*;
 import java.util.*;
 import sma.rhythmtapper.*;
 import sma.rhythmtapper.framework.*;
+import sma.rhythmtapper.framework.Impl.*;
 import sma.rhythmtapper.framework.Input.*;
 import sma.rhythmtapper.game.models.*;
 import sma.rhythmtapper.models.*;
+import sma.rhythmtapper.game.NoteFile.*;
 
 public class GameScreen extends Screen
 {
@@ -29,6 +31,7 @@ public class GameScreen extends Screen
     private Vibrator _vibrator;
     private boolean _isEnding;
 
+	NoteFile noteFile;
     // score
     //private int _score;
     //private int _multiplier;
@@ -115,14 +118,16 @@ public class GameScreen extends Screen
 
     private GameState state = GameState.Ready;
 
-    GameScreen(Game game, Difficulty difficulty, Deck deck)
+    GameScreen(Game game, Difficulty difficulty)
 	{
         super(game);
 
         _difficulty = difficulty;
         // init difficulty parameters
-        _ballSpeed = _difficulty.getBallSpeed();
-        _spawnInterval = _difficulty.getSpawnInterval();
+        _ballSpeed = ((RTGame)game).getBallspeed();//_difficulty.getBallSpeed();
+        noteFile=((RTGame)game).getNoteFile();
+		
+		_spawnInterval = _difficulty.getSpawnInterval();
 
         // Initialize game objects
         _gameHeight = game.getGraphics().getHeight();
@@ -155,7 +160,8 @@ public class GameScreen extends Screen
         _currentTime = 0f;
         _explosionTicker = 0;
         ///_lives = 10;
-        this.deck = deck;
+        this.deck = ((RTGame)game).getDeck();
+		
         deck.SetResult(result);
         this.bundle = new GameStatusBundle(deck);
 
@@ -464,7 +470,7 @@ public class GameScreen extends Screen
 						{
                             if (!hitLane(_balls.get(j), Ball.BallType.LongUp)&&finger.shouldHold)
 							{
-								onMiss(LowestBall(_balls.get(i)));
+								onMiss(LowestBall(_balls.get(j)));
                                 // if no ball was hit
                                 //_laneHitAlpha[j] = MISS_FLASH_INITIAL_ALPHA;
                             }

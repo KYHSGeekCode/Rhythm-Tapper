@@ -1,11 +1,10 @@
 package sma.rhythmtapper;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-
-import sma.rhythmtapper.framework.Game;
+import android.app.*;
+import android.content.*;
+import android.os.*;
 import sma.rhythmtapper.game.NoteFile.*;
+import sma.rhythmtapper.game.models.*;
 
 public class ChooseGuestActivity extends Activity {
 
@@ -17,6 +16,7 @@ public class ChooseGuestActivity extends Activity {
         String diff = intent.getStringExtra("Difficulty");
         //String name = intent.getStringExtra("Name");
 		NoteFile nf=(NoteFile) intent.getSerializableExtra("notefile");
+		//Deck deck=(Deck) intent.getSerializableExtra("deck");
         Intent i = new Intent(this, ChooseDeckActivity.class);
         // add flag, when activity already runs,
         // use it instead of launching a new instance
@@ -24,6 +24,8 @@ public class ChooseGuestActivity extends Activity {
         i.putExtra("Difficulty",diff);
         //i.putExtra("Name",name);
 		i.putExtra("notefile",nf);
+		i.putExtra("guest",Card.nullCard);
+		//i.putExtra("deck",deck);
         startActivity(i);
     }
 }

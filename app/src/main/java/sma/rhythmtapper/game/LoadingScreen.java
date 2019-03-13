@@ -47,14 +47,9 @@ public class LoadingScreen extends Screen {
         Assets.soundFlickOK= game.getAudio().createSound(SOUND_EFFECTS_PATH + "sound_flick_ok.ogg");
         Assets.soundMiss = game.getAudio().createSound(SOUND_EFFECTS_PATH + "sound_miss.ogg");
         Assets.musicTrack = game.getFileAudio().createMusic(_diff.getMusic());
-        Deck deck=new Deck();
-        deck.SetCard(0,new Card(ColorType.CUTE,5000,5000,5000,30, new CenterSkill(CenterSkill.Condition.ANY,ColorType.CUTE, AppealType.ANY,30), new SkillHeal(7,90,6)));
-        deck.SetCard(1,new Card(ColorType.COOL,5000,5000,5000,30, new CenterSkill(CenterSkill.Condition.ANY,ColorType.CUTE, AppealType.ANY,30), new SkillPerfectSupport(8,99,8)));
-        deck.SetCard(2,new Card(ColorType.COOL,5000,5000,5000,30, new CenterSkill(CenterSkill.Condition.TRICOLOR,ColorType.ANY, AppealType.ANY,40), new SkillScoreUp(4,60,3)));
-        deck.SetCard(3,new Card(ColorType.PASSION,5000,5000,5000,30, new CenterSkill(CenterSkill.Condition.ANY,ColorType.CUTE, AppealType.ANY,30), new SkillBoost(4,99,4)));
-        deck.SetCard(4,new Card(ColorType.PASSION,5000,5000,5000,30, new CenterSkill(CenterSkill.Condition.ANY,ColorType.CUTE, AppealType.ANY,30), new SkillDamageGuard(4,90,4)));
-        deck.ApplyCenterSkill();
-        game.setScreen(new GameScreen(game, _diff,deck));
+        //Deck deck=new Deck();
+        
+        game.setScreen(new GameScreen(game, _diff));
     }
     @Override
     public void paint(float deltaTime) {

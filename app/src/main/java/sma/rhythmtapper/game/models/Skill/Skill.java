@@ -2,8 +2,9 @@ package sma.rhythmtapper.game.models.Skill;
 
 import sma.rhythmtapper.game.models.GameStatusBundle;
 import sma.rhythmtapper.game.models.TestResult;
+import java.io.*;
 
-public abstract class Skill {
+public abstract class Skill implements Serializable{
     public int period;
     public int chance;
     public int duration;

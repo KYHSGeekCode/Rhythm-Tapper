@@ -1,8 +1,9 @@
 package sma.rhythmtapper.game.models;
 
 import sma.rhythmtapper.game.models.Skill.Skill;
+import java.io.*;
 
-public class Card {
+public class Card implements Serializable{
     int vocal;
     int visual;
     int dance;

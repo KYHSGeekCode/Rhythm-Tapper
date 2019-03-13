@@ -1,8 +1,9 @@
 package sma.rhythmtapper.game.models;
 
 import java.util.Random;
+import java.io.*;
 
-public class Deck {
+public class Deck implements Serializable{
     Card[] cards= new Card[5];
     int[] chances=new int [5];
     int visual;

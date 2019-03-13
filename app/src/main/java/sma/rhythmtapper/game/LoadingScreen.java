@@ -46,7 +46,7 @@ public class LoadingScreen extends Screen {
         Assets.soundCreepyLaugh = game.getAudio().createSound(SOUND_EFFECTS_PATH + "sound_creepy_laugh.mp3");
         Assets.soundFlickOK= game.getAudio().createSound(SOUND_EFFECTS_PATH + "sound_flick_ok.ogg");
         Assets.soundMiss = game.getAudio().createSound(SOUND_EFFECTS_PATH + "sound_miss.ogg");
-        Assets.musicTrack = game.getFileAudio().createMusic(new File(Environment.getExternalStorageDirectory(),"TempestWave/Songs/").getPath()+"/"+_diff.getMusic()+"/"+_diff.getMusic()+".wav");
+        Assets.musicTrack = game.getFileAudio().createMusic(_diff.getMusic());
         Deck deck=new Deck();
         deck.SetCard(0,new Card(ColorType.CUTE,5000,5000,5000,30, new CenterSkill(CenterSkill.Condition.ANY,ColorType.CUTE, AppealType.ANY,30), new SkillHeal(7,90,6)));
         deck.SetCard(1,new Card(ColorType.COOL,5000,5000,5000,30, new CenterSkill(CenterSkill.Condition.ANY,ColorType.CUTE, AppealType.ANY,30), new SkillPerfectSupport(8,99,8)));

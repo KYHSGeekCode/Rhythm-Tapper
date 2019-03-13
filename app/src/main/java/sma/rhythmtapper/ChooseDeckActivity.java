@@ -13,6 +13,7 @@ import java.io.Serializable;
 
 import sma.rhythmtapper.game.models.Difficulties;
 import sma.rhythmtapper.models.Difficulty;
+import sma.rhythmtapper.game.NoteFile.*;
 
 public class ChooseDeckActivity extends Activity {
     Button btStart;
@@ -22,7 +23,8 @@ public class ChooseDeckActivity extends Activity {
         setContentView(R.layout.activity_choose_deck);
         btStart= (Button) findViewById(R.id.chooseDeckBtStart);
         Intent intent=getIntent();
-        final String path = intent.getStringExtra("Name");
+		NoteFile nf=(NoteFile) intent.getSerializableExtra("notefile");
+        final String path = nf.getPath(); //intent.getStringExtra("Name");
         final String difficulty = intent.getStringExtra("Difficulty");
         btStart.setOnClickListener(new View.OnClickListener(){
             @Override

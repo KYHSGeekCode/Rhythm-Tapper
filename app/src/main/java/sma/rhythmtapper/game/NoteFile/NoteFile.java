@@ -31,7 +31,7 @@ public class NoteFile implements Serializable
         for (File file : files) {
             String filename = file.getName();
             String extension = filename.substring(filename.lastIndexOf("."));
-            if (extension.compareToIgnoreCase("mp3") == 0 || extension.compareToIgnoreCase("wav") == 0) {
+            if (extension.compareToIgnoreCase(".mp3") == 0 || extension.compareToIgnoreCase(".wav") == 0) {
                 musicFile = file;
                 Log.v("a", "musicfile=" + musicFile);
                 break;

@@ -108,10 +108,171 @@ public class NoteFile implements Serializable
         Log.v(TAG, "Artist=" + artist);
         Log.v(TAG, "Folder=" + dir.getName());
     }
+ /*
+     if (files[i].Extension.Equals(".tw1")) { ReadTWxMetadata(files[i].FullName, 4, ref hasError); }
+                     else if (files[i].Extension.Equals(".tw2")) { ReadTWxMetadata(files[i].FullName, 1, ref hasError); }
+                     else if (files[i].Extension.Equals(".tw4")) { ReadTWxMetadata(files[i].FullName, 2, ref hasError); }
+                     else if (files[i].Extension.Equals(".txt")) { ReadDelesteMetadata(files[i].FullName, ref hasError); }
+                     else if (files[i].Extension.Equals(".json")) { ReadSSTrainMetadata(files[i].FullName, ref hasError); }
+                     else if (files[i].Extension.Equals(".tw5")) { ReadTWxMetadata(files[i].FullName, 0, ref hasError); }
+                     else if (files[i].Extension.Equals(".tw6")) { ReadTWxMetadata(files[i].FullName, 3, ref hasError); }
+*/
+    public void Load(Difficulties difficulty)
+    {
+        //candidates:
+        //SongName_Diff.tw2,4,txt,json,tw5,tw6,notemap2
+        String baseName=songName+"_"+difficulty.getFileName()+".";
+        String[] candidates=new String[]{"txt","notemap2","json","tw5","tw2","tw4","tw6"};
+        for(String candidate:candidates)
+        {
+            File candidateFile=new File(dir,baseName+candidate);
+            if(candidateFile.exists())
+            {
+                switch (candidate)
+                {
+                    case "txt":
+                        LoadDeleste(candidateFile);
+                        return;
+                    case "notemap2":
+                        LoadNotemap2(candidateFile);
+                        return;
+                    case "json":
+                        LoadSSTrain(candidateFile);
+                        return;
+                    case "tw5":
+                    case "tw2":
+                    case "tw4":
+                    case "tw6":
+                        LoadTWX(candidateFile);
+                        return;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
 
-    public void Load(Difficulties difficulty) {
+    private void LoadTWX(File candidateFile) {
+
+    }
+
+    private void LoadSSTrain(File candidateFile) {
+
+    }
+
+    private void LoadDeleste(File candidateFile) {
+        //1. parse metadata
+        try {
+            BufferedReader br= new BufferedReader(new FileReader(candidateFile));
+            String line=br.readLine();
+            String title;
+            String lyricist;
+            String composer;
+            String background;
+            String song;
+            String lyrics;
+            double bpm;
+            int offset;
+            int movieoffset;
+            Difficulties difficulty;
+            int lv;
+            int bgmvol;
+            int sevol;
+            ColorType attribute;
+            while(line!=null)
+            {
+                //process one line
+                //if (line.startsWith(blah) line= line.replace(blah); data= line; else if ......
+                char[] chs=line.toCharArray();
+                if(chs.length<3)
+                {
+                    //ignore that line
+                    continue;
+                }
+                if(Character.isDigit(chs[1]))
+                {
+                    //maybe the note info, not metadata
+                    line=line.replace("#","");
+                    String [] data=line.split(":");
+                    /*
+                    위 영상의 전주부분 채보코드
+#0,000:20202220:54555:41441
+#1,000:00200020:44:55
+#0,001:20202220:54555:41441
+#1,001:00200020:44:55
+#0,002:2000200011133333:5422222222:4143212345
+#1,002:0000200000000000:4:5
+[출처] 데레시뮤 채보 제작방법|작성자 Van Azure
+                     */
+                    //data[0]: 0,000
+                    //data[1]:20202220
+                    //data[2]:54555
+                    //data[3]:41441
+                } else {
+                    //meta data
+                    String [] metadata=line.split("\\s");
+                    //metadata[1] is data [0] is index
+                    //expensive but convenient
+                    final String d=metadata[1];
+                    switch (metadata[0])
+                    {
+                        case "#Title":
+                            title=d;
+                            break;
+                        case "#Lyricist":
+                            lyricist=d;
+                            break;
+                        case "#Composer":
+                            composer=d;
+                            break;
+                        case"#BackGround":
+                            background=d;
+                            break;
+                        case "#Song":
+                            song=d;
+                            break;
+                        case "#Lyrics":
+                            lyrics=d;
+                            break;
+                        case "#BPM":
+                            bpm=Double.parseDouble(d);
+                            break;
+                        case "#Offset":
+                            offset=Integer.parseInt(d);
+                            break;
+                        case "#MovieOffset":
+                            movieoffset=Integer.parseInt(d);
+                            break;
+                        case "#Difficulty":
+                            difficulty=Difficulties.valueOf(d);
+                            break;
+                        case "#LV":
+                            lv=Integer.parseInt(d);
+                            break;
+                        case "#BGMVol":
+                            bgmvol = Integer.parseInt(d);
+                            break;
+                        case "#SEVol":
+                            sevol=Integer.parseInt(d);
+                            break;
+                        case "#Attribute":
+                            attribute=ColorType.valueOf(d);
+                            break;
+
+                    }
+                }
+                if(line.startsWith("#Title"))キミと☆Are You Ready？
+                //read one line
+                line=br.readLine();
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    public void LoadNotemap2(File candidateFile) {
         isLoaded = true;
-        File notemapFile = new File(dir, songName + "_" + difficulty.getFileName() + ".notemap2");
+        File notemapFile = candidateFile;
         try {
             BufferedReader br = new BufferedReader(new FileReader(notemapFile));
             int bpm = -1;

@@ -12,6 +12,10 @@ public class Ball implements Serializable{
 			return null;
 		}
     }
+    public int startLane, endLane;
+    public int showFrame;
+    public int missFrame;
+
 	public boolean startOfFlick;
     public int x;
     public int y;
@@ -24,7 +28,16 @@ public class Ball implements Serializable{
         this.y = y;
 		this.origx=x;
         this.type = type;
-        this.speedMultiplier = type == BallType.Speeder ? 1.4 : 1;
+        //this.speedMultiplier = type == BallType.Speeder ? 1.4 : 1;
+    }
+
+    public Ball (int startLane, int endLane, BallType bt, int startFrame)
+    {
+        this.startLane=startLane;
+        this.endLane=endLane;
+        this.type=bt;
+        this.showFrame=startFrame;
+        this.missFrame=showFrame+10;
     }
 
     public void update(int speed) {

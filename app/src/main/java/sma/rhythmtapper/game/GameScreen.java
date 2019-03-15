@@ -895,6 +895,16 @@ public class GameScreen extends Screen
 
     private void spawnBall(List<Ball> balls, float randFloat, int ballX, int ballY)
 	{
+	    //get a ball from the balls
+        //get all the balls that needs to be spawned now
+        //frame
+        // while(balls.peek().frame<=frame)
+        // {
+        //    Ball ball=balls.get();
+        //    ball을 배정한다
+        //    ball.endlane
+
+	    /*
         if (randFloat < _spawnChance_normal)
 		{
             balls.add(0, new Ball(ballX, ballY, Ball.BallType.Normal));
@@ -906,7 +916,7 @@ public class GameScreen extends Screen
 		else if (randFloat < _spawnChance_RightFlick)
 		{
             balls.add(0, new Ball(ballX, ballY, Ball.BallType.FlickRight));
-        }
+        }*/
 		/*else if (randFloat < _spawnChance_speeder)
 		 {
 		 balls.add(0, new Ball(ballX, ballY, Ball.BallType.Speeder));

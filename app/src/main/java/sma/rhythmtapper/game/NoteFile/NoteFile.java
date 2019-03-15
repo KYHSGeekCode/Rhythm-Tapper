@@ -266,6 +266,9 @@ public class NoteFile implements Serializable
 								case '4':
 									bt=Ball.BallType.LongUp;
 									break;
+                                case '5':
+                                    bt=Ball.BallType.Slide;
+                                    break;
 							}
 							
 							//start lane end lane

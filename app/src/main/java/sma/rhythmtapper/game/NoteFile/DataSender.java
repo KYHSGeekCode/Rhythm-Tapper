@@ -78,35 +78,36 @@ public  class DataSender
 
 
 
-        if (mode.Equals(NotemapMode.TW5) || mode.Equals(NotemapMode.SSTrain) || mode.Equals(NotemapMode.DelesteSimulator)) { gameMode = GameMode.Starlight; }
+        if (mode.equals(NotemapMode.TW5) || mode.equals(NotemapMode.SSTrain) || mode.equals(NotemapMode.DelesteSimulator)) { gameMode = GameMode.Starlight; }
 
-        else if (mode.Equals(NotemapMode.TW2))
+        else if (mode.equals(NotemapMode.TW2))
 
         {
 
-            if (PlayerPrefs.HasKey("theater2") && PlayerPrefs.GetInt("theater2").Equals(0)) { gameMode = GameMode.Theater2P; }
+            //if (PlayerPrefs.HasKey("theater2") && PlayerPrefs.GetInt("theater2").equals(0)) { gameMode = GameMode.Theater2P; }
 
-            else { gameMode = GameMode.Theater2L; }
+            //else
+             { gameMode = GameMode.Theater2L; }
 
         }
 
-        else if (mode.Equals(NotemapMode.TW4)) { gameMode = GameMode.Theater4; }
+        else if (mode.equals(NotemapMode.TW4)) { gameMode = GameMode.Theater4; }
 
-        else if (mode.Equals(NotemapMode.TW6)) { gameMode = GameMode.Theater; }
+        else if (mode.equals(NotemapMode.TW6)) { gameMode = GameMode.Theater; }
 
-        else if (mode.Equals(NotemapMode.TW1)) { gameMode = GameMode.Platinum; }
-
-    }
-
-
-
-    public static void SetGameResult(GameDataArchiver get)
-
-    {
-
-        data = get;
+        else if (mode.equals(NotemapMode.TW1)) { gameMode = GameMode.Platinum; }
 
     }
+
+
+
+    //public static void SetGameResult(GameDataArchiver get)
+
+    //{
+
+      //  data = get;
+
+    //}
 
 
 
@@ -253,14 +254,14 @@ public  class DataSender
     public static String ReturnBackImgPath() { return backPath; }
 
 
+//
+//    public static GameDataArchiver ReturnGameResult()
+//
+//    {
 
-    public static GameDataArchiver ReturnGameResult()
+  //      return data;
 
-    {
-
-        return data;
-
-    }
+    //}
 
 
 

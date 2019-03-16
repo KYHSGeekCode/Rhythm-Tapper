@@ -71,9 +71,9 @@ public class NoteFile implements Serializable
                  */
                 line = line.replace("\uEFBB\u00BF", "");
                 line = line.replace("\u0000\uFEFF", "");
-                line = line.replace("\uFF FE\u0000", "");
+                line = line.replace("\uFFFE\u0000", "");
                 line = line.replace("\uFEFF", "");
-                line = line.replace("\uFF FE", "");
+                line = line.replace("\uFFFE", "");
                 Log.v(TAG, Arrays.toString(line.getBytes()));
                 Log.v(TAG, Arrays.toString("#title".getBytes()));
                 if (line.startsWith("#title"))
@@ -252,37 +252,27 @@ public class NoteFile implements Serializable
 						if (ch != '0')
 						{
 							cnt++;
-							switch(ch)
-							{
-								case '1':
-									bt=Ball.BallType.FlickLeft;
-									break;
-								case '2':
-									bt=Ball.BallType.Normal;
-									break;
-								case '3':
-									bt=Ball.BallType.FlickRight;
-									break;
-								case '4':
-									bt=Ball.BallType.LongUp;
-									break;
-                                case '5':
-                                    bt=Ball.BallType.Slide;
+							switch(ch) {
+                                case '1':
+                                    bt = Ball.BallType.FlickLeft;
                                     break;
-							}
-							
+                                case '2':
+                                    bt = Ball.BallType.Normal;
+                                    break;
+                                case '3':
+                                    bt = Ball.BallType.FlickRight;
+                                    break;
+                                case '4':
+                                    bt = Ball.BallType.LongUp;
+                                    break;
+                                case '5':
+                                    bt = Ball.BallType.Slide;
+                                    break;
+                            }
 							//start lane end lane
-							balls.add(new Ball(startPos[cnt-1]-'0',endPos[cnt-1]-'0',bt));
-						}
-						else
-						{
-							balls.add(Ball.nullBall);
+							balls.add(new Ball(startPos[cnt-1]-'0',endPos[cnt-1]-'0',bt,(int)(block * bpm +i),thread));
 						}
 					}
-					
-					
-					
-
                 }
 				else
 				{
@@ -338,7 +328,7 @@ public class NoteFile implements Serializable
 
                     }
                 }
-                if (line.startsWith("#Title"))キミと☆Are You Ready？
+                if (line.startsWith("#Title"))//キミと☆Are You Ready？
 					//read one line
 					line=br.readLine();
             }

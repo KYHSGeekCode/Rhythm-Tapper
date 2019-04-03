@@ -15,13 +15,14 @@ public class Ball implements Serializable{
     public int startLane, endLane;
     public int showFrame;
     public int missFrame;
+    public int thread;
 
 	public boolean startOfFlick;
     public int x;
     public int y;
 	int origx;
     public BallType type;
-    private double speedMultiplier;
+    //private double speedMultiplier;
 	static Random random=new Random();
     public Ball(int x, int y, BallType type){
         this.x = x;
@@ -31,19 +32,20 @@ public class Ball implements Serializable{
         //this.speedMultiplier = type == BallType.Speeder ? 1.4 : 1;
     }
 
-    public Ball (int startLane, int endLane, BallType bt, int startFrame)
+    public Ball (int startLane, int endLane, BallType bt, int startFrame, int thread)
     {
         this.startLane=startLane;
         this.endLane=endLane;
         this.type=bt;
         this.showFrame=startFrame;
         this.missFrame=showFrame+10;
+        this.thread=thread;
     }
 
     public void update(int speed) {
 		//todo add fake move
 		//: Use bezier 
-        this.y += speed * speedMultiplier;
+        this.y += speed; // * speedMultiplier;
 		//this.x = origx+(int)(50*Math.sin(y));
     }
 }

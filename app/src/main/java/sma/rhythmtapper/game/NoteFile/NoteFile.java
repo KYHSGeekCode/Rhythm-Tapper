@@ -41,6 +41,12 @@ public class NoteFile implements Serializable
             }
         }
         File infoFile = new File(dir, "info.txt");
+		if(!infoFile.exists())
+		{
+			//simple add
+			//parse possible tw5 files
+			
+		}
         //parse info.txt
         //String songName;
         String artist = "?";
@@ -270,7 +276,7 @@ public class NoteFile implements Serializable
                                     break;
                             }
 							//start lane end lane
-							balls.add(new Ball(startPos[cnt-1]-'0',endPos[cnt-1]-'0',bt,(int)(block * bpm +i),thread));
+							//balls.add(new Ball(startPos[cnt-1]-'0',endPos[cnt-1]-'0',bt,(int)(block * bpm +i),thread));
 						}
 					}
                 }

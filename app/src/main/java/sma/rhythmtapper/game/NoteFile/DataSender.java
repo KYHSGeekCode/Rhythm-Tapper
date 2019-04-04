@@ -274,7 +274,7 @@ public  class DataSender
     }
 
 
-
+/*
     public static void ResultPopOut(out String sL, out String fF, out boolean aP, out boolean rW, out boolean iM, out String sA)
 
     {
@@ -292,5 +292,5 @@ public  class DataSender
         sA = speedAmp.ToString("N1");
 
     }
-
+*/
 }

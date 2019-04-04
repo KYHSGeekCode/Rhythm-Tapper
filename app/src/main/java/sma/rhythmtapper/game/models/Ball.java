@@ -3,7 +3,20 @@ import java.util.*;
 import java.io.*;
 
 //This class may become a mammoth class!!
-public class Ball implements Serializable{
+public class Ball implements Serializable
+{
+
+	public Ball(int id, int color, int mode, int flick, float time, float startLine, float endLine, int[] previds)
+	{
+		this.id = id;
+		this.color = color;
+		this.mode = mode;
+		this.flick = flick;
+		this.time = time;
+		this.startLine = startLine;
+		this.endLine = endLine;
+		this.previds = previds;
+	}
     public enum BallType {
         Normal, OneUp, Multiplier, Speeder, Bomb, Skull,
 		LongDown,LongUp,FlickLeft,FlickRight,Slide;
@@ -24,6 +37,16 @@ public class Ball implements Serializable{
     public BallType type;
     //private double speedMultiplier;
 	static Random random=new Random();
+	
+	int id;
+	int color;
+	int mode;
+	int flick;
+	float time;
+	float startLine;
+	float endLine;
+	int [] previds;
+	
     public Ball(int x, int y, BallType type){
         this.x = x;
         this.y = y;
@@ -32,6 +55,7 @@ public class Ball implements Serializable{
         //this.speedMultiplier = type == BallType.Speeder ? 1.4 : 1;
     }
 
+	//public ball
     public Ball (int startLane, int endLane, BallType bt, int startFrame, int thread)
     {
         this.startLane=startLane;

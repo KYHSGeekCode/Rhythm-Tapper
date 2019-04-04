@@ -52,7 +52,7 @@ public class Block implements Serializable{
 	//thread thread
 }
 
-
+/*
 public class DelesteBlockData
 {
     public List<String> DataLines;
@@ -80,7 +80,7 @@ public class DelesteBlockData
     //  @param ID the ID of the block
     //  @param Time the time of the start of the block
     //  @StaticData the data for the entire file
-    public void ParseBlock(/*GameManager Game, *//*ref*/ int ID, /*ref*/ double Time, DelesteGlobalData StaticData)
+    public void ParseBlock(/*GameManager Game, //*ref/ int ID, /*ref/ double Time, DelesteGlobalData StaticData)
     {
         int MaxBit = 1;
         List<Integer> DataIndex = new ArrayList<>(), StartIndex = new ArrayList<>(), EndIndex = new ArrayList<>();
@@ -126,7 +126,7 @@ public class DelesteBlockData
             }
             if(StaticData.Scroll.size() > 0 && StaticData.ScrollPos.get(0) <= Measure + (i / (double)MaxBit))
             {
-                /*Game.Dispensor.*/CreateNote(ID++, 0, android.graphics.Color.argb(255, 255, 255, 0), NoteInfo.SystemNoteScroller, FlickMode.None, (float)Time * 60, StaticData.Scroll.get(0)[0].floatValue(), 0, 0, new ArrayList<Integer>());
+                /*Game.Dispensor./CreateNote(ID++, 0, android.graphics.Color.argb(255, 255, 255, 0), NoteInfo.SystemNoteScroller, FlickMode.None, (float)Time * 60, StaticData.Scroll.get(0)[0].floatValue(), 0, 0, new ArrayList<Integer>());
                 StaticData.EndScrollTime = Time + StaticData.Scroll.get(0)[1];
                 StaticData.IsScrollModified = true;
                 StaticData.Scroll.remove(0);
@@ -134,7 +134,7 @@ public class DelesteBlockData
             }
             if(StaticData.EndScrollTime <= Time && StaticData.IsScrollModified)
             {
-                /*Game.Dispensor.*/CreateNote(ID++, 0, android.graphics.Color.argb(255, 255, 255, 0), NoteInfo.SystemNoteScroller, FlickMode.None, (float)Time * 60, 1, 0, 0, new ArrayList<Integer>());
+                /*Game.Dispensor./CreateNote(ID++, 0, android.graphics.Color.argb(255, 255, 255, 0), NoteInfo.SystemNoteScroller, FlickMode.None, (float)Time * 60, 1, 0, 0, new ArrayList<Integer>());
                 StaticData.IsScrollModified = false;
             }
 
@@ -306,7 +306,7 @@ public class DelesteBlockData
                 if (DataSender.ReturnMirror()) { Start = 6 - Start; }
 
                 // 노트를 게임에 추가합니다. 이 때 시간을 프레임으로 보정합니다 (60배수).
-                /*Game.Dispensor.*/CreateNote(ID++, 1, android.graphics.Color.argb(Color.get(j)[0], Color.get(j)[1], Color.get(j)[2], Color.get(j)[3]), Mode, Flick, (float)Time * 60, (float)(Speed.get(j) * StaticData.SpeedMultiplier), DataSender.ReturnRandWave() ? (float)ThreadLocalRandom.current().nextDouble(1, 6) : (float)Start, (float)End, Prevs);
+                /*Game.Dispensor./CreateNote(ID++, 1, android.graphics.Color.argb(Color.get(j)[0], Color.get(j)[1], Color.get(j)[2], Color.get(j)[3]), Mode, Flick, (float)Time * 60, (float)(Speed.get(j) * StaticData.SpeedMultiplier), DataSender.ReturnRandWave() ? (float)ThreadLocalRandom.current().nextDouble(1, 6) : (float)Start, (float)End, Prevs);
             }
 
             Time += (((240 / StaticData.CurrentBPM) * StaticData.BeatMultiplier) / MaxBit);
@@ -326,5 +326,5 @@ public class DelesteBlockData
     {
         if (b==0) { return a; }
         return GCD(b, a % b);
-    }
-}
+    }*/
+//}

@@ -16,6 +16,7 @@ import sma.rhythmtapper.game.NoteFile.*;
 public class GameScreen extends Screen
 {
     private static final String TAG = "GameScreenTag";
+    private List<Ball> balls;
 
     enum GameState
 	{
@@ -126,7 +127,7 @@ public class GameScreen extends Screen
         // init difficulty parameters
         _ballSpeed = ((RTGame)game).getBallspeed();//_difficulty.getBallSpeed();
         noteFile=((RTGame)game).getNoteFile();
-		
+		balls = noteFile.getBalls();
 		_spawnInterval = _difficulty.getSpawnInterval();
 
         // Initialize game objects
@@ -870,8 +871,18 @@ public class GameScreen extends Screen
 
     private void spawnBalls()
 	{
-        float randFloat = _rand.nextFloat();
         final int ballY = BALL_INITIAL_Y;
+	    for(Ball ball:balls)
+        {
+            if(ball.time>=time)
+            {
+                int ballX = (int)(_gameWidth / 5 / 2 * (2.0 * ball.startLane - 1.0));
+                spawnBall(_balls.get((int)ball.endLane),ball,ballX,ballY);
+            }
+        }
+        /*
+        float randFloat = _rand.nextFloat();
+
         int ballX = _gameWidth / 5 / 2;
         spawnBall(_balls1, randFloat, ballX, ballY);
 
@@ -890,11 +901,12 @@ public class GameScreen extends Screen
         randFloat = _rand.nextFloat();
         ballX = _gameWidth - _gameWidth / 5 / 2;
         spawnBall(_balls5, randFloat, ballX, ballY);
-
+    */
     }
 
-    private void spawnBall(List<Ball> balls, float randFloat, int ballX, int ballY)
+    private void spawnBall(List<Ball> lane, Ball ball, int ballX, int ballY)
 	{
+	    lane.add(ball);
 	    //get a ball from the balls
         //get all the balls that needs to be spawned now
         //frame

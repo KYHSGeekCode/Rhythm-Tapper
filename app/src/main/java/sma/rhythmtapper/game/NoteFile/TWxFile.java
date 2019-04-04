@@ -8,7 +8,7 @@ import android.graphics.*;
 
 public class TWxFile
 {
-	public List<Ball> Read(File file) throws FileNotFoundException, JSONException
+	public static List<Ball> Read(File file) throws FileNotFoundException, JSONException
 	{
 		ArrayList<Ball> balls = new ArrayList<>();
 		FileInputStream finputstream = new FileInputStream(file);
@@ -52,7 +52,7 @@ public class TWxFile
 	}
 	//https://stackoverflow.com/a/3849771/8614565
 
-	public int[] toIntArray(JSONArray jarr) throws JSONException
+	public static int[] toIntArray(JSONArray jarr) throws JSONException
 	{
 		int[] ret = new int[jarr.length()];
 		for(int i=0;i<ret.length;i++)

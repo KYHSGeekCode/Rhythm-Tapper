@@ -1,8 +1,8 @@
 package sma.rhythmtapper.game.models;
 
 public enum Difficulties {
-    EASY,
     NORMAL,
+    EASY,
     HARD,
     MASTER,
     MASTERPLUS;

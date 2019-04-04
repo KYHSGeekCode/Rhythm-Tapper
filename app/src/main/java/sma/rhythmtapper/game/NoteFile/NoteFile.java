@@ -1,6 +1,9 @@
 package sma.rhythmtapper.game.NoteFile;
 
 import android.util.Log;
+import android.widget.Toast;
+
+import org.json.JSONException;
 
 import java.io.*;
 import java.util.*;
@@ -43,9 +46,48 @@ public class NoteFile implements Serializable
         File infoFile = new File(dir, "info.txt");
 		if(!infoFile.exists())
 		{
+		    songName = dir.getName();
 			//simple add
 			//parse possible tw5 files
-			
+            //Check for files end with .tw5
+            //get affix split by _
+            for(File file : files)
+            {
+                String filename = file.getName();
+                int litw5 = filename.lastIndexOf(".tw5");
+                if(litw5>0)
+                {
+                    int li_ = filename.lastIndexOf('_');
+                    String affix = filename.substring(li_,litw5);
+                    int idx = 0;
+                    switch (affix.toLowerCase())
+                    {
+                        case "easy":
+                        case "debut":
+                            idx  = 0;
+                            break;
+                        case "regular":
+                        case "normal":
+                            idx = 1;
+                            break;
+                        case "hard":
+                        case "pro":
+                            idx = 2;
+                            break;
+                        case "master":
+                            idx = 3;
+                            break;
+                        case "master+":
+                        case "apex":
+                            idx = 4;
+                            break;
+                    }
+                    notemapFiles.get(idx).add(file);
+                }
+            }
+
+            return;
+            //balls = TWxFile.Read();
 		}
         //parse info.txt
         //String songName;
@@ -145,6 +187,18 @@ public class NoteFile implements Serializable
 	 */
     public void Load(Difficulties difficulty)
     {
+
+        try {
+            balls= TWxFile.Read(notemapFiles.get(difficulty.ordinal()).get(0));
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IndexOutOfBoundsException e) {
+            Log.e(TAG,"",e);
+        }
+        /*
         //candidates:
         //SongName_Diff.tw2,4,txt,json,tw5,tw6,notemap2
         String baseName=songName + "_" + difficulty.getFileName() + ".";
@@ -175,7 +229,7 @@ public class NoteFile implements Serializable
                         break;
                 }
             }
-        }
+        }*/
     }
 
     private void LoadTWX(File candidateFile)
@@ -496,12 +550,25 @@ public class NoteFile implements Serializable
 
     int startframe;
     List<Block> blocks = new ArrayList<>();
+
+    public List<Ball> getBalls() {
+        return balls;
+    }
+
     //note form: list of balls?
-    List<List<Ball>> balls;
+    List<Ball> balls;
     File musicFile;
     boolean isLoaded;
     File dir;
     String songName = "?";
+
+    List<List<File>> notemapFiles = new ArrayList<List<File>>(5);
+    {
+        for(int it = 0;it<5;it++)
+        {
+            notemapFiles.add(new ArrayList<File>());
+        }
+    }
 
     public String getName()
 	{

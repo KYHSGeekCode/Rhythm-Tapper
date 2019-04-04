@@ -38,14 +38,14 @@ public class Ball implements Serializable
     //private double speedMultiplier;
 	static Random random=new Random();
 	
-	int id;
-	int color;
-	int mode;
-	int flick;
-	float time;
-	float startLine;
-	float endLine;
-	int [] previds;
+	public int id;
+	public int color;
+	public int mode;
+	public int flick;
+	public float time;
+	public float startLine;
+	public float endLine;
+	public int [] previds;
 	
     public Ball(int x, int y, BallType type){
         this.x = x;

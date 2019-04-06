@@ -16,6 +16,7 @@ public class Ball implements Serializable
 		this.startLine = startLine;
 		this.endLine = endLine;
 		this.previds = previds;
+		type = BallType.Normal;
 	}
     public enum BallType {
         Normal, OneUp, Multiplier, Speeder, Bomb, Skull,

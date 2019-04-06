@@ -36,7 +36,9 @@ public class RTFastRenderView extends SurfaceView implements Runnable {
                 continue;
 
 
-            float deltaTime = (System.nanoTime() - startTime) / 10000000.000f;
+            float deltaTime = (System.nanoTime() - startTime) / 10000000.000f;      //천만 = 1e+7
+                                                                                    // 1ns = 1e-9 sec
+                                                                                    // deltatime = 1/100 sec
             startTime = System.nanoTime();
 
             if (deltaTime > 3.15){

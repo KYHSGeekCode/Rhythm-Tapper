@@ -19,6 +19,10 @@ public class NoteFile implements Serializable
 	{
         this.dir = dir;
         isLoaded = false;
+        for(int it = 0;it<5;it++)
+        {
+            notemapFiles.add(new ArrayList<File>());
+        }
         //file is the root directory of the project
         //file/*.mp3,wav
         //file/easy.notemap2
@@ -58,12 +62,14 @@ public class NoteFile implements Serializable
                 if(litw5>0)
                 {
                     int li_ = filename.lastIndexOf('_');
-                    String affix = filename.substring(li_,litw5);
+                    String affix = filename.substring(li_+1,litw5);
                     int idx = 0;
+                    Log.v(TAG,"affix:"+affix);
                     switch (affix.toLowerCase())
                     {
                         case "easy":
                         case "debut":
+                        case "light":
                             idx  = 0;
                             break;
                         case "regular":
@@ -72,6 +78,7 @@ public class NoteFile implements Serializable
                             break;
                         case "hard":
                         case "pro":
+                        case "trick":
                             idx = 2;
                             break;
                         case "master":
@@ -79,9 +86,11 @@ public class NoteFile implements Serializable
                             break;
                         case "master+":
                         case "apex":
+                        case "apex2":
                             idx = 4;
                             break;
                     }
+                    Log.v(TAG, "Adding "+idx+file.getName());
                     notemapFiles.get(idx).add(file);
                 }
             }
@@ -190,7 +199,6 @@ public class NoteFile implements Serializable
 
         try {
             balls= TWxFile.Read(notemapFiles.get(difficulty.ordinal()).get(0));
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (JSONException e) {
@@ -563,12 +571,6 @@ public class NoteFile implements Serializable
     String songName = "?";
 
     List<List<File>> notemapFiles = new ArrayList<List<File>>(5);
-    {
-        for(int it = 0;it<5;it++)
-        {
-            notemapFiles.add(new ArrayList<File>());
-        }
-    }
 
     public String getName()
 	{

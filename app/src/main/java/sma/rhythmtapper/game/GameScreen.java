@@ -44,10 +44,10 @@ public class GameScreen extends Screen
     GameResult result = new GameResult();
 
     // tickers
-    private int _tick;
+    private int _tick;                          //Period : 100000 Unit : 0.01sec
     private int _doubleMultiplierTicker;
     private int _explosionTicker;
-    private float _currentTime;
+    private float _currentTime;                 //Unit : 1 sec
     private int _endTicker;
 
     // balls
@@ -555,10 +555,12 @@ public class GameScreen extends Screen
     }
 
     // update all the games variables each tick
+    // Deltatime : 1/100s = 0.01s = 10ms
+    // If deltatime == 100 : 1sec
     private void updateVariables(float deltatime)
 	{
         // update timer
-        _currentTime += deltatime;
+        _currentTime += deltatime * 0.01f;
 
         // update ball position
         for (Ball b : _balls1)
@@ -653,8 +655,8 @@ public class GameScreen extends Screen
         }
 
         // update tickers
-        _doubleMultiplierTicker -= Math.min(1, _doubleMultiplierTicker);
-        _explosionTicker -= Math.min(1, _explosionTicker);
+        //_doubleMultiplierTicker -= Math.min(1, _doubleMultiplierTicker);
+        //_explosionTicker -= Math.min(1, _explosionTicker);
         _tick = (_tick + 1) % 100000;
 
         if (_isEnding)
@@ -874,7 +876,7 @@ public class GameScreen extends Screen
         final int ballY = BALL_INITIAL_Y;
 	    for(Ball ball:balls)
         {
-            if(ball.time>=time)
+            if(ball.time>=_currentTime)
             {
                 int ballX = (int)(_gameWidth / 5 / 2 * (2.0 * ball.startLane - 1.0));
                 spawnBall(_balls.get((int)ball.endLane),ball,ballX,ballY);

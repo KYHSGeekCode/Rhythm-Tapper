@@ -8,6 +8,7 @@ import org.json.JSONException;
 import java.io.*;
 import java.util.*;
 
+import sma.rhythmtapper.game.BallComparator;
 import sma.rhythmtapper.game.models.*;
 
 public class NoteFile implements Serializable
@@ -76,12 +77,12 @@ public class NoteFile implements Serializable
                         case "normal":
                             idx = 1;
                             break;
-                        case "hard":
                         case "pro":
                         case "trick":
                             idx = 2;
                             break;
                         case "master":
+                        case "hard":
                             idx = 3;
                             break;
                         case "master+":
@@ -196,9 +197,13 @@ public class NoteFile implements Serializable
 	 */
     public void Load(Difficulties difficulty)
     {
-
         try {
-            balls= TWxFile.Read(notemapFiles.get(difficulty.ordinal()).get(0));
+            List<Ball> lballs= TWxFile.Read(notemapFiles.get(difficulty.ordinal()).get(0));
+            balls = new PriorityQueue<>(new BallComparator());
+            for(Ball bl:lballs)
+            {
+                balls.add(bl);
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (JSONException e) {
@@ -249,7 +254,7 @@ public class NoteFile implements Serializable
 	{
 
     }
-
+/*
     private void LoadDeleste(File candidateFile)
 	{
         //1. parse metadata
@@ -295,7 +300,7 @@ public class NoteFile implements Serializable
 					 #0,002:2000200011133333:5422222222:4143212345
 					 #1,002:0000200000000000:4:5
 					 [출처] 데레시뮤 채보 제작방법|작성자 Van Azure
-                     */
+                     *
                     //data[0]: 0,000 thread#, block
                     //data[1]:20202220 type
                     //data[2]:54555 start
@@ -312,7 +317,7 @@ public class NoteFile implements Serializable
 					/*if (cnt != startPos.length || cnt != endPos.length)
 					{
 						//Error
-					}*/
+					}* /
 					for (int i=0;i<noteTypes.length;i++)
 					{
 						char ch=noteTypes[i];
@@ -512,7 +517,7 @@ public class NoteFile implements Serializable
         switch (chars[0])
 		{
             case '-':
-                return new Ball(0, 0,/*null*/Ball.BallType.Bomb);
+                return new Ball(0, 0,null Ball.BallType.Bomb);
             case '1':
                 ballTyoe = Ball.BallType.Normal;
                 break;
@@ -555,16 +560,16 @@ public class NoteFile implements Serializable
         ball.startOfFlick = startOfFlick;
         return ball;
     }
-
+*/
     int startframe;
     List<Block> blocks = new ArrayList<>();
 
-    public List<Ball> getBalls() {
+    public Queue<Ball> getBalls() {
         return balls;
     }
 
     //note form: list of balls?
-    List<Ball> balls;
+    Queue<Ball> balls;
     File musicFile;
     boolean isLoaded;
     File dir;

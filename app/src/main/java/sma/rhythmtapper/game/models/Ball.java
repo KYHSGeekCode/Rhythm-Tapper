@@ -1,11 +1,15 @@
 package sma.rhythmtapper.game.models;
+import android.util.Log;
+
 import java.util.*;
 import java.io.*;
+
+import sma.rhythmtapper.game.EnvVar;
 
 //This class may become a mammoth class!!
 public class Ball implements Serializable
 {
-
+    private static final String TAG = "Ball";
 	public Ball(int id, int color, int mode, int flick, float time, float startLine, float endLine, int[] previds)
 	{
 		this.id = id;
@@ -26,7 +30,7 @@ public class Ball implements Serializable
 			return null;
 		}
     }
-    public int startLane, endLane;
+    //public int startLane, endLane;
     public int showFrame;
     public int missFrame;
     public int thread;
@@ -34,11 +38,14 @@ public class Ball implements Serializable
 	public boolean startOfFlick;
     public int x;
     public int y;
-	int origx;
     public BallType type;
     //private double speedMultiplier;
 	static Random random=new Random();
-	
+
+	int origx;
+	int endx;
+//	int origy;
+
 	public int id;
 	public int color;
 	public int mode;
@@ -47,7 +54,8 @@ public class Ball implements Serializable
 	public float startLine;
 	public float endLine;
 	public int [] previds;
-	
+
+	/*
     public Ball(int x, int y, BallType type){
         this.x = x;
         this.y = y;
@@ -66,11 +74,23 @@ public class Ball implements Serializable
         this.missFrame=showFrame+10;
         this.thread=thread;
     }
-
+*/
+	public void OnSpawn(){
+	    Log.v(TAG,"Width="+EnvVar.gameWidth);
+        this.origx = (int)((EnvVar.gameWidth / 5 / 2) * (2 * startLine - 1));
+        this.endx = (int)((EnvVar.gameWidth / 5 / 2) * (2 * endLine - 1));
+        Log.d("Ball","endline"+endLine+"startLine"+startLine+"origx"+origx+"endx"+endx);
+    }
     public void update(int speed) {
-		//todo add fake move
-		//: Use bezier 
-        this.y += speed; // * speedMultiplier;
+        // Bezier : p(t) = (1-t)^2A +t^2C
+        // t = 0 : A x = startlane
+        // t = 1: B x = endlane
+        this.y += speed;
+        float t = (float)this.y / (float)EnvVar.HITBOX_CENTER;
+        this.x = (int)((1-t)*/*(1-t)*/origx + t/*t*/*endx);
+        Log.v("Ballx",""+x);
+		//: Use bezier
+         // * speedMultiplier;
 		//this.x = origx+(int)(50*Math.sin(y));
     }
 }

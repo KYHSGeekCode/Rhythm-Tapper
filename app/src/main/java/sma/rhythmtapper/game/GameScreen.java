@@ -3,6 +3,7 @@ package sma.rhythmtapper.game;
 import android.content.*;
 import android.graphics.*;
 import android.os.*;
+import android.support.v4.os.EnvironmentCompat;
 import android.util.*;
 import java.util.*;
 import sma.rhythmtapper.*;
@@ -16,12 +17,12 @@ import sma.rhythmtapper.game.NoteFile.*;
 public class GameScreen extends Screen
 {
     private static final String TAG = "GameScreenTag";
-    private List<Ball> balls;
+    private Queue<Ball> balls;
 
     enum GameState
 	{
         Ready, Running, Paused, GameOver
-		}
+	}
 
     // game and device
     private int _gameHeight;
@@ -106,7 +107,7 @@ public class GameScreen extends Screen
     // initial y coordinate of spawned balls
     private static final int BALL_INITIAL_Y = -50;
     // hitbox is the y-range within a ball can be hit by a press in its lane
-    private static int HITBOX_CENTER = 1760;
+    public static int HITBOX_CENTER = 1760;
     private static int HITBOX_HEIGHT = 240;
     // if no ball is in the hitbox when pressed, remove the lowest ball in the
     // miss zone right above the hitbox (it still counts as a miss)
@@ -222,6 +223,11 @@ public class GameScreen extends Screen
 
 
         HITBOX_CENTER = game.getScreenY() - HITBOX_HEIGHT;
+        EnvVar.sizeY = game.getScreenY();
+        EnvVar.sizeX = game.getScreenX();
+        EnvVar.gameWidth = _gameWidth;
+        EnvVar.gameHeight = _gameHeight;
+        EnvVar.HITBOX_CENTER = HITBOX_CENTER;
     }
 
     @Override
@@ -268,7 +274,7 @@ public class GameScreen extends Screen
 
     private void checkEnd()
 	{
-        if (_currentTrack.isStopped())
+        if (balls.isEmpty())//_currentTrack.isStopped())
 		{
             _isEnding = true;
         }
@@ -625,7 +631,7 @@ public class GameScreen extends Screen
 		 }
 		 */
         // spawn new balls
-        if (!_isEnding && _currentTime % _spawnInterval <= deltatime)
+        if (!_isEnding /*&& _currentTime % _spawnInterval <= deltatime*/)
 		{
             spawnBalls();
         }
@@ -874,13 +880,15 @@ public class GameScreen extends Screen
     private void spawnBalls()
 	{
         final int ballY = BALL_INITIAL_Y;
-	    for(Ball ball:balls)
+        while(balls.peek()!=null)
         {
-            if(ball.time>=_currentTime)
-            {
-                int ballX = (int)(_gameWidth / 5 / 2 * (2.0 * ball.startLane - 1.0));
-                spawnBall(_balls.get((int)ball.endLane),ball,ballX,ballY);
-            }
+            Ball ball = balls.peek();
+            if(ball.time >_currentTime)
+                break;
+            ball = balls.remove();
+            ball.OnSpawn();
+            //int ballX = (int)(_gameWidth / 5 / 2 * (2.0 * ball.startLane - 1.0));
+            spawnBall(_balls.get((int)(ball.endLine-1)),ball,ballY);
         }
         /*
         float randFloat = _rand.nextFloat();
@@ -906,8 +914,10 @@ public class GameScreen extends Screen
     */
     }
 
-    private void spawnBall(List<Ball> lane, Ball ball, int ballX, int ballY)
+    private void spawnBall(List<Ball> lane, Ball ball,int ballY)
 	{
+	    //ball.x = ballX;
+	    ball.y = ballY;
 	    lane.add(ball);
 	    //get a ball from the balls
         //get all the balls that needs to be spawned now
@@ -1048,7 +1058,21 @@ public class GameScreen extends Screen
 
     private void paintBall(Graphics g, Ball b)
 	{
-        switch (b.type)
+	    //b.type ==normal
+        switch(b.flick)
+        {
+            case 0:
+                g.drawImage(Assets.ballNormal, b.x - 90, b.y - 90);
+                break;
+            case 1:
+                g.drawImage(Assets.ballFlickLeft, b.x - 90, b.y - 90);
+                break;
+            case 2:
+                g.drawImage(Assets.ballFlickRight, b.x - 90, b.y - 90);
+                break;
+        }
+
+/*        switch (b.type)
 		{
             case Normal:
                 g.drawImage(Assets.ballNormal, b.x - 90, b.y - 90);
@@ -1076,6 +1100,7 @@ public class GameScreen extends Screen
                 break;
 
         }
+        */
     }
 
     private void nullify()

@@ -176,6 +176,7 @@ public class Deck implements Serializable{
         //how to apply combo bonus?
         //score bonus?
         int basicScore=totalAppeal/100;
+        bundle.testResult = TestResult.PERFECT;
         if(bundle.testResult.compareTo(TestResult.NICE)<=0)
             bundle.continueCombo=false;
         else

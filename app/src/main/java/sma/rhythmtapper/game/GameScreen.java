@@ -1,6 +1,7 @@
 package sma.rhythmtapper.game;
 
 import android.content.*;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.*;
 import android.os.*;
 import android.util.*;
@@ -1056,24 +1057,88 @@ public class GameScreen extends Screen
             drawGameOverUI();
     }
 
+    //
+    /*
+        Draw bezier ribbon
+        https://stackoverflow.com/a/30148733/8614565
+
+    private void init(){
+        paint = new Paint();
+
+        paint.setStyle(Paint.Style.STROKE);
+
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        path = new Path();
+        paint.setColor(Color.RED);
+        paint.setStrokeWidth(3);
+        path.moveTo(34, 259);
+        path.cubicTo(68, 151, 286, 350, 336, 252);
+        canvas.drawPath(path, paint);
+
+    }
+     */
     private final int SIZE_BALL = 80;
     private void paintBall(Graphics g, Ball b)
 	{
 	    //b.type ==normal
         int sizeCoeff = (int)(SIZE_BALL*(1- (1-b.t)*(1-b.t)));
+        Image imgToDraw = Assets.ballNormal;
         switch(b.flick)
         {
             case 0:
-                g.drawImage(Assets.ballNormal, (int)(b.x - sizeCoeff), (int)(b.y - sizeCoeff),sizeCoeff*2,sizeCoeff*2);
+                if(b.mode == 0 || b.mode == 1){
+                    imgToDraw = Assets.ballNormal;
+                } else if(b.mode == 2)//slide
+                {
+                    imgToDraw = Assets.ballHitpoint;
+                }
                 break;
             case 1:
-                g.drawImage(Assets.ballFlickLeft, (int)(b.x -sizeCoeff), (int)(b.y - sizeCoeff),sizeCoeff*2,sizeCoeff*2);
+                imgToDraw = Assets.ballFlickLeft;
                 break;
             case 2:
-                g.drawImage(Assets.ballFlickRight, (int)(b.x - sizeCoeff), (int)(b.y - sizeCoeff),sizeCoeff*2,sizeCoeff*2);
+                imgToDraw = Assets.ballFlickRight;
                 break;
         }
 
+        Ball next = b.nextBall;
+        if(next != null)
+        {
+            //Slide?
+            //Flick?
+            //Long?
+            int targetX = 100;
+            int targetY = 100;
+            if(next.isSpawn)
+            {
+                targetX = next.x;
+                targetY = next.y;
+            } else {
+                targetX = (int)((EnvVar.gameWidth / 5 / 2) * (2 * next.startLine - 1));;
+                targetY = 0;
+            }
+            g.drawLinear(b.x,b.y,targetX,targetY);
+
+/*
+            switch(b.mode)
+            {
+                case 0:         //Flick
+                    g.drawLinear(b.x,b.y,targetX,targetY);
+                    break;
+                case 1:         //Hold(long)
+                    g.drawLinear(b.x,b.y,targetX,targetY);
+                    break;
+                case 2:         //Slide note
+
+            }
+*/
+
+        }
+        g.drawImage(imgToDraw, (int)(b.x - sizeCoeff), (int)(b.y - sizeCoeff),sizeCoeff*2,sizeCoeff*2);
 /*        switch (b.type)
 		{
             case Normal:

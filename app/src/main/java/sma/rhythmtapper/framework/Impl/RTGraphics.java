@@ -10,8 +10,10 @@ import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.graphics.Path;
 import android.graphics.Rect;
 
 import sma.rhythmtapper.R;
@@ -26,6 +28,7 @@ public class RTGraphics implements Graphics {
     private Rect srcRect = new Rect();
     private Rect dstRect = new Rect();
 
+    private Path path = new Path();
     public RTGraphics(AssetManager assets, Bitmap frameBuffer) {
         this.assets = assets;
         this.frameBuffer = frameBuffer;
@@ -89,6 +92,25 @@ public class RTGraphics implements Graphics {
         paint.setColor(color);
         canvas.drawLine(x, y, x2, y2, paint);
     }
+
+    public void drawLinear(int x, int y, int x2, int y2) {
+        drawLinear(x,y,x2,y2, Color.WHITE);
+    }
+
+    @Override
+    public void drawLinear(int x, int y, int x2, int y2, int color) {
+        paint.setColor(color);
+        paint.setStyle(Style.FILL);
+        path.moveTo(x-10,y-10);
+        path.lineTo(x2-10,y2+10);
+        path.lineTo(x2+10,y2+10);
+        path.lineTo(x+10,y-10);
+        path.lineTo(x-10,y-10);
+        path.close();
+        canvas.drawPath(path, paint);
+        path.reset();
+    }
+
 
     @Override
     public void drawRect(int x, int y, int width, int height, int color) {

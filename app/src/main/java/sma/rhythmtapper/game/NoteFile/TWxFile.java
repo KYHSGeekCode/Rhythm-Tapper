@@ -8,7 +8,9 @@ import android.graphics.*;
 
 public class TWxFile
 {
-	public static List<Ball> Read(File file) throws FileNotFoundException, JSONException
+    private static String TAG = "TWX";
+
+    public static List<Ball> Read(File file) throws FileNotFoundException, JSONException
 	{
 		ArrayList<Ball> balls = new ArrayList<>();
 		FileInputStream finputstream = new FileInputStream(file);
@@ -20,6 +22,8 @@ public class TWxFile
 		JSONObject metadata = jobject.getJSONObject("metadata");
 		JSONArray notes = jobject.getJSONArray("notes");
 		int numnotes = notes.length();
+		Map<Integer, Ball> id2Ball = new HashMap<>();
+		Map<Integer,Integer> prevMap = new HashMap<>();
 		for(int i=0;i<numnotes;i++)
 		{
 			JSONObject note = notes.getJSONObject(i);
@@ -32,7 +36,29 @@ public class TWxFile
 			float endLine = (float) note.getDouble("EndLine");
 			JSONArray prevIDs = note.getJSONArray("PrevIDs");
 			int col = Color.argb(color.getInt(3),color.getInt(0),color.getInt(1),color.getInt(2));
-			balls.add(new Ball(id,col,mode,flick,time,startLine,endLine,toIntArray(prevIDs)));
+			Ball ball = new Ball(id,col,mode,flick,time,startLine,endLine,toIntArray(prevIDs));
+			id2Ball.put(id,ball);
+			if(ball.previds!=null && ball.previds.length>0)
+			{
+				for(int prev:ball.previds)
+				{
+				    if(prev==0)
+				        continue;
+					prevMap.put(prev,ball.id);
+					Log.v(TAG,"prev"+prev+"id"+ball.id);
+				}
+			}
+			//balls.add(ball);
+		}
+		for(Integer id:prevMap.keySet())
+		{
+		    Log.v(TAG,"connect "+id+" with"+prevMap.get(id));
+			Ball ba = id2Ball.get(id);
+			ba.nextBall = id2Ball.get(prevMap.get(id));
+		}
+		for(Ball b:id2Ball.values())
+		{
+			balls.add(b);
 		}
 		return balls;
 	}

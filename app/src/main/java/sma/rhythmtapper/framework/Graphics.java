@@ -16,6 +16,10 @@ public interface Graphics {
 
     public void drawLine(int x, int y, int x2, int y2, int color);
 
+    public void drawLinear(int x, int y, int x2, int y2);
+
+    public void drawLinear(int x, int y, int x2, int y2, int color);
+
     public void drawRect(int x, int y, int width, int height, int color);
 
     public void drawRect(int x, int y, int width, int height, Paint paint);

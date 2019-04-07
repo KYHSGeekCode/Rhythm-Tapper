@@ -21,6 +21,7 @@ public class Ball implements Serializable
 		this.endLine = endLine;
 		this.previds = previds;
 		type = BallType.Normal;
+		isSpawn = false;
 	}
     public enum BallType {
         Normal, OneUp, Multiplier, Speeder, Bomb, Skull,
@@ -54,8 +55,11 @@ public class Ball implements Serializable
 	public float startLine;
 	public float endLine;
 	public int [] previds;
-
+    //public int nextid;
+    public Ball nextBall;
 	public float t = 0;
+
+	public boolean isSpawn;
 	/*
     public Ball(int x, int y, BallType type){
         this.x = x;
@@ -80,6 +84,7 @@ public class Ball implements Serializable
 	    //Log.v(TAG,"Width="+EnvVar.gameWidth);
         this.origx = (int)((EnvVar.gameWidth / 5 / 2) * (2 * startLine - 1));
         this.endx = (int)((EnvVar.gameWidth / 5 / 2) * (2 * endLine - 1));
+        isSpawn = true;
         //Log.d("Ball","endline"+endLine+"startLine"+startLine+"origx"+origx+"endx"+endx);
     }
     public void update(int speed) {

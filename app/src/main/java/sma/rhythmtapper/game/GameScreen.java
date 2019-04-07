@@ -3,7 +3,6 @@ package sma.rhythmtapper.game;
 import android.content.*;
 import android.graphics.*;
 import android.os.*;
-import android.support.v4.os.EnvironmentCompat;
 import android.util.*;
 import java.util.*;
 import sma.rhythmtapper.*;
@@ -108,7 +107,7 @@ public class GameScreen extends Screen
     private static final int BALL_INITIAL_Y = -50;
     // hitbox is the y-range within a ball can be hit by a press in its lane
     public static int HITBOX_CENTER = 1760;
-    private static int HITBOX_HEIGHT = 240;
+    private static int HITBOX_HEIGHT = 200;
     // if no ball is in the hitbox when pressed, remove the lowest ball in the
     // miss zone right above the hitbox (it still counts as a miss)
     private static int MISS_ZONE_HEIGHT = 150;
@@ -1024,7 +1023,7 @@ public class GameScreen extends Screen
         for (int i = 0; i < 5; i++)
 		{
             int n = 2 * i + 1;
-            g.drawImage(Assets.ballHitpoint, dx * n - 90, HITBOX_CENTER - 90);
+            g.drawImage(Assets.ballHitpoint, dx * n - SIZE_BALL, HITBOX_CENTER - SIZE_BALL);
         }
         for (List<Ball> bals : _balls)
 		{
@@ -1057,19 +1056,21 @@ public class GameScreen extends Screen
             drawGameOverUI();
     }
 
+    private final int SIZE_BALL = 80;
     private void paintBall(Graphics g, Ball b)
 	{
 	    //b.type ==normal
+        int sizeCoeff = (int)(SIZE_BALL*(1- (1-b.t)*(1-b.t)));
         switch(b.flick)
         {
             case 0:
-                g.drawImage(Assets.ballNormal, b.x - 90, b.y - 90);
+                g.drawImage(Assets.ballNormal, (int)(b.x - sizeCoeff), (int)(b.y - sizeCoeff),sizeCoeff*2,sizeCoeff*2);
                 break;
             case 1:
-                g.drawImage(Assets.ballFlickLeft, b.x - 90, b.y - 90);
+                g.drawImage(Assets.ballFlickLeft, (int)(b.x -sizeCoeff), (int)(b.y - sizeCoeff),sizeCoeff*2,sizeCoeff*2);
                 break;
             case 2:
-                g.drawImage(Assets.ballFlickRight, b.x - 90, b.y - 90);
+                g.drawImage(Assets.ballFlickRight, (int)(b.x - sizeCoeff), (int)(b.y - sizeCoeff),sizeCoeff*2,sizeCoeff*2);
                 break;
         }
 

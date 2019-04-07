@@ -132,6 +132,15 @@ public class RTGraphics implements Graphics {
     }
 
     @Override
+    public void drawImage(Image Image, int x, int y,int w, int h) {
+        Rect rect = new Rect(x,y,x+w,y+h);
+        Bitmap bit = ((RTImage)Image).bitmap;
+        Rect srcRect = new Rect(0,0,bit.getHeight(),bit.getWidth());
+        canvas.drawBitmap(bit,srcRect,rect,null);
+        //canvas.drawBitmap(((RTImage)Image).bitmap, x, y, null);
+    }
+
+    @Override
     public void drawImage(Image Image, int x, int y) {
         canvas.drawBitmap(((RTImage)Image).bitmap, x, y, null);
     }

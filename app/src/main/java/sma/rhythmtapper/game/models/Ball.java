@@ -55,6 +55,7 @@ public class Ball implements Serializable
 	public float endLine;
 	public int [] previds;
 
+	public float t = 0;
 	/*
     public Ball(int x, int y, BallType type){
         this.x = x;
@@ -76,19 +77,19 @@ public class Ball implements Serializable
     }
 */
 	public void OnSpawn(){
-	    Log.v(TAG,"Width="+EnvVar.gameWidth);
+	    //Log.v(TAG,"Width="+EnvVar.gameWidth);
         this.origx = (int)((EnvVar.gameWidth / 5 / 2) * (2 * startLine - 1));
         this.endx = (int)((EnvVar.gameWidth / 5 / 2) * (2 * endLine - 1));
-        Log.d("Ball","endline"+endLine+"startLine"+startLine+"origx"+origx+"endx"+endx);
+        //Log.d("Ball","endline"+endLine+"startLine"+startLine+"origx"+origx+"endx"+endx);
     }
     public void update(int speed) {
         // Bezier : p(t) = (1-t)^2A +t^2C
         // t = 0 : A x = startlane
         // t = 1: B x = endlane
         this.y += speed;
-        float t = (float)this.y / (float)EnvVar.HITBOX_CENTER;
+        t = (float)this.y / (float)EnvVar.HITBOX_CENTER;
         this.x = (int)((1-t)*/*(1-t)*/origx + t/*t*/*endx);
-        Log.v("Ballx",""+x);
+        //Log.v("Ballx",""+x);
 		//: Use bezier
          // * speedMultiplier;
 		//this.x = origx+(int)(50*Math.sin(y));

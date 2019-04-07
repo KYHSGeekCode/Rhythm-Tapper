@@ -883,8 +883,9 @@ public class GameScreen extends Screen
         while(balls.peek()!=null)
         {
             Ball ball = balls.peek();
-            if(ball.time >_currentTime)
+            if(ball.time*1000 >_currentTrack.getCurrentPosition())
                 break;
+            //Log.v(TAG,"Spawn ball:"+ball.time+"s; current:"+_currentTime+"s; music:"+_currentTrack.);
             ball = balls.remove();
             ball.OnSpawn();
             //int ballX = (int)(_gameWidth / 5 / 2 * (2.0 * ball.startLane - 1.0));

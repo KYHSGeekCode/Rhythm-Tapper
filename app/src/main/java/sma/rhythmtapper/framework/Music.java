@@ -21,4 +21,6 @@ public interface Music {
     public void dispose();
 
     void seekBegin();
+
+    public int getCurrentPosition();
 }

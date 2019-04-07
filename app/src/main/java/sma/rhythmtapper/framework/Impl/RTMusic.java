@@ -18,6 +18,11 @@ public class RTMusic implements Music, OnCompletionListener, OnSeekCompleteListe
     private MediaPlayer mediaPlayer;
     private boolean isPrepared = false;
 
+    @Override
+    public int getCurrentPosition() {
+        return mediaPlayer.getCurrentPosition();
+    }
+
     public RTMusic(File file) {
         mediaPlayer = new MediaPlayer();
         try {

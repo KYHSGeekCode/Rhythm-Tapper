@@ -33,7 +33,7 @@ public class ChooseDeckActivity extends Activity {
             public void onClick(View view) {
                 final NumberPicker np=new NumberPicker(ChooseDeckActivity.this);
                 np.setMinValue(5);
-                np.setMaxValue(20);
+                np.setMaxValue(40);
                 LinearLayout ll=new LinearLayout(ChooseDeckActivity.this);
                 Button btSt=new Button(ChooseDeckActivity.this);
                 btSt.setText("Start");

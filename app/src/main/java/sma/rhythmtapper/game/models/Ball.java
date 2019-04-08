@@ -107,8 +107,13 @@ public class Ball implements Serializable
 		//this.x = origx+(int)(50*Math.sin(y));
     }
 
-	public int getXfromT(float t)
+	public int getXfromT(float tt)
 	{
-		return (int)((1 - t) */*(1-t)*/origx + t/*t*/* endx);
+		if(this.origx==0)
+		{
+			this.origx = (int)((EnvVar.gameWidth / 5 / 2) * (2 * startLine - 1));
+			this.endx = (int)((EnvVar.gameWidth / 5 / 2) * (2 * endLine - 1));
+		}
+		return (int)((1 - tt) */*(1-t)*/origx + tt/*t*/* endx);
 	}
 }

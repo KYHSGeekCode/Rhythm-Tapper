@@ -105,7 +105,7 @@ public class GameScreen extends Screen
     // how far the screen should scroll after the track ends
     private static final int END_TIME = 1800;
     // initial y coordinate of spawned balls
-    private static final int BALL_INITIAL_Y = -50;
+    public static final int BALL_INITIAL_Y = -50;
     // hitbox is the y-range within a ball can be hit by a press in its lane
     public static int HITBOX_CENTER = 1760;
     private static int HITBOX_HEIGHT = 200;
@@ -479,7 +479,9 @@ public class GameScreen extends Screen
 						{
                             if (!hitLane(_balls.get(j), Ball.BallType.LongUp)&&finger.shouldHold)
 							{
-								onMiss(LowestBall(_balls.get(j)));
+							    Ball toremove = LowestBall(_balls.get(j));
+							    removeBall(_balls.get(j),toremove);
+								onMiss(toremove);
                                 // if no ball was hit
                                 //_laneHitAlpha[j] = MISS_FLASH_INITIAL_ALPHA;
                             }
@@ -688,7 +690,7 @@ public class GameScreen extends Screen
 			{
 				if (b.y > HITBOX_CENTER + HITBOX_HEIGHT)
 				{
-					iterator.remove();
+				    removeBall(iterator,b);
 					Log.d(TAG, "fail press");
 					onMiss(b);
 
@@ -699,7 +701,7 @@ public class GameScreen extends Screen
 			{
 				if (b.y > HITBOX_CENTER + HITBOX_HEIGHT / 2)
 				{
-					iterator.remove();
+					removeBall(iterator,b);
 					Log.d(TAG, "fail press");
 					onMiss(b);
 					return b.type != Ball.BallType.Skull;
@@ -752,7 +754,7 @@ public class GameScreen extends Screen
 			{
                 if (lowestBall.type == type)
 				{
-                    balls.remove(lowestBall);
+				    removeBall(balls, lowestBall);
                     onHit(lowestBall);
                 }
 				else
@@ -762,6 +764,7 @@ public class GameScreen extends Screen
             }
 			else
 			{
+			    removeBall(balls,lowestBall);
                 balls.remove(lowestBall);
                 onHit(lowestBall);
             }
@@ -780,6 +783,42 @@ public class GameScreen extends Screen
         }
     }
 
+    private void removeBall(Iterator<Ball> iterator,Ball ball)
+    {
+        ball.alive = false;
+        iterator.remove();
+        Tail toremove=null;
+        for(Tail tail: aliveTails)
+        {
+            if(tail.ball2.equals(ball)) {
+                toremove = tail;
+                break;
+            }
+        }
+        if(toremove!=null)
+        {
+            Log.v(TAG, "REMOVE TAIL1");
+            aliveTails.remove(toremove);
+        }
+    }
+    private void removeBall(List<Ball> balls, Ball ball)
+    {
+        balls.remove(ball);
+        ball.alive = false;
+        Tail toremove=null;
+        for(Tail tail: aliveTails)
+        {
+            if(tail.ball2.equals(ball)) {
+                toremove = tail;
+                break;
+            }
+        }
+        if(toremove!=null)
+        {
+            aliveTails.remove(toremove);
+            Log.v(TAG, "REMOVE TAIL2");
+        }
+    }
     // triggers when a lane gets tapped that has currently no ball in its hitbox
     private void onMiss(Ball b)
 	{
@@ -788,7 +827,7 @@ public class GameScreen extends Screen
             return;
         }
         Assets.soundMiss.play(1);
-        _vibrator.vibrate(100);
+        //_vibrator.vibrate(100);
         bundle.testResult = TestResult.MISS;
         deck.Apply(bundle);
         //_streak = 0;
@@ -1028,6 +1067,10 @@ public class GameScreen extends Screen
             int n = 2 * i + 1;
             g.drawImage(Assets.ballHitpoint, dx * n - SIZE_BALL, HITBOX_CENTER - SIZE_BALL);
         }
+        for(Tail tail:aliveTails)
+        {
+            tail.Paint(g);
+        }
         for (List<Ball> bals : _balls)
 		{
             for (Ball b : bals)
@@ -1083,6 +1126,7 @@ public class GameScreen extends Screen
 
     }
      */
+    Set<Tail> aliveTails = new ArraySet<>();
     private final int SIZE_BALL = 80;
     private void paintBall(Graphics g, Ball b)
 	{
@@ -1110,6 +1154,7 @@ public class GameScreen extends Screen
         Ball next = b.nextBall;
         if(next != null)
         {
+            aliveTails.add(b.tail);
             //Slide?
             //Flick?
             //Long?
@@ -1123,7 +1168,7 @@ public class GameScreen extends Screen
                 targetX = (int)((EnvVar.gameWidth / 5 / 2) * (2 * next.startLine - 1));;
                 targetY = 0;
             }*/
-			b.tail.Paint(g);
+			//b.tail.Paint(g);
             //g.drawLinear(b.x,b.y,targetX,targetY);
 
 /*

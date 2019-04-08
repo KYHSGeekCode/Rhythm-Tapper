@@ -6,7 +6,7 @@ import sma.rhythmtapper.framework.*;
 
 public class Tail implements Serializable
 {
-	Ball ball1, ball2;
+	public Ball ball1, ball2;
 	//ghost 1 is lower
 	int ghost1x, ghost1y;
 	int ghost2x, ghost2y;
@@ -39,12 +39,22 @@ public class Tail implements Serializable
 		//if(ball1.alive==false)
 		//{
 		//diffY = difftime*EnvVar.speed;
-		ghost1y = (int)(EnvVar.currentTime - ball1.time) * EnvVar.speed;
+		ghost1y = (int)((EnvVar.currentTime - ball1.time) * EnvVar.speed * 100 + GameScreen.BALL_INITIAL_Y);
 		float t1 = ((float)ghost1y) / EnvVar.HITBOX_CENTER;
-		ghost1x = ball1.getXfromT(t1);
-		ghost2y = (int)(EnvVar.currentTime - ball2.time) * EnvVar.speed;
+        ghost1x = ball1.getXfromT(t1);
+		ghost2y = (int)((EnvVar.currentTime - ball2.time) * EnvVar.speed * 100 + GameScreen.BALL_INITIAL_Y);
 		float t2 = ((float)ghost2y) / EnvVar.HITBOX_CENTER;
-		ghost2x = ball1.getXfromT(t2);
+		ghost2x = ball2.getXfromT(t2);
+		if(ball1.isAlive()) {
+            ghost1x = ball1.x;
+            ghost1y = ball1.y;
+        }
+        if(ball1.isAlive())
+        {
+            ghost2x = ball2.x;
+            ghost2y = ball2.y;
+        }
+
 		//}
 		return ;
 	}

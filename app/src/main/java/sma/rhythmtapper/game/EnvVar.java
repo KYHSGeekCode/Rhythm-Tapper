@@ -6,5 +6,6 @@ public class EnvVar {
     public static int gameWidth;
     public static int gameHeight;
     public static int HITBOX_CENTER;
-
+	public static int speed;
+	public static float currentTime;
 }

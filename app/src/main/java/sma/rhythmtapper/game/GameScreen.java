@@ -127,6 +127,7 @@ public class GameScreen extends Screen
         _difficulty = difficulty;
         // init difficulty parameters
         _ballSpeed = ((RTGame)game).getBallspeed();//_difficulty.getBallSpeed();
+		EnvVar.speed = _ballSpeed;
         noteFile=((RTGame)game).getNoteFile();
 		balls = noteFile.getBalls();
 		_spawnInterval = _difficulty.getSpawnInterval();
@@ -160,6 +161,7 @@ public class GameScreen extends Screen
         _tick = 0;
         _endTicker = END_TIME / _difficulty.getBallSpeed();
         _currentTime = 0f;
+		EnvVar.currentTime = _currentTime;
         _explosionTicker = 0;
         ///_lives = 10;
         this.deck = ((RTGame)game).getDeck();
@@ -567,7 +569,7 @@ public class GameScreen extends Screen
 	{
         // update timer
         _currentTime += deltatime * 0.01f;
-
+		EnvVar.currentTime = _currentTime;
         // update ball position
         for (Ball b : _balls1)
 		{
@@ -799,7 +801,7 @@ public class GameScreen extends Screen
 
 	static boolean isFlick(Ball b)
 	{
-		return b.type==Ball.BallType.FlickLeft || b.type==Ball.BallType.FlickRight;
+		return b.flick!=0;//b.type==Ball.BallType.FlickLeft || b.type==Ball.BallType.FlickRight;
 	}
     // triggers when a lane gets tapped that currently has a ball in its hitbox
     private void onHit(Ball b)
@@ -1111,17 +1113,18 @@ public class GameScreen extends Screen
             //Slide?
             //Flick?
             //Long?
-            int targetX = 100;
+            /*int targetX = 100;
             int targetY = 100;
-            if(next.isSpawn)
+            if(next.alive)
             {
                 targetX = next.x;
                 targetY = next.y;
             } else {
                 targetX = (int)((EnvVar.gameWidth / 5 / 2) * (2 * next.startLine - 1));;
                 targetY = 0;
-            }
-            g.drawLinear(b.x,b.y,targetX,targetY);
+            }*/
+			b.tail.Paint(g);
+            //g.drawLinear(b.x,b.y,targetX,targetY);
 
 /*
             switch(b.mode)

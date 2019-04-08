@@ -101,11 +101,11 @@ public class RTGraphics implements Graphics {
     public void drawLinear(int x, int y, int x2, int y2, int color) {
         paint.setColor(color);
         paint.setStyle(Style.FILL);
-        path.moveTo(x-10,y-10);
-        path.lineTo(x2-10,y2+10);
-        path.lineTo(x2+10,y2+10);
-        path.lineTo(x+10,y-10);
-        path.lineTo(x-10,y-10);
+        path.moveTo(x-30,y-30);
+        path.lineTo(x2-30,y2+30);
+        path.lineTo(x2+30,y2+30);
+        path.lineTo(x+30,y-30);
+        path.lineTo(x-30,y-30);
         path.close();
         canvas.drawPath(path, paint);
         path.reset();

@@ -21,7 +21,12 @@ public class Ball implements Serializable
 		this.endLine = endLine;
 		this.previds = previds;
 		type = BallType.Normal;
-		isSpawn = false;
+		alive = false;
+	}
+
+	public boolean isAlive()
+	{
+		return alive;
 	}
     public enum BallType {
         Normal, OneUp, Multiplier, Speeder, Bomb, Skull,
@@ -59,7 +64,9 @@ public class Ball implements Serializable
     public Ball nextBall;
 	public float t = 0;
 
-	public boolean isSpawn;
+	public boolean alive;
+	
+	public Tail tail;
 	/*
     public Ball(int x, int y, BallType type){
         this.x = x;
@@ -84,7 +91,7 @@ public class Ball implements Serializable
 	    //Log.v(TAG,"Width="+EnvVar.gameWidth);
         this.origx = (int)((EnvVar.gameWidth / 5 / 2) * (2 * startLine - 1));
         this.endx = (int)((EnvVar.gameWidth / 5 / 2) * (2 * endLine - 1));
-        isSpawn = true;
+        alive = true;
         //Log.d("Ball","endline"+endLine+"startLine"+startLine+"origx"+origx+"endx"+endx);
     }
     public void update(int speed) {
@@ -93,10 +100,15 @@ public class Ball implements Serializable
         // t = 1: B x = endlane
         this.y += speed;
         t = (float)this.y / (float)EnvVar.HITBOX_CENTER;
-        this.x = (int)((1-t)*/*(1-t)*/origx + t/*t*/*endx);
+        this.x= getXfromT(t);
         //Log.v("Ballx",""+x);
 		//: Use bezier
          // * speedMultiplier;
 		//this.x = origx+(int)(50*Math.sin(y));
     }
+
+	public int getXfromT(float t)
+	{
+		return (int)((1 - t) */*(1-t)*/origx + t/*t*/* endx);
+	}
 }

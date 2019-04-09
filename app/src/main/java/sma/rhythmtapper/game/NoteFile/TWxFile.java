@@ -23,7 +23,7 @@ public class TWxFile
 		JSONArray notes = jobject.getJSONArray("notes");
 		int numnotes = notes.length();
 		Map<Integer, Ball> id2Ball = new HashMap<>();
-		Map<Integer,Integer> prevMap = new HashMap<>();
+		Map<Integer,Integer> prevMap = new HashMap<>();			//prev to next
 		for(int i=0;i<numnotes;i++)
 		{
 			JSONObject note = notes.getJSONObject(i);
@@ -53,8 +53,8 @@ public class TWxFile
 		for(Integer id:prevMap.keySet())
 		{
 		    Log.v(TAG,"connect "+id+" with"+prevMap.get(id));
-			Ball ba = id2Ball.get(id);
-			ba.nextBall = id2Ball.get(prevMap.get(id));
+			Ball ba = id2Ball.get(id);			//formar
+			ba.nextBall = id2Ball.get(prevMap.get(id));	//next
 			ba.tail = new Tail(ba, ba.nextBall);
 		}
 		for(Ball b:id2Ball.values())

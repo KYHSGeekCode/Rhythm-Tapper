@@ -13,7 +13,7 @@ public class Tail implements Serializable
 
 	float difftime;
 	float diffY;
-	//Ball1 is first 
+	//Ball1 is first (lower)
 	public Tail(Ball ball1, Ball ball2)
 	{
 		this.ball1 = ball1;
@@ -39,17 +39,17 @@ public class Tail implements Serializable
 		//if(ball1.alive==false)
 		//{
 		//diffY = difftime*EnvVar.speed;
-		ghost1y = (int)((EnvVar.currentTime - ball1.time) * EnvVar.speed * 100 + GameScreen.BALL_INITIAL_Y);
+		ghost1y = (int)((EnvVar.currentTime - ball1.time) * EnvVar.speed * 100 /*+ GameScreen.BALL_INITIAL_Y*/);
 		float t1 = ((float)ghost1y) / EnvVar.HITBOX_CENTER;
         ghost1x = ball1.getXfromT(t1);
-		ghost2y = (int)((EnvVar.currentTime - ball2.time) * EnvVar.speed * 100 + GameScreen.BALL_INITIAL_Y);
+		ghost2y = (int)((EnvVar.currentTime - ball2.time) * EnvVar.speed * 100 /*+ GameScreen.BALL_INITIAL_Y*/);
 		float t2 = ((float)ghost2y) / EnvVar.HITBOX_CENTER;
 		ghost2x = ball2.getXfromT(t2);
 		if(ball1.isAlive()) {
             ghost1x = ball1.x;
             ghost1y = ball1.y;
         }
-        if(ball1.isAlive())
+        if(ball2.isAlive())
         {
             ghost2x = ball2.x;
             ghost2y = ball2.y;

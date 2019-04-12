@@ -5,6 +5,9 @@ import java.util.*;
 import java.io.*;
 
 import sma.rhythmtapper.game.EnvVar;
+import sma.rhythmtapper.game.GameScreen;
+
+import static sma.rhythmtapper.game.EnvVar.speed;
 
 //This class may become a mammoth class!!
 public class Ball implements Serializable
@@ -87,10 +90,11 @@ public class Ball implements Serializable
         this.thread=thread;
     }
 */
-	public void OnSpawn(){
+	public void OnGameStart(){
 	    //Log.v(TAG,"Width="+EnvVar.gameWidth);
         this.origx = (int)((EnvVar.gameWidth / 5 / 2) * (2 * startLine - 1));
         this.endx = (int)((EnvVar.gameWidth / 5 / 2) * (2 * endLine - 1));
+        this.y = (int)(GameScreen.BALL_INITIAL_Y + ( EnvVar.currentTime-this.time)* speed *100);
         alive = true;
         //Log.d("Ball","endline"+endLine+"startLine"+startLine+"origx"+origx+"endx"+endx);
     }
@@ -98,7 +102,8 @@ public class Ball implements Serializable
         // Bezier : p(t) = (1-t)^2A +t^2C
         // t = 0 : A x = startlane
         // t = 1: B x = endlane
-        this.y += speed;
+        //this.y += speed;
+		this.y = (int)(GameScreen.BALL_INITIAL_Y + ( EnvVar.currentTime-this.time)* speed *100);
         t = (float)this.y / (float)EnvVar.HITBOX_CENTER;
         this.x= getXfromT(t);
         //Log.v("Ballx",""+x);

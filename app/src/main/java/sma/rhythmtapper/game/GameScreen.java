@@ -1,7 +1,6 @@
 package sma.rhythmtapper.game;
 
 import android.content.*;
-import android.content.res.AssetFileDescriptor;
 import android.graphics.*;
 import android.os.*;
 import android.util.*;
@@ -18,6 +17,7 @@ public class GameScreen extends Screen
 {
     private static final String TAG = "GameScreenTag";
     private Queue<Ball> balls;
+    private Queue<Ball> totalBalls;
 
     enum GameState
 	{
@@ -130,6 +130,11 @@ public class GameScreen extends Screen
 		EnvVar.speed = _ballSpeed;
         noteFile=((RTGame)game).getNoteFile();
 		balls = noteFile.getBalls();
+		totalBalls = new ArrayDeque<>(balls);
+		for(Ball b:totalBalls)
+        {
+            b.OnGameStart();
+        }
 		_spawnInterval = _difficulty.getSpawnInterval();
 
         // Initialize game objects
@@ -573,7 +578,11 @@ public class GameScreen extends Screen
         _currentTime += deltatime * 0.01f;
 		EnvVar.currentTime = _currentTime;
         // update ball position
-        for (Ball b : _balls1)
+        for(Ball b: totalBalls)
+        {
+            b.update((int)(_ballSpeed * deltatime));
+        }
+        /*for (Ball b : _balls1)
 		{
             b.update((int) (_ballSpeed * deltatime));
         }
@@ -597,6 +606,7 @@ public class GameScreen extends Screen
 		{
             b.update((int) (_ballSpeed * deltatime));
         }
+        */
 
         for (int i = 0; i < 5; i++)
 		{
@@ -928,7 +938,7 @@ public class GameScreen extends Screen
                 break;
             //Log.v(TAG,"Spawn ball:"+ball.time+"s; current:"+_currentTime+"s; music:"+_currentTrack.);
             ball = balls.remove();
-            ball.OnSpawn();
+            //ball.OnGameStart();
             //int ballX = (int)(_gameWidth / 5 / 2 * (2.0 * ball.startLane - 1.0));
             spawnBall(_balls.get((int)(ball.endLine-1)),ball,ballY);
         }

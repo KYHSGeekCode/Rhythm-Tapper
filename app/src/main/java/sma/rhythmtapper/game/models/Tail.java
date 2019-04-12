@@ -1,4 +1,6 @@
 package sma.rhythmtapper.game.models;
+import android.util.Log;
+
 import sma.rhythmtapper.framework.Impl.*;
 import sma.rhythmtapper.game.*;
 import java.io.*;
@@ -6,6 +8,7 @@ import sma.rhythmtapper.framework.*;
 
 public class Tail implements Serializable
 {
+	private String TAG = "Tail";
 	public Ball ball1, ball2;
 	//ghost 1 is lower
 	int ghost1x, ghost1y;
@@ -39,11 +42,13 @@ public class Tail implements Serializable
 		//if(ball1.alive==false)
 		//{
 		//diffY = difftime*EnvVar.speed;
-		ghost1y = (int)((EnvVar.currentTime - ball1.time) * EnvVar.speed * 100 /*+ GameScreen.BALL_INITIAL_Y*/);
+		ghost1y = (int)(-(EnvVar.currentTime - ball1.time) * EnvVar.speed * 100 /*+ GameScreen.BALL_INITIAL_Y*/);
 		float t1 = ((float)ghost1y) / EnvVar.HITBOX_CENTER;
+		Log.d(TAG,"t1="+t1);
         ghost1x = ball1.getXfromT(t1);
-		ghost2y = (int)((EnvVar.currentTime - ball2.time) * EnvVar.speed * 100 /*+ GameScreen.BALL_INITIAL_Y*/);
+		ghost2y = (int)(-(EnvVar.currentTime - ball2.time) * EnvVar.speed * 100 /*+ GameScreen.BALL_INITIAL_Y*/);
 		float t2 = ((float)ghost2y) / EnvVar.HITBOX_CENTER;
+		Log.d(TAG,"t2="+t2);
 		ghost2x = ball2.getXfromT(t2);
 		if(ball1.isAlive()) {
             ghost1x = ball1.x;

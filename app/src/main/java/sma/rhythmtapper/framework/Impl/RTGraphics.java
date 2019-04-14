@@ -29,11 +29,13 @@ public class RTGraphics implements Graphics {
     private Rect dstRect = new Rect();
 
     private Path path = new Path();
+
     public RTGraphics(AssetManager assets, Bitmap frameBuffer) {
         this.assets = assets;
         this.frameBuffer = frameBuffer;
         this.canvas = new Canvas(frameBuffer);
         this.paint = new Paint();
+        paint.setStrokeWidth(10);
     }
 
     @Override
@@ -86,26 +88,32 @@ public class RTGraphics implements Graphics {
                 (color & 0xff));
     }
 
-
     @Override
-    public void drawLine(int x, int y, int x2, int y2, int color) {
+    public void drawLine(int x, int y, int x2, int y2, int color, int stroke) {
         paint.setColor(color);
+        paint.setStrokeWidth(stroke);
         canvas.drawLine(x, y, x2, y2, paint);
     }
 
+
+    @Override
+    public void drawLine(int x, int y, int x2, int y2, int color) {
+        drawLine(x, y, x2, y2, color, 10);
+    }
+
     public void drawLinear(int x, int y, int x2, int y2) {
-        drawLinear(x,y,x2,y2, Color.WHITE);
+        drawLinear(x, y, x2, y2, Color.WHITE);
     }
 
     @Override
     public void drawLinear(int x, int y, int x2, int y2, int color) {
         paint.setColor(color);
         paint.setStyle(Style.FILL);
-        path.moveTo(x-30,y-30);
-        path.lineTo(x2-30,y2+30);
-        path.lineTo(x2+30,y2+30);
-        path.lineTo(x+30,y-30);
-        path.lineTo(x-30,y-30);
+        path.moveTo(x - 30, y - 30);
+        path.lineTo(x2 - 30, y2 + 30);
+        path.lineTo(x2 + 30, y2 + 30);
+        path.lineTo(x + 30, y - 30);
+        path.lineTo(x - 30, y - 30);
         path.close();
         canvas.drawPath(path, paint);
         path.reset();
@@ -120,11 +128,11 @@ public class RTGraphics implements Graphics {
     }
 
     @Override
-    public void drawRect(int x, int y, int width, int height, Paint paint)
-    {
+    public void drawRect(int x, int y, int width, int height, Paint paint) {
         //paint.setStyle(Style.FILL);
         canvas.drawRect(x, y, x + width - 1, y + height - 1, paint);
     }
+
     @Override
     public void drawARGB(int a, int r, int g, int b) {
         paint.setStyle(Style.FILL);
@@ -132,7 +140,7 @@ public class RTGraphics implements Graphics {
     }
 
     @Override
-    public void drawString(String text, int x, int y, Paint paint){
+    public void drawString(String text, int x, int y, Paint paint) {
         canvas.drawText(text, x, y, paint);
     }
 
@@ -154,20 +162,20 @@ public class RTGraphics implements Graphics {
     }
 
     @Override
-    public void drawImage(Image Image, int x, int y,int w, int h) {
-        Rect rect = new Rect(x,y,x+w,y+h);
-        Bitmap bit = ((RTImage)Image).bitmap;
-        Rect srcRect = new Rect(0,0,bit.getHeight(),bit.getWidth());
-        canvas.drawBitmap(bit,srcRect,rect,null);
+    public void drawImage(Image Image, int x, int y, int w, int h) {
+        Rect rect = new Rect(x, y, x + w, y + h);
+        Bitmap bit = ((RTImage) Image).bitmap;
+        Rect srcRect = new Rect(0, 0, bit.getHeight(), bit.getWidth());
+        canvas.drawBitmap(bit, srcRect, rect, null);
         //canvas.drawBitmap(((RTImage)Image).bitmap, x, y, null);
     }
 
     @Override
     public void drawImage(Image Image, int x, int y) {
-        canvas.drawBitmap(((RTImage)Image).bitmap, x, y, null);
+        canvas.drawBitmap(((RTImage) Image).bitmap, x, y, null);
     }
 
-    public void drawScaledImage(Image Image, int x, int y, int width, int height, int srcX, int srcY, int srcWidth, int srcHeight){
+    public void drawScaledImage(Image Image, int x, int y, int width, int height, int srcX, int srcY, int srcWidth, int srcHeight) {
 
 
         srcRect.left = srcX;
@@ -180,7 +188,6 @@ public class RTGraphics implements Graphics {
         dstRect.top = y;
         dstRect.right = x + width;
         dstRect.bottom = y + height;
-
 
 
         canvas.drawBitmap(((RTImage) Image).bitmap, srcRect, dstRect, null);

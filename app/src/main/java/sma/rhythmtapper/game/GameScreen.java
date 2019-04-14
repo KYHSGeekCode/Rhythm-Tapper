@@ -17,6 +17,8 @@ public class GameScreen extends Screen
 {
     private static final String TAG = "GameScreenTag";
     private Queue<Ball> balls;
+    int ballsCount = 0;
+    int ballsTotalCount = 0;
     private Queue<Ball> totalBalls;
 
     enum GameState
@@ -105,14 +107,15 @@ public class GameScreen extends Screen
     // how far the screen should scroll after the track ends
     private static final int END_TIME = 1800;
     // initial y coordinate of spawned balls
-    public static final int BALL_INITIAL_Y = -50;
-    // hitbox is the y-range within a ball can be hit by a press in its lane
     public static int HITBOX_CENTER = 1760;
     private static int HITBOX_HEIGHT = 200;
+    public static int BALL_INITIAL_Y = HITBOX_CENTER;
+    // hitbox is the y-range within a ball can be hit by a press in its lane
+
     // if no ball is in the hitbox when pressed, remove the lowest ball in the
     // miss zone right above the hitbox (it still counts as a miss)
     private static int MISS_ZONE_HEIGHT = 150;
-    private static final int MISS_FLASH_INITIAL_ALPHA = 240;
+    private static final int MISS_FLASH_INITIAL_ALPHA = 50;
     private static final int DOUBLE_MULTIPLIER_TIME = 600;
     // explosion
     private static final int EXPLOSION_TOP = 600;
@@ -130,6 +133,8 @@ public class GameScreen extends Screen
 		EnvVar.speed = _ballSpeed;
         noteFile=((RTGame)game).getNoteFile();
 		balls = noteFile.getBalls();
+		ballsTotalCount = balls.size();
+		ballsCount = 0;
 		totalBalls = new ArrayDeque<>(balls);
 		for(Ball b:totalBalls)
         {
@@ -230,11 +235,13 @@ public class GameScreen extends Screen
 
 
         HITBOX_CENTER = game.getScreenY() - HITBOX_HEIGHT;
+        BALL_INITIAL_Y = HITBOX_CENTER;
         EnvVar.sizeY = game.getScreenY();
         EnvVar.sizeX = game.getScreenX();
         EnvVar.gameWidth = _gameWidth;
         EnvVar.gameHeight = _gameHeight;
         EnvVar.HITBOX_CENTER = HITBOX_CENTER;
+
     }
 
     @Override
@@ -281,12 +288,13 @@ public class GameScreen extends Screen
 
     private void checkEnd()
 	{
-        if (balls.isEmpty())//_currentTrack.isStopped())
+        if (ballsCount == ballsTotalCount)//_currentTrack.isStopped())
 		{
             _isEnding = true;
         }
     }
 
+    /*
     private void explosion(List<Ball> balls)
 	{
         Iterator<Ball> iter = balls.iterator();
@@ -303,7 +311,11 @@ public class GameScreen extends Screen
             }
         }
     }
+*/
+    private void OnBallFinished(Bundle bundle)
+    {
 
+    }
     private void checkDeath()
 	{
         if (bundle.isDead())
@@ -485,7 +497,7 @@ public class GameScreen extends Screen
                             if (!hitLane(_balls.get(j), Ball.BallType.LongUp)&&finger.shouldHold)
 							{
 							    Ball toremove = LowestBall(_balls.get(j));
-							    removeBall(_balls.get(j),toremove);
+							    RemoveBall(_balls.get(j),toremove);
 								onMiss(toremove);
                                 // if no ball was hit
                                 //_laneHitAlpha[j] = MISS_FLASH_INITIAL_ALPHA;
@@ -663,16 +675,16 @@ public class GameScreen extends Screen
 		 _laneHitAlpha5 -= Math.min(_laneHitAlpha5, 10);
 		 */
         // atom explosion ticker
-        if (_explosionTicker > 0)
-		{
-            for (List<Ball> bals : _balls)
-                explosion(bals);
+        //if (_explosionTicker > 0)
+		//{
+        //    for (List<Ball> bals : _balls)
+        //        explosion(bals);
 			/* explosion(_balls1);
 			 explosion(_balls2);
 			 explosion(_balls3);
 			 explosion(_balls4);
 			 explosion(_balls5);*/
-        }
+        //}
 
         // update tickers
         //_doubleMultiplierTicker -= Math.min(1, _doubleMultiplierTicker);
@@ -764,7 +776,7 @@ public class GameScreen extends Screen
 			{
                 if (lowestBall.type == type)
 				{
-				    removeBall(balls, lowestBall);
+				    RemoveBall(balls, lowestBall);
                     onHit(lowestBall);
                 }
 				else
@@ -774,7 +786,7 @@ public class GameScreen extends Screen
             }
 			else
 			{
-			    removeBall(balls,lowestBall);
+			    RemoveBall(balls,lowestBall);
                 balls.remove(lowestBall);
                 onHit(lowestBall);
             }
@@ -797,7 +809,22 @@ public class GameScreen extends Screen
     {
         ball.alive = false;
         iterator.remove();
+        RemoveHelper(ball);
+        RemoveTail(ball);
+    }
+
+
+    private void RemoveBall(List<Ball> balls, Ball ball)
+    {
+        balls.remove(ball);
+        ball.alive = false;
+        RemoveHelper(ball);
+        RemoveTail(ball);
+    }
+
+    private void RemoveTail(Ball ball) {
         Tail toremove=null;
+
         for(Tail tail: aliveTails)
         {
             if(tail.ball2.equals(ball)) {
@@ -811,35 +838,31 @@ public class GameScreen extends Screen
             aliveTails.remove(toremove);
         }
     }
-    private void removeBall(List<Ball> balls, Ball ball)
-    {
-        balls.remove(ball);
-        ball.alive = false;
-        Tail toremove=null;
-        for(Tail tail: aliveTails)
+
+    private void RemoveHelper(Ball ball) {
+        HelperLine toremoveH = null;
+        for(HelperLine h:helperLines)
         {
-            if(tail.ball2.equals(ball)) {
-                toremove = tail;
+            if (h.ball1.equals(ball) || h.ball2.equals(ball)) {
+                toremoveH = h;
                 break;
             }
         }
-        if(toremove!=null)
+        if(toremoveH != null)
         {
-            aliveTails.remove(toremove);
-            Log.v(TAG, "REMOVE TAIL2");
+            helperLines.remove(toremoveH);
         }
     }
-    // triggers when a lane gets tapped that has currently no ball in its hitbox
+
     private void onMiss(Ball b)
 	{
         if (b != null && b.type == Ball.BallType.Skull)
 		{
             return;
         }
-        Assets.soundMiss.play(1);
         //_vibrator.vibrate(100);
         bundle.testResult = TestResult.MISS;
-        deck.Apply(bundle);
+        OnBallTestEnded(b);
         //_streak = 0;
         //_combo=0;
         //_score -= Math.min(_score, 50);
@@ -889,22 +912,7 @@ public class GameScreen extends Screen
 		if(isFlick(b))
 			HITBOX_HEIGHT/=2;
         bundle.testResult = tr;
-        deck.Apply(bundle);
-        if (tr.compareTo(TestResult.BAD) >= 0)
-		{
-            if (b.type == Ball.BallType.FlickLeft || b.type == Ball.BallType.FlickRight)
-			{
-                Assets.soundFlickOK.play(1);
-            }
-			else
-			{
-                Assets.soundClick.play(1);
-            }
-        }
-		else
-		{
-            Assets.soundMiss.play(1);
-        }
+        OnBallTestEnded(b);
 		/* switch(b.type) {
 		 case OneUp: {
 		 //++_lives;
@@ -928,19 +936,39 @@ public class GameScreen extends Screen
         //* (_doubleMultiplierTicker > 0 ? 2 : 1);
     }
 
+    private void OnBallTestEnded(Ball b) {
+        deck.Apply(bundle);
+        ballsCount ++;
+        if (bundle.testResult.compareTo(TestResult.BAD) >= 0)
+		{
+            if (isFlick(b))
+			{
+                Assets.soundFlickOK.play(1);
+            }
+			else
+			{
+                Assets.soundClick.play(1);
+            }
+        }
+		else
+		{
+            Assets.soundMiss.play(1);
+        }
+    }
+
     private void spawnBalls()
 	{
-        final int ballY = BALL_INITIAL_Y;
+        //final int ballY = BALL_INITIAL_Y;
         while(balls.peek()!=null)
         {
             Ball ball = balls.peek();
-            if(ball.time*1000 >_currentTrack.getCurrentPosition())
+            if(ball.time*1000 - 4000 >_currentTrack.getCurrentPosition())
                 break;
             //Log.v(TAG,"Spawn ball:"+ball.time+"s; current:"+_currentTime+"s; music:"+_currentTrack.);
             ball = balls.remove();
             //ball.OnGameStart();
             //int ballX = (int)(_gameWidth / 5 / 2 * (2.0 * ball.startLane - 1.0));
-            spawnBall(_balls.get((int)(ball.endLine-1)),ball,ballY);
+            spawnBall(_balls.get((int)(ball.endLine-1)),ball/*,ballY*/);
         }
         /*
         float randFloat = _rand.nextFloat();
@@ -966,10 +994,10 @@ public class GameScreen extends Screen
     */
     }
 
-    private void spawnBall(List<Ball> lane, Ball ball,int ballY)
+    private void spawnBall(List<Ball> lane, Ball ball/*,int ballY*/)
 	{
 	    //ball.x = ballX;
-	    ball.y = ballY;
+	    //ball.y = ballY;
 	    lane.add(ball);
 	    //get a ball from the balls
         //get all the balls that needs to be spawned now
@@ -1075,17 +1103,24 @@ public class GameScreen extends Screen
         for (int i = 0; i < 5; i++)
 		{
             int n = 2 * i + 1;
-            g.drawImage(Assets.ballHitpoint, dx * n - SIZE_BALL, HITBOX_CENTER - SIZE_BALL);
+            g.drawImage(Assets.ballHitpoint, (int)(dx * n - SIZE_BALL), (int)(HITBOX_CENTER - SIZE_BALL),SIZE_BALL*2,SIZE_BALL*2);
+        }
+        for(HelperLine h : helperLines)
+        {
+            h.Paint(g);
         }
         for(Tail tail:aliveTails)
         {
             tail.Paint(g);
         }
+
         for (List<Ball> bals : _balls)
 		{
             for (Ball b : bals)
-			{
-                paintBall(g, b);
+            {
+                if (b.isShown()) {
+                    paintBall(g, b);
+                }
             }
         }
         if (_explosionTicker > 0)
@@ -1137,7 +1172,8 @@ public class GameScreen extends Screen
     }
      */
     Set<Tail> aliveTails = new ArraySet<>();
-    private final int SIZE_BALL = 80;
+    Set<HelperLine> helperLines = new ArraySet<>();
+    private final int SIZE_BALL = 50;
     private void paintBall(Graphics g, Ball b)
 	{
 	    //b.type ==normal
@@ -1161,40 +1197,14 @@ public class GameScreen extends Screen
                 break;
         }
 
+        if(b.helperLine !=null)
+        {
+            helperLines.add(b.helperLine);
+        }
         Ball next = b.nextBall;
         if(next != null)
         {
             aliveTails.add(b.tail);
-            //Slide?
-            //Flick?
-            //Long?
-            /*int targetX = 100;
-            int targetY = 100;
-            if(next.alive)
-            {
-                targetX = next.x;
-                targetY = next.y;
-            } else {
-                targetX = (int)((EnvVar.gameWidth / 5 / 2) * (2 * next.startLine - 1));;
-                targetY = 0;
-            }*/
-			//b.tail.Paint(g);
-            //g.drawLinear(b.x,b.y,targetX,targetY);
-
-/*
-            switch(b.mode)
-            {
-                case 0:         //Flick
-                    g.drawLinear(b.x,b.y,targetX,targetY);
-                    break;
-                case 1:         //Hold(long)
-                    g.drawLinear(b.x,b.y,targetX,targetY);
-                    break;
-                case 2:         //Slide note
-
-            }
-*/
-
         }
         g.drawImage(imgToDraw, (int)(b.x - sizeCoeff), (int)(b.y - sizeCoeff),sizeCoeff*2,sizeCoeff*2);
 /*        switch (b.type)

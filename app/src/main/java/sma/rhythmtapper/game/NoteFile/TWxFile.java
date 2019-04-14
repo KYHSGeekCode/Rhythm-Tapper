@@ -1,6 +1,8 @@
 package sma.rhythmtapper.game.NoteFile;
 import java.io.*;
 import java.util.*;
+
+import sma.rhythmtapper.game.HelperLine;
 import sma.rhythmtapper.game.models.*;
 import android.util.*;
 import org.json.*;
@@ -24,6 +26,7 @@ public class TWxFile
 		int numnotes = notes.length();
 		Map<Integer, Ball> id2Ball = new HashMap<>();
 		Map<Integer,Integer> prevMap = new HashMap<>();			//prev to next
+		Map<Float, Ball> timeMap = new HashMap<>();
 		for(int i=0;i<numnotes;i++)
 		{
 			JSONObject note = notes.getJSONObject(i);
@@ -47,6 +50,13 @@ public class TWxFile
 					prevMap.put(prev,ball.id);
 					Log.v(TAG,"prev"+prev+"id"+ball.id);
 				}
+			}
+			if(timeMap.containsKey(ball.time))
+			{
+				ball.helperLine = new HelperLine(ball, timeMap.get(ball.time));
+				timeMap.remove(ball.time);
+			} else {
+				timeMap.put(ball.time, ball);
 			}
 			//balls.add(ball);
 		}

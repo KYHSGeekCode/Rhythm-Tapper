@@ -14,6 +14,8 @@ public interface Graphics {
 
     public void clearScreen(int color);
 
+    public void drawLine(int x, int y, int x2, int y2, int color, int stroke);
+
     public void drawLine(int x, int y, int x2, int y2, int color);
 
     public void drawLinear(int x, int y, int x2, int y2);

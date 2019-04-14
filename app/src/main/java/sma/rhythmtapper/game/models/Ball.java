@@ -6,6 +6,7 @@ import java.io.*;
 
 import sma.rhythmtapper.game.EnvVar;
 import sma.rhythmtapper.game.GameScreen;
+import sma.rhythmtapper.game.HelperLine;
 
 import static sma.rhythmtapper.game.EnvVar.speed;
 
@@ -31,7 +32,12 @@ public class Ball implements Serializable
 	{
 		return alive;
 	}
-    public enum BallType {
+
+	public boolean isShown() {
+		return y >= -50 && y <= EnvVar.gameHeight + 50;
+	}
+
+	public enum BallType {
         Normal, OneUp, Multiplier, Speeder, Bomb, Skull,
 		LongDown,LongUp,FlickLeft,FlickRight,Slide;
 		public BallType valueOf()
@@ -70,6 +76,7 @@ public class Ball implements Serializable
 	public boolean alive;
 	
 	public Tail tail;
+	public HelperLine helperLine;
 	/*
     public Ball(int x, int y, BallType type){
         this.x = x;
@@ -103,7 +110,7 @@ public class Ball implements Serializable
         // t = 0 : A x = startlane
         // t = 1: B x = endlane
         //this.y += speed;
-		this.y = (int)(GameScreen.BALL_INITIAL_Y + ( EnvVar.currentTime-this.time)* speed *100);
+		this.y = (int)(GameScreen.BALL_INITIAL_Y + ( EnvVar.currentTime-this.time)* EnvVar.speed *100);
         t = (float)this.y / (float)EnvVar.HITBOX_CENTER;
         this.x= getXfromT(t);
         //Log.v("Ballx",""+x);

@@ -136,20 +136,20 @@ public class Deck implements Serializable{
     {
         this.bundle=bundle;
     }
-    //몇백 나노초가 지났는가
+    //몇 밀리 초가 지났는가
     //1000000이 되면 1초가 지났단 뜻이다.
     float[] periodTimer=new float[5];
     boolean[] bSkillOn=new boolean[5];
     boolean [] bSkillCheckedNow= new boolean[5];
     public void Update(float deltaTime)
     {
-        //deltatime is nanosec/10^7 which means deltatime is 1, then 100 nanoseconds elapsed.
-        //1 sec elapsed-> 1000000 is deltatime
+        ////deltatime is nanosec/10^7 which means deltatime is 1, then 100 nanoseconds elapsed.
+        ////1 sec elapsed-> 1000000 is deltatime
         for(int i=0;i<5;i++)
         {
-            periodTimer[i]+=deltaTime;
-            int sec=(int)(periodTimer[i]/100);
-            if(sec>cards[i].skill.period&&bSkillCheckedNow[i]==false)
+            periodTimer[i]+=deltaTime * 0.01f;
+            int sec=(int)(periodTimer[i]);
+            if(sec>cards[i].skill.period/*&&bSkillCheckedNow[i]==false*/)
             {
                 //bSkillCheckedNow[i]=true;
                 if(random.nextInt()%100<chances[i])
@@ -166,7 +166,7 @@ public class Deck implements Serializable{
                 //finish applying skill
                 bSkillOn[i]=false;
                 //cards[i].skill.End();
-                bSkillCheckedNow[i]=false;
+                //bSkillCheckedNow[i]=false;
                 bundle.runningSkills.remove(cards[i].skill);
             }
         }

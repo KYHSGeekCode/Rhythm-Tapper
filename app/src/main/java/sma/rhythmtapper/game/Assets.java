@@ -4,7 +4,7 @@ import sma.rhythmtapper.framework.Image;
 import sma.rhythmtapper.framework.Music;
 import sma.rhythmtapper.framework.Sound;
 
-class Assets {
+public class Assets {
     // Graphics
     static Image background;
     static Image gameover;
@@ -18,7 +18,7 @@ class Assets {
     static Image ballSkull;
     static Image explosionBright;
     static Image sirens;
-    static Image ballHitpoint;
+    public static Image ballHitpoint;
 
     static Image ballFlickLeft;
     static Image ballFlickRight;

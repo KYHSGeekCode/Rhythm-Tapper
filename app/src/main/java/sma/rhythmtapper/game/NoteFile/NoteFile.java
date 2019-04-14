@@ -204,12 +204,9 @@ public class NoteFile implements Serializable
             {
                 balls.add(bl);
             }
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("No such level file found");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IndexOutOfBoundsException e) {
-            Log.e(TAG,"",e);
+        } catch (FileNotFoundException|JSONException|IndexOutOfBoundsException e) {
+            Log.e(TAG, "error reading notefile",e);
+            throw new RuntimeException("No such valid level file found");
         }
         /*
         //candidates:

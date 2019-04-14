@@ -9,6 +9,8 @@ import java.io.*;
 
 import sma.rhythmtapper.framework.*;
 
+import static sma.rhythmtapper.game.EnvVar.SIZE_BALL;
+
 public class Tail implements Serializable {
     private String TAG = "Tail";
     public Ball ball1, ball2;
@@ -37,6 +39,10 @@ public class Tail implements Serializable {
         //	}
 
         g.drawLine(ghost1x, ghost1y, ghost2x, ghost2y,ball1.color,40);
+        if(ghost1y > EnvVar.HITBOX_CENTER && ghost2y <EnvVar.HITBOX_CENTER) {
+            int helperx = (GameScreen.HITBOX_CENTER - ghost1y) * (ghost2x - ghost1x) / (ghost2y - ghost1y) + ghost1x;
+            g.drawImage(Assets.ballHitpoint, (int) (helperx - SIZE_BALL), (int) (EnvVar.HITBOX_CENTER - SIZE_BALL), SIZE_BALL * 2, SIZE_BALL * 2);
+        }
         return;
     }
 

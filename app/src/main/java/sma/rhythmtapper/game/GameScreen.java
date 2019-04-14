@@ -1123,18 +1123,18 @@ public class GameScreen extends Screen
                 }
             }
         }
-        if (_explosionTicker > 0)
-		{
-            if (_rand.nextDouble() > 0.05)
-			{
-                g.drawImage(Assets.explosion, 0, 680);
-            }
-			else
-			{
-                g.drawImage(Assets.explosionBright, 0, 680);
-            }
-            g.drawARGB((int) ((double) _explosionTicker / EXPLOSION_TIME * 255), 255, 255, 255);
-        }
+        //if (_explosionTicker > 0)
+		//{
+        //    if (_rand.nextDouble() > 0.05)
+		//	{
+        //        g.drawImage(Assets.explosion, 0, 680);
+        //    }
+		//	else
+		//	{
+        //  /      g.drawImage(Assets.explosionBright, 0, 680);
+        //    }
+        //    g.drawARGB((int) ((double) _explosionTicker / EXPLOSION_TIME * 255), 255, 255, 255);
+        //}
 
         // Secondly, draw the UI above the game elements.
         if (state == GameState.Ready)
@@ -1173,7 +1173,7 @@ public class GameScreen extends Screen
      */
     Set<Tail> aliveTails = new ArraySet<>();
     Set<HelperLine> helperLines = new ArraySet<>();
-    private final int SIZE_BALL = 50;
+    public static final int SIZE_BALL = 50;
     private void paintBall(Graphics g, Ball b)
 	{
 	    //b.type ==normal

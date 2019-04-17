@@ -19,7 +19,7 @@ public class SkillPerfectSupport extends Skill {
     public void PreTest(GameStatusBundle bundle) {
         if(bundle.testResult.compareTo(TestResult.BAD)>=0)
         {
-            bundle.testResult=TestResult.PERFECT;
+            //bundle.testResult=TestResult.PERFECT;
             bundle.continueCombo=true;
         }
     }

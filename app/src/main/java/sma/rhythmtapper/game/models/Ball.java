@@ -160,9 +160,11 @@ public class Ball implements Serializable
 			this.origx = (int)((EnvVar.gameWidth / 5 / 2) * (2 * startLine - 1));
 			this.endx = (int)((EnvVar.gameWidth / 5 / 2) * (2 * endLine - 1));
 		}
-		if(tt >= 0.6f)
-			return endx;
-		tt /= 0.6f;
-		return (int)((1 - tt) *(1-tt)*origx + tt*tt* endx);
+		//if(tt >= 0.6f)
+		//	return endx;
+		int a = origx-endx;
+		//tt /= 0.6f;
+		return (int)(a*(t-1)*(t-1)+endx);
+		//return (int)((1 - tt) *(1-tt)*origx + tt*tt* endx);
 	}
 }

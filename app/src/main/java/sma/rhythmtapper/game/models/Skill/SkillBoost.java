@@ -25,7 +25,7 @@ public class SkillBoost extends Skill {
                 bundle.ApplyDeltaLife(4);
             } else if (skill instanceof  SkillPerfectSupport)
             {
-                bundle.testResult= TestResult.PERFECT;
+                //bundle.testResult= TestResult.PERFECT;
             }
         }
     }

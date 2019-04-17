@@ -80,9 +80,9 @@ public class GameScreen extends Screen
     // difficulty params
     private float _spawnInterval;
     private int _ballSpeed;
-    private final double _spawnChance_normal = 0.10; // TODO dynamic
-    private final double _spawnChance_LeftFlick = _spawnChance_normal + 0.03;
-    private final double _spawnChance_RightFlick = _spawnChance_LeftFlick + 0.03;
+    //private final double _spawnChance_normal = 0.10; // TODO dynamic
+    //private final double _spawnChance_LeftFlick = _spawnChance_normal + 0.03;
+    //private final double _spawnChance_RightFlick = _spawnChance_LeftFlick + 0.03;
     /*private final double _spawnChance_oneup = _spawnChance_LeftFlick;// + 0.003;
 	 private final double _spawnChance_multiplier = _spawnChance_oneup;// + 0.001;
 	 private final double _spawnChance_speeder = _spawnChance_multiplier;// + 0.003;
@@ -372,7 +372,7 @@ public class GameScreen extends Screen
 				Finger finger=findFinger(event.pointer);
 				if(finger==null){
 					fingers.add(new Finger(event.x,event.y,event.pointer));
-					return;
+					//return;
 					//FIXME
 				}
 				finger.vx = event.x-finger.x;
@@ -385,6 +385,8 @@ public class GameScreen extends Screen
                 //then later reset the first
                 for (int j=0;j < 5;j++)
                 {
+					if(hitLane(_balls.get(j),Ball.BallType.Slide))
+						break;
                     //int midline=_gameWidth / 10 * (2 * j - 1);
 					int lline=_gameWidth/5*i;
 					int rline= _gameWidth/5*(i+1);
@@ -708,7 +710,7 @@ public class GameScreen extends Screen
         while (iterator.hasNext())
 		{
             Ball b = iterator.next();
-			if (b.type == Ball.BallType.FlickLeft || b.type == Ball.BallType.FlickRight)
+			if (b.isFlick())
 			{
 				if (b.y > HITBOX_CENTER + HITBOX_HEIGHT)
 				{
@@ -735,7 +737,7 @@ public class GameScreen extends Screen
 
 	boolean isMiss(Ball b)
 	{
-		if(b.type==Ball.BallType.FlickLeft||b.type==Ball.BallType.FlickRight)
+		if(!b.isNormal())
 		{
 			return b.y>HITBOX_CENTER+HITBOX_HEIGHT;
 		} else {
@@ -745,10 +747,14 @@ public class GameScreen extends Screen
 	
 	boolean isHitable(Ball b)
 	{
-		if(b.type==Ball.BallType.FlickLeft||b.type==Ball.BallType.FlickRight)
+		if(isFlick(b))
 		{
 			return b.y<HITBOX_CENTER+HITBOX_HEIGHT&&b.y>HITBOX_CENTER-HITBOX_HEIGHT;
-		} else {
+		} else if (b.isLongNote())
+		{
+			return b.y<HITBOX_CENTER+HITBOX_HEIGHT*2&&b.y>HITBOX_CENTER-HITBOX_HEIGHT*2;
+		}
+		else{
 			return b.y<HITBOX_CENTER+HITBOX_HEIGHT/2&&b.y>HITBOX_CENTER-HITBOX_HEIGHT/2; 
 		}
 	}
@@ -772,24 +778,37 @@ public class GameScreen extends Screen
 		Ball lowestBall=LowestBall(balls);
         if (lowestBall != null && isHitable(lowestBall))
 		{
-            if (lowestBall.type != Ball.BallType.Normal)
+            if (!lowestBall.isNormal())
 			{
-                if (lowestBall.type == type)
+                if ((lowestBall.flick==1 && type.equals(Ball.BallType.FlickLeft)) ||
+					(lowestBall.flick==2 && type.equals(Ball.BallType.FlickRight))) //(lowestBall.type == type)
 				{
 				    RemoveBall(balls, lowestBall);
                     onHit(lowestBall);
+					return true;
                 }
-				else
+				else if (lowestBall.isLongNote() && type == Ball.BallType.Normal)
 				{
+					RemoveBall(balls, lowestBall);
+					onHit(lowestBall);
+					return true;
                     //onMiss(lowestBall);
-                }
+                } else if(lowestBall.isLongUp()&&type==Ball.BallType.LongUp){
+					return true;
+				} else if(lowestBall.isSlideNote() && type ==Ball.BallType.Slide){
+					return true;// type==Ball.BallType.;
+				} else {
+					return false;
+				}
             }
-			else
+			else if(type==Ball.BallType.Normal)
 			{
 			    RemoveBall(balls,lowestBall);
                 balls.remove(lowestBall);
                 onHit(lowestBall);
-            }
+            } else{
+				return false;
+			}
 
             return lowestBall.type != Ball.BallType.Skull;
         }
@@ -889,8 +908,10 @@ public class GameScreen extends Screen
         //great    15%
         //nice     15%
         //bad      10%
-		if(isFlick(b))
+		if(b.isFlick())
 			HITBOX_HEIGHT*=2;
+		else if(b.isLongNote())
+			HITBOX_HEIGHT*=4;
         int diff = Math.abs(HITBOX_CENTER - y);
         TestResult tr = TestResult.MISS;
         if (diff <= HITBOX_HEIGHT * 0.1)
@@ -909,8 +930,10 @@ public class GameScreen extends Screen
 		{
             tr = TestResult.BAD;
         }
-		if(isFlick(b))
+		if(b.isFlick())
 			HITBOX_HEIGHT/=2;
+		else if(b.isLongNote())
+			HITBOX_HEIGHT/=4;
         bundle.testResult = tr;
         OnBallTestEnded(b);
 		/* switch(b.type) {
@@ -1092,8 +1115,8 @@ public class GameScreen extends Screen
 
         // Example:
         g.drawScaledImage(Assets.background, 0, 0, _gameWidth, _gameHeight, 0, 0, Assets.background.getWidth(), Assets.background.getHeight());
-        for (int i = 0; i < 5; i++)
-            g.drawRect(_gameWidth / 5 * i, 0, _gameWidth / 5 + 1, _gameHeight, Color.argb(_laneHitAlpha[i], 255, 0, 0));
+        //for (int i = 0; i < 5; i++)
+        //    g.drawRect(_gameWidth / 5 * i, 0, _gameWidth / 5 + 1, _gameHeight, Color.argb(_laneHitAlpha[i], 255, 0, 0));
         /*g.drawRect(_gameWidth / 5    , 0, _gameWidth / 5 + 1, _gameHeight, Color.argb(_laneHitAlpha2, 255, 0, 0));
 		 g.drawRect(_gameWidth / 5 * 2, 0, _gameWidth / 5 + 1, _gameHeight, Color.argb(_laneHitAlpha3, 255, 0, 0));
 		 g.drawRect(_gameWidth / 5 * 3, 0, _gameWidth / 5 + 1, _gameHeight, Color.argb(_laneHitAlpha4, 255, 0, 0));
@@ -1275,11 +1298,11 @@ public class GameScreen extends Screen
             ratioOfLife2 = ratioOfLife1 - 1;
             ratioOfLife1 = 1;
         }
-        g.drawRect(0, 0, (int) (_gameWidth * 0.4f * ratioOfLife1), 100, ratioOfLife1 > 0.1f ? Color.GREEN : Color.RED);
-        g.drawRect(0, 0, (int) (_gameWidth * 0.4f * ratioOfLife2), 100, Color.CYAN);
+        g.drawRect(0, 0, (int) (_gameWidth * 0.4f * ratioOfLife1), 50, ratioOfLife1 > 0.2f ? Color.GREEN : Color.RED);
+        g.drawRect(0, 0, (int) (_gameWidth * 0.4f * ratioOfLife2), 50, Color.CYAN);
         //50-70-85-100
         float scoreRatio = (float) bundle.score / 10000.0f;
-        g.drawRect((int) (_gameWidth * 0.5f), 0, (int) (_gameWidth * 0.5f * Math.min(scoreRatio, 1)), 100, GetScoreBkPaint(scoreRatio));
+        g.drawRect((int) (_gameWidth * 0.5f), 0, (int) (_gameWidth * 0.5f * Math.min(scoreRatio, 1)), 50, GetScoreBkPaint(scoreRatio));
         //String s = "Score: " + _score +
         //        "   Multiplier: " + _multiplier * (_doubleMultiplierTicker > 0 ? 2 : 1) + "x" +
         //        "   Lifes remaining: " + _lives;

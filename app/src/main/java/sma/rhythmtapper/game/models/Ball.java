@@ -24,10 +24,44 @@ public class Ball implements Serializable
 		this.startLine = startLine;
 		this.endLine = endLine;
 		this.previds = previds;
-		type = BallType.Normal;
 		alive = false;
 	}
 
+	public boolean isSlideEnd()
+	{
+		return isSlideNote()&& tail==null;
+	}
+	public boolean isSlideDownOrMiddle()
+	{
+		return tail!=null && isSlideNote();
+	}
+	
+	//FixMe
+	public boolean isSlideStart()
+	{
+		return isSlideNote()&&tail!=null;
+	}
+	
+	public boolean isLongUp()
+	{
+		return isLongNote()&& tail==null;
+	}
+	public boolean isNormal()
+	{
+		return (!isFlick())&&(mode==0);
+	}
+	public boolean isFlick()
+	{
+		return flick>0;
+	}
+	public boolean isLongNote()
+	{
+		return mode ==1;
+	}
+	public boolean isSlideNote()
+	{
+		return mode==2;
+	}
 	public boolean isAlive()
 	{
 		return alive;

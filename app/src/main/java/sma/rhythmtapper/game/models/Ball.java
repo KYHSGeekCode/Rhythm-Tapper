@@ -54,6 +54,10 @@ public class Ball implements Serializable
 	{
 		return flick>0;
 	}
+	public boolean isLongDown()
+	{
+		return isLongNote()&& tail!=null;
+	}
 	public boolean isLongNote()
 	{
 		return mode ==1;
@@ -160,8 +164,8 @@ public class Ball implements Serializable
 			this.origx = (int)((EnvVar.gameWidth / 5 / 2) * (2 * startLine - 1));
 			this.endx = (int)((EnvVar.gameWidth / 5 / 2) * (2 * endLine - 1));
 		}
-		//if(tt >= 0.6f)
-		//	return endx;
+		if(tt >= 1f)
+			return endx;
 		int a = origx-endx;
 		//tt /= 0.6f;
 		return (int)(a*(t-1)*(t-1)+endx);

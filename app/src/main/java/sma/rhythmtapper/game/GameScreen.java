@@ -372,7 +372,7 @@ public class GameScreen extends Screen
 				Finger finger=findFinger(event.pointer);
 				if(finger==null){
 					fingers.add(new Finger(event.x,event.y,event.pointer));
-					//return;
+					return;
 					//FIXME
 				}
 				finger.vx = event.x-finger.x;
@@ -461,10 +461,8 @@ public class GameScreen extends Screen
 					{
                         if (event.x < _gameWidth / 5 * (j + 1))
 						{
-                            if (!hitLane(_balls.get(j), Ball.BallType.Normal))
+                            if (hitLane(_balls.get(j), Ball.BallType.Normal))
 							{
-                                // if no ball was hit
-                                //_laneHitAlpha[j] = MISS_FLASH_INITIAL_ALPHA;
                             }
 							else if(hitLane(_balls.get(j), Ball.BallType.LongDown))
 							{
@@ -786,17 +784,18 @@ public class GameScreen extends Screen
 				    RemoveBall(balls, lowestBall);
                     onHit(lowestBall);
 					return true;
-                }
-				else if (lowestBall.isLongNote() && type == Ball.BallType.Normal)
-				{
+                } else if(lowestBall.isLongUp()&&type==Ball.BallType.LongUp){
 					RemoveBall(balls, lowestBall);
 					onHit(lowestBall);
 					return true;
-                    //onMiss(lowestBall);
-                } else if(lowestBall.isLongUp()&&type==Ball.BallType.LongUp){
-					return true;
 				} else if(lowestBall.isSlideNote() && type ==Ball.BallType.Slide){
+					RemoveBall(balls, lowestBall);
+					onHit(lowestBall);
 					return true;// type==Ball.BallType.;
+				} else if(lowestBall.isLongDown() && type==Ball.BallType.LongDown){
+					RemoveBall(balls, lowestBall);
+					onHit(lowestBall);
+					return true;
 				} else {
 					return false;
 				}

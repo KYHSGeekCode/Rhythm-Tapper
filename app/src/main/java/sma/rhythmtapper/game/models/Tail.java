@@ -9,16 +9,18 @@ public class Tail extends Connector
 	{
 		super(ball1,ball2);
 	}
+	float[] tailxs;
 	@Override
-	public void Paint(Graphics g) {
-//		if (ball1.alive && ball2.alive)
-//		{
-//
-//		}
-//		else
-        //	{
+	public void Paint(Graphics g) {	
        	UpdateGhosts();
-        //	}
+		MakeTails();
+		int x = ghost2x;
+		int y = ghost2y;
+		for(int i=0;i<tailxs.length;i++)
+		{
+			//x = tailxs[i];
+			//y = 
+		}
         g.drawLine(ghost1x, ghost1y, ghost2x, ghost2y,ball1.color,40);
         if(ghost1y > EnvVar.HITBOX_CENTER && ghost2y <EnvVar.HITBOX_CENTER) {
             int helperx = (GameScreen.HITBOX_CENTER - ghost1y) * (ghost2x - ghost1x) / (ghost2y - ghost1y) + ghost1x;

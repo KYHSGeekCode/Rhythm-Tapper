@@ -1226,7 +1226,7 @@ public class GameScreen extends Screen
         Ball next = b.nextBall;
         if(next != null)
         {
-            aliveTails.add(b.tail);
+            aliveTails.add(b.connector);
         }
         g.drawImage(imgToDraw, (int)(b.x - sizeCoeff), (int)(b.y - sizeCoeff),sizeCoeff*2,sizeCoeff*2);
 /*        switch (b.type)

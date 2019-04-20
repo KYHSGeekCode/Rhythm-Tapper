@@ -33,29 +33,29 @@ public class Ball implements Serializable
 	}
 	void Erase()
 	{
-		if(tail==null)
+		if(connector==null)
 			return;
-		tail.ball2.Erase();
+		connector.ball2.Erase();
 		RemoveSelf();
 	}
 	public boolean isSlideEnd()
 	{
-		return isSlideNote()&& tail==null;
+		return isSlideNote()&& connector==null;
 	}
 	public boolean isSlideDownOrMiddle()
 	{
-		return tail!=null && isSlideNote();
+		return connector!=null && isSlideNote();
 	}
 	
 	//FixMe
 	public boolean isSlideStart()
 	{
-		return isSlideNote()&&tail!=null;
+		return isSlideNote()&&connector!=null;
 	}
 	
 	public boolean isLongUp()
 	{
-		return isLongNote()&& tail==null;
+		return isLongNote()&& connector==null;
 	}
 	public boolean isNormal()
 	{
@@ -67,7 +67,7 @@ public class Ball implements Serializable
 	}
 	public boolean isLongDown()
 	{
-		return isLongNote()&& tail!=null;
+		return isLongNote()&& connector!=null;
 	}
 	public boolean isLongNote()
 	{
@@ -124,7 +124,7 @@ public class Ball implements Serializable
 
 	public boolean alive;
 	
-	public Connector tail;
+	public Connector connector;
 	public HelperLine helperLine;
 	/*
     public Ball(int x, int y, BallType type){

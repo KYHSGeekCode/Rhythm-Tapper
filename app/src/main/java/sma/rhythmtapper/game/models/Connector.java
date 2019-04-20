@@ -21,7 +21,7 @@ public class Connector implements Serializable {
     float difftime;
     float diffY;
 
-	float[] tailxs;
+	
     //Ball1 is first (lower)
     public Connector(Ball ball1, Ball ball2) {
         this.ball1 = ball1;
@@ -40,11 +40,11 @@ public class Connector implements Serializable {
         //	}
 
         g.drawLine(ghost1x, ghost1y, ghost2x, ghost2y,ball1.color,40);
-        if(ghost1y > EnvVar.HITBOX_CENTER && ghost2y <EnvVar.HITBOX_CENTER) {
+        /*if(ghost1y > EnvVar.HITBOX_CENTER && ghost2y <EnvVar.HITBOX_CENTER) {
             int helperx = (GameScreen.HITBOX_CENTER - ghost1y) * (ghost2x - ghost1x) / (ghost2y - ghost1y) + ghost1x;
             g.drawImage(Assets.ballHitpoint, (int) (helperx - SIZE_BALL), (int) (EnvVar.HITBOX_CENTER - SIZE_BALL)
 			, SIZE_BALL * 2, SIZE_BALL * 2);
-        }
+        }*/
         return;
     }
 

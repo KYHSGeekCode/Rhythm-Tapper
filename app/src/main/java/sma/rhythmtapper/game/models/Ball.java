@@ -27,6 +27,17 @@ public class Ball implements Serializable
 		alive = false;
 	}
 
+	private void RemoveSelf()
+	{
+		
+	}
+	void Erase()
+	{
+		if(tail==null)
+			return;
+		tail.ball2.Erase();
+		RemoveSelf();
+	}
 	public boolean isSlideEnd()
 	{
 		return isSlideNote()&& tail==null;
@@ -113,7 +124,7 @@ public class Ball implements Serializable
 
 	public boolean alive;
 	
-	public Tail tail;
+	public Connector tail;
 	public HelperLine helperLine;
 	/*
     public Ball(int x, int y, BallType type){
@@ -164,11 +175,13 @@ public class Ball implements Serializable
 			this.origx = (int)((EnvVar.gameWidth / 5 / 2) * (2 * startLine - 1));
 			this.endx = (int)((EnvVar.gameWidth / 5 / 2) * (2 * endLine - 1));
 		}
-		if(tt >= 1f)
-			return endx;
-		int a = origx-endx;
-		//tt /= 0.6f;
-		return (int)(a*(t-1)*(t-1)+endx);
-		//return (int)((1 - tt) *(1-tt)*origx + tt*tt* endx);
+		return getXfromT(origx,endx,tt);
+	}
+	public static int getXfromT(int start, int end, float tt)
+	{
+		if(tt>=1f)
+			return end;
+		int a = start-end;
+		return (int)(a*(tt-1)*(tt-1)+end);
 	}
 }

@@ -65,7 +65,7 @@ public class TWxFile
 		    Log.v(TAG,"connect "+id+" with"+prevMap.get(id));
 			Ball ba = id2Ball.get(id);			//formar
 			ba.nextBall = id2Ball.get(prevMap.get(id));	//next
-			ba.tail = new Tail(ba, ba.nextBall);
+			ba.tail = new Connector(ba, ba.nextBall);
 		}
 		for(Ball b:id2Ball.values())
 		{

@@ -841,9 +841,9 @@ public class GameScreen extends Screen
     }
 
     private void RemoveTail(Ball ball) {
-        Tail toremove=null;
+        Connector toremove=null;
 
-        for(Tail tail: aliveTails)
+        for(Connector tail: aliveTails)
         {
             if(tail.ball2.equals(ball)) {
                 toremove = tail;
@@ -1131,7 +1131,7 @@ public class GameScreen extends Screen
         {
             h.Paint(g);
         }
-        for(Tail tail:aliveTails)
+        for(Connector tail:aliveTails)
         {
             tail.Paint(g);
         }
@@ -1193,7 +1193,7 @@ public class GameScreen extends Screen
 
     }
      */
-    Set<Tail> aliveTails = new ArraySet<>();
+    Set<Connector> aliveTails = new ArraySet<>();
     Set<HelperLine> helperLines = new ArraySet<>();
     public static final int SIZE_BALL = 50;
     private void paintBall(Graphics g, Ball b)

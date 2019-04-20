@@ -1,43 +1,24 @@
 package sma.rhythmtapper.game.models;
-
-import android.util.Log;
-
-import sma.rhythmtapper.framework.Impl.*;
-import sma.rhythmtapper.game.*;
-
-import java.io.*;
-
 import sma.rhythmtapper.framework.*;
-
+import sma.rhythmtapper.game.*;
 import static sma.rhythmtapper.game.EnvVar.SIZE_BALL;
 
-public class Tail implements Serializable {
-    private String TAG = "Tail";
-    public Ball ball1, ball2;
-    //ghost 1 is lower
-    int ghost1x, ghost1y;
-    int ghost2x, ghost2y;
-
-    float difftime;
-    float diffY;
-
-    //Ball1 is first (lower)
-    public Tail(Ball ball1, Ball ball2) {
-        this.ball1 = ball1;
-        this.ball2 = ball2;
-        //this.difftime = ball2.time - ball1.time;
-    }
-
-    public void Paint(Graphics g) {
+public class Tail extends Connector
+{
+	public Tail(Ball ball1,Ball ball2)
+	{
+		super(ball1,ball2);
+	}
+	@Override
+	public void Paint(Graphics g) {
 //		if (ball1.alive && ball2.alive)
 //		{
 //
 //		}
 //		else
         //	{
-        UpdateGhosts();
+       	UpdateGhosts();
         //	}
-
         g.drawLine(ghost1x, ghost1y, ghost2x, ghost2y,ball1.color,40);
         if(ghost1y > EnvVar.HITBOX_CENTER && ghost2y <EnvVar.HITBOX_CENTER) {
             int helperx = (GameScreen.HITBOX_CENTER - ghost1y) * (ghost2x - ghost1x) / (ghost2y - ghost1y) + ghost1x;
@@ -45,30 +26,20 @@ public class Tail implements Serializable {
         }
         return;
     }
-
-    private void UpdateGhosts() {
-        //if(ball1.alive==false)
-        //{
-        //diffY = difftime*EnvVar.speed;
-        //ghost1y = (int)((EnvVar.currentTime - ball1.time) * EnvVar.speed * 100 /*+ GameScreen.BALL_INITIAL_Y*/);
-        ///float t1 = ((float)ghost1y) / EnvVar.HITBOX_CENTER;
-        //Log.d(TAG,"t1="+t1);
-        //ghost1x = ball1.getXfromT(t1);
-        //ghost2y = (int)((EnvVar.currentTime - ball2.time) * EnvVar.speed * 100 /*+ GameScreen.BALL_INITIAL_Y*/);
-        //float t2 = ((float)ghost2y) / EnvVar.HITBOX_CENTER;
-        //Log.d(TAG,"t2="+t2);
-        //ghost2x = ball2.getXfromT(t2);
-        //if(ball1.isAlive()) {
-        ghost1x = ball1.x;
-        ghost1y = ball1.y;
-        //}
-        //if(ball2.isAlive())
-        //{
-        ghost2x = ball2.x;
-        ghost2y = ball2.y;
-        //}
-
-        //}
-        return;
-    }
+	public void MakeTails()
+	{
+		final int delta = EnvVar.speed;
+		int dy = ghost1y-ghost2y;
+		int slices = dy/delta;
+		final float dt = dy/slices;
+		if(slices<=1)
+			return;
+		tailxs = new float[slices-1];
+		float tt =0;
+		for(int i=0; i<slices-1;i++)
+		{
+			tailxs[i]= Ball.getXfromT(ghost2x,ghost1x,tt);
+			tt+= dt;
+		}
+	}
 }

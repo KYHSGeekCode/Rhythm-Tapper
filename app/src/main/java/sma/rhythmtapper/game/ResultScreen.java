@@ -5,11 +5,13 @@ import android.graphics.Paint;
 
 import java.util.List;
 
+import sma.rhythmtapper.DifficultySelectionActivity;
 import sma.rhythmtapper.framework.Game;
 import sma.rhythmtapper.framework.Graphics;
 import sma.rhythmtapper.framework.Impl.RTGame;
 import sma.rhythmtapper.framework.Input;
 import sma.rhythmtapper.framework.Screen;
+import sma.rhythmtapper.game.models.Difficulties;
 import sma.rhythmtapper.game.models.GameResult;
 
 public class ResultScreen extends Screen {
@@ -37,7 +39,8 @@ public class ResultScreen extends Screen {
             {
                 if(event.x>=sizeX/3*2&&event.y>sizeY/3*2)
                 {
-                    game.setScreen(((RTGame)game).chooseSongScreen);
+                    //game.setScreen(((RTGame)game).chooseSongScreen);
+                    game.goToActivity(DifficultySelectionActivity.class);
                 }
             }
         }

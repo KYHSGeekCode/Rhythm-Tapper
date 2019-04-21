@@ -1,6 +1,7 @@
 package sma.rhythmtapper.framework;
 
 import android.graphics.Paint;
+import android.graphics.Path;
 
 /**
  * Created by Peter on 23.01.2017.
@@ -13,6 +14,8 @@ public interface Graphics {
     public Image newImage(String fileName, ImageFormat format);
 
     public void clearScreen(int color);
+
+    public void DrawPath(Path path);
 
     public void drawLine(int x, int y, int x2, int y2, int color, int stroke);
 

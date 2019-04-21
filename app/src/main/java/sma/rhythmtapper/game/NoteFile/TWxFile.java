@@ -65,7 +65,7 @@ public class TWxFile
 		    Log.v(TAG,"connect "+id+" with"+prevMap.get(id));
 			Ball ba = id2Ball.get(id);			//formar
 			ba.nextBall = id2Ball.get(prevMap.get(id));	//next
-			if(ba.isSlideNote()||ba.isLongNote())
+			if((ba.isSlideNote()||ba.isLongNote()) && (ba.nextBall.isSlideNote() || ba.nextBall.isLongNote()))
 			{
 				ba.connector= new Tail(ba, ba.nextBall);
 			} else{

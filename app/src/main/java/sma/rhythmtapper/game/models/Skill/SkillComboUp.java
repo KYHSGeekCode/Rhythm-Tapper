@@ -16,4 +16,11 @@ public class SkillComboUp extends Skill {
     public void PostTest(GameStatusBundle bundle) {
         bundle.ApplyComboBonus(15);
     }
+
+	@Override
+	public boolean isAffectComboBonus()
+	{
+		// TODO: Implement this method
+		return true;
+	}
 }

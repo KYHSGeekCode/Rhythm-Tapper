@@ -20,7 +20,9 @@ import sma.rhythmtapper.R;
 import sma.rhythmtapper.framework.Graphics;
 import sma.rhythmtapper.framework.Image;
 
-public class RTGraphics implements Graphics {
+public class RTGraphics implements Graphics
+{
+	
     private AssetManager assets;
     private Bitmap frameBuffer;
     private Canvas canvas;
@@ -144,6 +146,17 @@ public class RTGraphics implements Graphics {
         canvas.drawARGB(a, r, g, b);
     }
 
+	@Override
+    public void drawString(String text, int x, int y, Paint paint, boolean center) {
+		if(center == true)
+		{
+			int dx =(int)(paint.measureText(text)/2);
+			x-=dx;
+		}
+        canvas.drawText(text, x, y, paint);
+    }
+	
+	
     @Override
     public void drawString(String text, int x, int y, Paint paint) {
         canvas.drawText(text, x, y, paint);

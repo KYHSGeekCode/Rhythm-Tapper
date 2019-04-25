@@ -35,4 +35,25 @@ public class SkillOverload extends Skill {
     public String GetName() {
         return "Overload";
     }
+
+	@Override
+	public boolean isAffectLife()
+	{
+		// TODO: Implement this method
+		return true;
+	}
+
+	@Override
+	public boolean isAffectScore()
+	{
+		// TODO: Implement this method
+		return true;
+	}
+
+	@Override
+	public boolean isAffectComboBonus()
+	{
+		// TODO: Implement this method
+		return true;
+	}
 }

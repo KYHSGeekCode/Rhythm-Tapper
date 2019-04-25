@@ -19,6 +19,7 @@ public class GameActivity extends RTGame {
 		setDeck((Deck)intent.getSerializableExtra("deck"));
 		setNoteFile((NoteFile)intent.getSerializableExtra("notefile"));
 		setBallspeed((int)intent.getIntExtra("speed",10));
+		setAutoPlay(intent.getBooleanExtra("autoplay",false));
         return new LoadingScreen(this, _diff);
     }
 }

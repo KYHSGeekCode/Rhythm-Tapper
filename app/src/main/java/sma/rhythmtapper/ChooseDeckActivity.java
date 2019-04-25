@@ -32,8 +32,10 @@ public class ChooseDeckActivity extends Activity {
             @Override
             public void onClick(View view) {
                 final NumberPicker np=new NumberPicker(ChooseDeckActivity.this);
+				final CheckBox cb = new CheckBox(ChooseDeckActivity.this);
                 np.setMinValue(5);
                 np.setMaxValue(40);
+				cb.setChecked(false);
                 LinearLayout ll=new LinearLayout(ChooseDeckActivity.this);
                 Button btSt=new Button(ChooseDeckActivity.this);
                 btSt.setText("Start");
@@ -46,11 +48,13 @@ public class ChooseDeckActivity extends Activity {
 						i.putExtra("notefile",nf);
 						i.putExtra("deck",deck);
 						i.putExtra("speed",np.getValue());
+						i.putExtra("autoplay",cb.isChecked());
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(i);
                     }
                 });
                 ll.addView(np);
+				ll.addView(cb);
                 ll.addView(btSt);
                 AlertDialog ad=new AlertDialog.Builder(ChooseDeckActivity.this)
                         .setCancelable(true)

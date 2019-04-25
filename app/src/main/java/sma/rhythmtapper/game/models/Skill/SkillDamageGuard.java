@@ -21,4 +21,12 @@ public class SkillDamageGuard extends Skill {
     public void Finish(GameStatusBundle bundle) {
         bundle.shouldDamage=true;
     }
+
+	@Override
+	public boolean isAffectLife()
+	{
+		// TODO: Implement this method
+		return true;
+	}
+	
 }

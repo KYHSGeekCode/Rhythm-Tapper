@@ -31,6 +31,19 @@ public abstract class Skill implements Serializable{
     {
 
     }
+	public boolean isAffectLife()
+	{
+		return false;
+	}
+	public boolean isAffectScore()
+	{
+		return false;
+	}
+	public boolean isAffectComboBonus()
+	{
+		return false;
+	}
+
     public static final Skill nullSkill=new Skill(100,0,1){
         @Override
         public String GetName() {

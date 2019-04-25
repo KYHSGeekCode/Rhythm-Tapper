@@ -20,4 +20,12 @@ public class SkillScoreUp extends Skill {
             bundle.ApplyScoreBonus(17);
         }
     }
+
+	@Override
+	public boolean isAffectScore()
+	{
+		// TODO: Implement this method
+		return true;
+	}
+	
 }

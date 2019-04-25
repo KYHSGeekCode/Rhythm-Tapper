@@ -1,7 +1,8 @@
 package sma.rhythmtapper.game.models;
 
-import java.util.Random;
 import java.io.*;
+import java.util.*;
+import sma.rhythmtapper.game.models.Skill.*;
 
 public class Deck implements Serializable{
     Card[] cards= new Card[5];
@@ -176,7 +177,7 @@ public class Deck implements Serializable{
         //how to apply combo bonus?
         //score bonus?
         int basicScore=totalAppeal/100;
-        bundle.testResult = TestResult.PERFECT;
+        //bundle.testResult = TestResult.PERFECT;
         if(bundle.testResult.compareTo(TestResult.NICE)<=0)
             bundle.continueCombo=false;
         else
@@ -254,7 +255,21 @@ public class Deck implements Serializable{
         }
     }
 
-    public String GetActivatedSkills() {
+	public List<Skill> getActivatedSkills()
+	{
+		List<Skill> sk= new ArrayList<>();
+		for(int i=0;i<bSkillOn.length;i++)
+        {
+            if(bSkillOn[i])
+            {
+                sk.add (cards[i].skill);
+            }
+        }
+		return sk;
+	}
+	
+	
+    public String GetActivatedSkillNames() {
         StringBuilder sb=new StringBuilder();
         for(int i=0;i<5;i++)
         {

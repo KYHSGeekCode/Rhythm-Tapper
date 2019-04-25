@@ -30,6 +30,10 @@ public class RTGame extends Activity implements Game {
 	NoteFile noteFile;
 	Deck deck;
 
+	public void setAutoPlay(boolean au)
+	{
+		EnvVar.autoPlay = au;
+	}
 	public void setBallspeed(int ballspeed)
 	{
 		this.ballspeed = ballspeed;

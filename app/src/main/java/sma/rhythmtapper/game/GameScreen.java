@@ -12,6 +12,7 @@ import sma.rhythmtapper.framework.Input.*;
 import sma.rhythmtapper.game.models.*;
 import sma.rhythmtapper.models.*;
 import sma.rhythmtapper.game.NoteFile.*;
+import sma.rhythmtapper.game.models.Skill.*;
 
 public class GameScreen extends Screen
 {
@@ -101,6 +102,8 @@ public class GameScreen extends Screen
     private Paint _paintScoreB;
     private Paint _paintScoreC;
     private Paint _paintScoreD;
+	private Paint _paintCombo;
+	private Paint _paintComboShadow;
 
 
     // constants
@@ -209,6 +212,24 @@ public class GameScreen extends Screen
         _paintScoreShadow.setAntiAlias(true);
         _paintScoreShadow.setColor(Color.WHITE);
 
+		_paintCombo = new Paint();
+        _paintCombo.setTextSize(70);
+        _paintCombo.setTextAlign(Paint.Align.CENTER);
+        _paintCombo.setAntiAlias(true);
+        _paintCombo.setColor(Color.WHITE);
+        _paintCombo.setStrokeWidth(6);
+
+        // paints for text
+        _paintComboShadow = new Paint();
+        _paintComboShadow.setTextSize(70);
+        _paintComboShadow.setStrokeWidth(10);
+        _paintComboShadow.setStyle(Paint.Style.STROKE);
+        _paintComboShadow.setTextAlign(Paint.Align.CENTER);
+        _paintComboShadow.setAntiAlias(true);
+        _paintComboShadow.setColor(Color.YELLOW);
+		
+		
+		
         _paintGameover = new Paint();
         _paintGameover.setTextSize(60);
         _paintGameover.setTextAlign(Paint.Align.CENTER);
@@ -234,7 +255,7 @@ public class GameScreen extends Screen
         _paintScoreD.setColor(Color.rgb(0xc6, 0x8a, 0x12));
 
 
-        HITBOX_CENTER = game.getScreenY() - HITBOX_HEIGHT;
+        HITBOX_CENTER = (int)(game.getScreenY()*1.1f- HITBOX_HEIGHT);
         BALL_INITIAL_Y = HITBOX_CENTER;
         EnvVar.sizeY = game.getScreenY();
         EnvVar.sizeX = game.getScreenX();
@@ -275,6 +296,7 @@ public class GameScreen extends Screen
     private void updateRunning(List<TouchEvent> touchEvents, float deltaTime)
 	{
         deck.Update(deltaTime);
+		judgePopup.Update(deltaTime*0.01f);
         // 1. All touch input is handled here:
         handleTouchEvents(touchEvents);
 
@@ -880,6 +902,9 @@ public class GameScreen extends Screen
         }
         //_vibrator.vibrate(100);
         bundle.testResult = TestResult.MISS;
+		if(EnvVar.autoPlay)
+			bundle.testResult = TestResult.PERFECT;
+		
         OnBallTestEnded(b);
         //_streak = 0;
         //_combo=0;
@@ -913,11 +938,11 @@ public class GameScreen extends Screen
 			HITBOX_HEIGHT*=4;
         int diff = Math.abs(HITBOX_CENTER - y);
         TestResult tr = TestResult.MISS;
-        if (diff <= HITBOX_HEIGHT * 0.1)
+        if (diff <= HITBOX_HEIGHT * 0.2)
 		{
             tr = TestResult.PERFECT;
         }
-		else if (diff <= HITBOX_HEIGHT * 0.25)
+		else if (diff <= HITBOX_HEIGHT * 0.3)
 		{
             tr = TestResult.GREAT;
         }
@@ -933,7 +958,15 @@ public class GameScreen extends Screen
 			HITBOX_HEIGHT/=2;
 		else if(b.isLongNote())
 			HITBOX_HEIGHT/=4;
-        bundle.testResult = tr;
+		if(b.isSlideMiddle())
+		{
+			if(tr.compareTo(TestResult.BAD)>=0)
+				tr = TestResult.PERFECT;
+		}
+		bundle.testResult = tr;
+		if(EnvVar.autoPlay)
+			bundle.testResult = TestResult.PERFECT;
+		
         OnBallTestEnded(b);
 		/* switch(b.type) {
 		 case OneUp: {
@@ -960,6 +993,7 @@ public class GameScreen extends Screen
 
     private void OnBallTestEnded(Ball b) {
         deck.Apply(bundle);
+		judgePopup.Show(bundle.testResult);
         ballsCount ++;
         if (bundle.testResult.compareTo(TestResult.BAD) >= 0)
 		{
@@ -1280,6 +1314,7 @@ public class GameScreen extends Screen
 
     }
 
+	JudgePopup judgePopup= new JudgePopup();
     private void drawRunningUI()
 	{
         Graphics g = game.getGraphics();
@@ -1289,7 +1324,7 @@ public class GameScreen extends Screen
             g.drawImage(Assets.sirens, 0, 100);
         }
 
-        g.drawRect(0, 0, _gameWidth, 100, Color.BLACK);
+        g.drawRect(0, 0, _gameWidth, 50, Color.BLACK);
         float ratioOfLife1 = (float) bundle.life / bundle.totalLife;
         float ratioOfLife2 = 0;
         if (ratioOfLife1 > 1)
@@ -1307,10 +1342,42 @@ public class GameScreen extends Screen
         //        "   Lifes remaining: " + _lives;
         DrawString(g, "" + bundle.score, (int) (_gameWidth * 0.55f), 80);
         //g.drawString(""+bundle.score, (int)(_gameWidth*0.52f), 80, _paintScore);
-        g.drawString(bundle.combo + " COMBO", (int) (_gameWidth * 0.5f), 300, _paintScore);
-        g.drawString(bundle.testResult.name(), (int) (_gameWidth * 0.5f), 350, _paintScore);
-        String skills = deck.GetActivatedSkills();
-        g.drawString(skills, (int) (_gameWidth * 0.5f), 400, _paintScore);
+		if(bundle.combo>0)
+        	DrawString(g,bundle.combo + "\nCOMBO", (int) (_gameWidth * 0.7f), (int)(EnvVar.gameHeight*0.3f),_paintCombo,_paintComboShadow);
+		judgePopup.Paint(g);
+        //g.drawString(bundle.testResult.name(), (int) (_gameWidth * 0.5f), 350, _paintScore);
+        List<Skill> skills=deck.getActivatedSkills();
+		boolean boost =false;
+		for(Skill skill:skills)
+		{
+			if(skill instanceof SkillBoost)
+			{
+				boost=true;
+				break;
+			}
+		}
+		_paintScore.setTextAlign(Paint.Align.LEFT);
+		_paintScoreShadow.setTextAlign(Paint.Align.LEFT);
+		for(Skill skill:skills)
+		{
+			if(skill.isAffectLife())
+			{
+				DrawString(g,skill.GetName()+(boost?"⇈":""),0,50);	
+			}
+			if(skill.isAffectScore())
+			{
+				DrawString(g,skill.GetName()+(boost?"⇈":""),(int)(_gameWidth*0.55f),130);
+			}
+			if(skill.isAffectComboBonus())
+			{
+				DrawString(g,skill.GetName()+(boost?"⇈":""),(int) (_gameWidth * 0.7f),(int)(EnvVar.gameHeight*0.3f)+50);
+			}
+		}
+		_paintScore.setTextAlign(Paint.Align.CENTER);
+		_paintScoreShadow.setTextAlign(Paint.Align.CENTER);
+		
+		//String skills = deck.GetActivatedSkillNames();
+        //g.drawString(skills, (int) (_gameWidth * 0.5f), 400, _paintScore);
 
     }
 
@@ -1336,6 +1403,12 @@ public class GameScreen extends Screen
         g.drawString(s, x, y, _paintScore);
     }
 
+	private void DrawString(Graphics g, String s, int x, int y,Paint shadow, Paint fg)
+	{
+        g.drawString(s, x, y, shadow);
+        g.drawString(s, x, y, fg);
+    }
+	
     private Paint GetScoreBkPaint(float ratio)
 	{
         if (ratio < 0.5f)

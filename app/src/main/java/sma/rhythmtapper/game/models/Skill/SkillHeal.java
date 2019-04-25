@@ -20,4 +20,12 @@ public class SkillHeal extends Skill {
             bundle.ApplyDeltaLife(3);
         }
     }
+
+	@Override
+	public boolean isAffectLife()
+	{
+		// TODO: Implement this method
+		return true;
+	}
+	
 }

@@ -38,6 +38,10 @@ public class Ball implements Serializable
 		connector.ball2.Erase();
 		RemoveSelf();
 	}
+	public boolean isSlideMiddle()
+	{
+		return isSlideNote() && connector!=null;// && FIXME
+	}
 	public boolean isSlideEnd()
 	{
 		return isSlideNote()&& connector==null;

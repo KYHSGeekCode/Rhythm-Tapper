@@ -1233,7 +1233,7 @@ public class GameScreen extends Screen
     private void paintBall(Graphics g, Ball b)
 	{
 	    //b.type ==normal
-        int sizeCoeff = (int)(SIZE_BALL*(1- (1-b.t)*(1-b.t)));
+        int sizeCoeff = (int)(SIZE_BALL*getSizeCoeff(b.t));
         Image imgToDraw = Assets.ballNormal;
         switch(b.flick)
         {
@@ -1292,6 +1292,10 @@ public class GameScreen extends Screen
 
         }
         */
+    }
+
+    public static float getSizeCoeff(float  t) {
+        return (1- (1-t)*(1-t));
     }
 
     private void nullify()

@@ -152,8 +152,7 @@ public class Ball implements Serializable
 */
 	public void OnGameStart(){
 	    //Log.v(TAG,"Width="+EnvVar.gameWidth);
-        this.origx = (int)((EnvVar.gameWidth / 5 / 2) * (2 * startLine - 1));
-        this.endx = (int)((EnvVar.gameWidth / 5 / 2) * (2 * endLine - 1));
+        SetupXs();
         this.y = (int)(GameScreen.BALL_INITIAL_Y + ( EnvVar.currentTime-this.time)* speed *100);
         alive = true;
         //Log.d("Ball","endline"+endLine+"startLine"+startLine+"origx"+origx+"endx"+endx);
@@ -176,11 +175,16 @@ public class Ball implements Serializable
 	{
 		if(this.origx==0)
 		{
-			this.origx = (int)((EnvVar.gameWidth / 5 / 2) * (2 * startLine - 1));
-			this.endx = (int)((EnvVar.gameWidth / 5 / 2) * (2 * endLine - 1));
+			SetupXs();
 		}
 		return getXfromT(origx,endx,tt);
 	}
+
+	private void SetupXs() {
+		this.origx = (int)((EnvVar.gameWidth *0.8f / 5 / 2) * (2 * startLine - 1)+EnvVar.gameWidth*0.1f);
+		this.endx = (int)((EnvVar.gameWidth / 5 / 2) * (2 * endLine - 1));
+	}
+
 	public static int getXfromT(int start, int end, float tt)
 	{
 		if(tt>=1f)

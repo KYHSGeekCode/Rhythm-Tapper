@@ -519,8 +519,10 @@ public class GameScreen extends Screen
                             if (!hitLane(_balls.get(j), Ball.BallType.LongUp)&&finger.shouldHold)
 							{
 							    Ball toremove = LowestBall(_balls.get(j));
-							    RemoveBall(_balls.get(j),toremove);
-								onMiss(toremove);
+							    if(toremove!=null) {
+                                    RemoveBall(_balls.get(j), toremove);
+                                    onMiss(toremove);
+                                }
                                 // if no ball was hit
                                 //_laneHitAlpha[j] = MISS_FLASH_INITIAL_ALPHA;
                             }

@@ -185,6 +185,7 @@ public class Deck implements Serializable{
 
         if(bundle.testResult.compareTo(TestResult.BAD)<=0)
             bundle.shouldDamage=true;
+        bundle.shouldDamage = false;
         for(int i=0;i<5;i++)
         {
             if(bSkillOn[i])

@@ -394,6 +394,7 @@ public class GameScreen extends Screen
 				Finger finger=findFinger(event.pointer);
 				if(finger==null){
 					fingers.add(new Finger(event.x,event.y,event.pointer));
+					Log.v(TAG,"NO FINGER"+event.x);
 					return;
 					//FIXME
 				}
@@ -935,7 +936,7 @@ public class GameScreen extends Screen
         //nice     15%
         //bad      10%
 		if(b.isFlick())
-			HITBOX_HEIGHT*=2;
+			HITBOX_HEIGHT*=5;
 		else if(b.isLongNote())
 			HITBOX_HEIGHT*=4;
         int diff = Math.abs(HITBOX_CENTER - y);
@@ -959,7 +960,7 @@ public class GameScreen extends Screen
 		if(b.isFlick())
 			HITBOX_HEIGHT/=2;
 		else if(b.isLongNote())
-			HITBOX_HEIGHT/=4;
+			HITBOX_HEIGHT/=5;
 		if(b.isSlideMiddle())
 		{
 			if(tr.compareTo(TestResult.BAD)>=0)

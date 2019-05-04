@@ -349,6 +349,11 @@ public class GameScreen extends Screen
     private void endGame()
 	{
         state = GameState.GameOver;
+        Assets.soundMiss.stop();
+        Assets.soundFlickOK.stop();
+        Assets.soundClick.stop();
+
+
         // update highscore
         FileIO fileIO = game.getFileIO();
         SharedPreferences prefs = fileIO.getSharedPref();
@@ -1164,6 +1169,10 @@ public class GameScreen extends Screen
             int n = 2 * i + 1;
             g.drawImage(Assets.ballHitpoint, (int)(dx * n - SIZE_BALL), (int)(HITBOX_CENTER - SIZE_BALL),SIZE_BALL*2,SIZE_BALL*2);
         }
+
+        if (state == GameState.Running)
+            drawRunningUI();
+
         for(HelperLine h : helperLines)
         {
             h.Paint(g);
@@ -1198,8 +1207,6 @@ public class GameScreen extends Screen
         // Secondly, draw the UI above the game elements.
         if (state == GameState.Ready)
             drawReadyUI();
-        if (state == GameState.Running)
-            drawRunningUI();
         if (state == GameState.Paused)
             drawPausedUI();
         if (state == GameState.GameOver)

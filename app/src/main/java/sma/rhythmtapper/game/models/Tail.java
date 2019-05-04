@@ -75,7 +75,7 @@ public class Tail extends Connector {
             for (int y = ghost2y + EnvVar.speed; y < ghost1y; y += EnvVar.speed) {
                 float tt = (float) (y - ghost2y) / (float) (dy);
                 float sizett = (ball1.t - ball2.t) / (ghost1y - ghost2y) * (y - ghost1y) + ball1.t;
-                int x = Ball.getXfromT(ghost2x, ghost1x, tt);
+                int x = Ball.getXfromTLinear(ghost2x, ghost1x, tt);
                 g.drawLine(prevx, prevy, x, y, ball1.color, (int) (STROKE * GameScreen.getSizeCoeff(sizett)));
                 if (y > EnvVar.HITBOX_CENTER && prevy < EnvVar.HITBOX_CENTER) {
                     int helperx = (GameScreen.HITBOX_CENTER - y) * (prevx - x) / (prevy - y) + x;

@@ -11,11 +11,12 @@ public class RTSound implements Sound {
     public RTSound(SoundPool soundPool, int soundId) {
         this.soundId = soundId;
         this.soundPool = soundPool;
+        soundPool.play(soundId, 0, 0, 0, -1, 1);
     }
 
     @Override
     public void play(float volume) {
-        soundPool.play(soundId, volume, volume, 0, 0, 1);
+        soundPool.play(soundId, volume, volume, 1, 0, 1);
     }
 
     @Override
@@ -23,4 +24,6 @@ public class RTSound implements Sound {
         soundPool.unload(soundId);
     }
 
+    @Override
+    public void stop(){ soundPool.stop(soundId);}
 }

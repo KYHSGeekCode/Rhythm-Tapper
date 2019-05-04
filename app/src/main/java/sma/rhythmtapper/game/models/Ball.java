@@ -162,7 +162,7 @@ public class Ball implements Serializable
         // t = 0 : A x = startlane
         // t = 1: B x = endlane
         //this.y += speed;
-		this.y = (int)(GameScreen.BALL_INITIAL_Y + ( EnvVar.currentTime-this.time)* EnvVar.speed *100);
+		this.y = (int)(/*GameScreen.BALL_INITIAL_Y*/ EnvVar.HITBOX_CENTER+ ( EnvVar.currentTime-this.time)* EnvVar.speed *100);
         t = (float)this.y / (float)EnvVar.HITBOX_CENTER;
         this.x= getXfromT(t);
         //Log.v("Ballx",""+x);
@@ -191,5 +191,12 @@ public class Ball implements Serializable
 			return end;
 		int a = start-end;
 		return (int)(a*(tt-1)*(tt-1)+end);
+	}
+	public static int getXfromTLinear(int start, int end, float tt)
+	{
+		if(tt>=1f)
+			return end;
+		int a = start-end;
+		return (int)(a*(1-tt)+end);
 	}
 }

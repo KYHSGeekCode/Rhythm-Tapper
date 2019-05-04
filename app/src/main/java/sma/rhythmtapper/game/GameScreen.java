@@ -617,7 +617,7 @@ public class GameScreen extends Screen
     private void updateVariables(float deltatime)
 	{
         // update timer
-        _currentTime += deltatime * 0.01f;
+        _currentTime = _currentTrack.getCurrentPosition()/1000.0f;//deltatime * 0.01f;
 		EnvVar.currentTime = _currentTime;
         // update ball position
         for(Ball b: totalBalls)

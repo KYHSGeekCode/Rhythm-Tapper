@@ -13,10 +13,14 @@ import sma.rhythmtapper.game.models.*;
 import sma.rhythmtapper.models.*;
 import sma.rhythmtapper.game.NoteFile.*;
 import sma.rhythmtapper.game.models.Skill.*;
+import wseemann.media.FFmpegMediaMetadataRetriever;
 
 public class GameScreen extends Screen
 {
     private static final String TAG = "GameScreenTag";
+    private final FFmpegMediaMetadataRetriever videoPlayer;
+    private final MVProvider mvProvider;
+
     private Queue<Ball> balls;
     int ballsCount = 0;
     int ballsTotalCount = 0;
@@ -125,6 +129,8 @@ public class GameScreen extends Screen
     private static final int EXPLOSION_TIME = 150;
 
     private GameState state = GameState.Ready;
+
+    private Bitmap [] videoBits;
 
     GameScreen(Game game, Difficulty difficulty)
 	{
@@ -254,6 +260,10 @@ public class GameScreen extends Screen
         _paintScoreD = new Paint();
         _paintScoreD.setColor(Color.rgb(0xc6, 0x8a, 0x12));
 
+        videoPlayer = Assets.videoExtractor;
+
+        mvProvider = new MVProvider(_currentTrack.getDuration(),videoPlayer,_gameWidth,_gameHeight);
+        mvProvider.start();
 
         HITBOX_CENTER = (int)(game.getScreenY()*1.1f- HITBOX_HEIGHT);
         BALL_INITIAL_Y = HITBOX_CENTER;
@@ -352,7 +362,6 @@ public class GameScreen extends Screen
         Assets.soundMiss.stop();
         Assets.soundFlickOK.stop();
         Assets.soundClick.stop();
-
 
         // update highscore
         FileIO fileIO = game.getFileIO();
@@ -1147,6 +1156,8 @@ public class GameScreen extends Screen
 
     }
 
+
+    Bitmap oldBitmap;
     @Override
     public void paint(float deltaTime)
 	{
@@ -1155,7 +1166,27 @@ public class GameScreen extends Screen
         // First draw the game elements.
 
         // Example:
-        g.drawScaledImage(Assets.background, 0, 0, _gameWidth, _gameHeight, 0, 0, Assets.background.getWidth(), Assets.background.getHeight());
+        if(videoPlayer == null)
+            g.drawScaledImage(Assets.background, 0, 0, _gameWidth, _gameHeight, 0, 0, Assets.background.getWidth(), Assets.background.getHeight());
+        else{
+            _currentTime = _currentTrack.getCurrentPosition()/1000.0f;
+            //Bitmap bitmap =  videoPlayer.getScaledFrameAtTime((long)(_currentTime*1000000.0f),FFmpegMediaMetadataRetriever.OPTION_CLOSEST_SYNC,_gameWidth,_gameHeight);
+            int index = (int)(_currentTime*MVProvider.FRAMERATE);
+            Log.d(TAG,"Consumer index:"+index);
+            Bitmap bitmap = mvProvider.getBitmap(index);
+            if(bitmap!=null)
+            {
+                g.drawImage(bitmap,0,0);
+                if(oldBitmap != bitmap)
+                {
+                    if(oldBitmap !=null)
+                        oldBitmap.recycle();
+                }
+                oldBitmap = bitmap;
+            }
+            else
+                g.drawScaledImage(Assets.background, 0, 0, _gameWidth, _gameHeight, 0, 0, Assets.background.getWidth(), Assets.background.getHeight());
+        }
         //for (int i = 0; i < 5; i++)
         //    g.drawRect(_gameWidth / 5 * i, 0, _gameWidth / 5 + 1, _gameHeight, Color.argb(_laneHitAlpha[i], 255, 0, 0));
         /*g.drawRect(_gameWidth / 5    , 0, _gameWidth / 5 + 1, _gameHeight, Color.argb(_laneHitAlpha2, 255, 0, 0));

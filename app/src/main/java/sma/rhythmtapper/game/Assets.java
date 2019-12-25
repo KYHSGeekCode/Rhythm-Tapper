@@ -3,6 +3,7 @@ package sma.rhythmtapper.game;
 import sma.rhythmtapper.framework.Image;
 import sma.rhythmtapper.framework.Music;
 import sma.rhythmtapper.framework.Sound;
+import wseemann.media.FFmpegMediaMetadataRetriever;
 
 public class Assets {
     // Graphics
@@ -30,4 +31,5 @@ public class Assets {
     static Sound soundMiss;
 
     static Music musicTrack;
+    static FFmpegMediaMetadataRetriever videoExtractor;
 }

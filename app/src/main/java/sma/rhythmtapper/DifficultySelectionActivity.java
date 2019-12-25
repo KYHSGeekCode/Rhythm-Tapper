@@ -27,13 +27,13 @@ public class DifficultySelectionActivity extends Activity implements View.OnClic
 
     private ListView lvSongs;
     private SongListViewAdapter adapter;
-    private final Difficulty _diffEasy =
+    /*private final Difficulty _diffEasy =
             new Difficulty(Difficulties.EASY, "Spyro_Year_of_the_Dragon_Acoustic_Fields_OC_ReMix.mp3", 115f / 2, 8);
     private final Difficulty _diffMid =
             new Difficulty(Difficulties.NORMAL, "super_meat_boy_power_of_the_meat.mp3", 128, 10);
     private final Difficulty _diffHard =
             new Difficulty(Difficulties.HARD, "Aquaria_Minibadass_OC_ReMix.mp3", 180, 15);
-
+*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

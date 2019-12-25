@@ -23,4 +23,6 @@ public interface Music {
     void seekBegin();
 
     public int getCurrentPosition();
+    public int getDuration();
+
 }

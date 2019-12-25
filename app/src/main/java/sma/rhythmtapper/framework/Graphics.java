@@ -1,5 +1,6 @@
 package sma.rhythmtapper.framework;
 
+import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.Path;
 
@@ -32,11 +33,16 @@ public interface Graphics {
     public void drawImage(Image image, int x, int y, int srcX, int srcY,
                           int srcWidth, int srcHeight);
 
+
     public void drawImage(Image Image, int x, int y);
+
+    public void drawImage(Bitmap Image, int x, int y);
 
     public void drawImage(Image Image, int x, int y,int w, int h);
 
     public void drawScaledImage(Image Image, int x, int y, int width, int height, int srcX, int srcY, int srcWidth, int srcHeight);
+
+    public void drawScaledImage(Bitmap Image, int x, int y, int width, int height, int srcX, int srcY, int srcWidth, int srcHeight);
 
     public void drawString(String text, int x, int y, Paint paint);
 	

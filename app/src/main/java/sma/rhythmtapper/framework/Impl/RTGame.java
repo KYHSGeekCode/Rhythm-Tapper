@@ -10,6 +10,7 @@ import sma.rhythmtapper.framework.*;
 import sma.rhythmtapper.game.*;
 import sma.rhythmtapper.game.NoteFile.*;
 import sma.rhythmtapper.game.models.*;
+import wseemann.media.FFmpegMediaMetadataRetriever;
 
 
 public class RTGame extends Activity implements Game {
@@ -89,6 +90,15 @@ public class RTGame extends Activity implements Game {
     }
 
     @Override
+    public FFmpegMediaMetadataRetriever createVideo(String video) {
+	    if(video == null)
+	        return null;
+	    FFmpegMediaMetadataRetriever med = new FFmpegMediaMetadataRetriever();
+	    med.setDataSource(video);
+        return med;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -118,8 +128,10 @@ public class RTGame extends Activity implements Game {
         screen = getInitScreen();
         setContentView(renderView);
 
+        //TODO: use window flag instead
+        //https://developer.android.com/training/scheduling/wakelock
         PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "RhythmTapper");
+        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "RhythmTapper::wakelock");
 
         chooseSongScreen=new ChooseSongScreen(this);
     }

@@ -1,12 +1,8 @@
 package sma.rhythmtapper.game;
 
-import android.os.*;
 import android.util.Log;
 
-import java.io.*;
 import sma.rhythmtapper.framework.*;
-import sma.rhythmtapper.game.models.*;
-import sma.rhythmtapper.game.models.Skill.*;
 import sma.rhythmtapper.models.*;
 
 
@@ -49,6 +45,8 @@ public class LoadingScreen extends Screen {
         Assets.soundFlickOK= game.getAudio().createSound(SOUND_EFFECTS_PATH + "sound_flick_ok.ogg");
         Assets.soundMiss = game.getAudio().createSound(SOUND_EFFECTS_PATH + "sound_miss.ogg");
         Assets.musicTrack = game.getFileAudio().createMusic(_diff.getMusic());
+        Assets.videoExtractor = game.createVideo(_diff.getVideo());
+        Log.d(TAG,"videoextractor:"+Assets.videoExtractor);
         Log.d(TAG, "musictrack"+Assets.musicTrack);
         //Deck deck=new Deck();
         

@@ -46,10 +46,20 @@ public class NoteFile implements Serializable
                 continue;
             }
             String extension = filename.substring(filename.lastIndexOf("."));
-            if (extension.compareToIgnoreCase(".mp3") == 0 || extension.compareToIgnoreCase(".wav") == 0)
+            if(extension == null)
+                continue;
+            extension = extension.toLowerCase();
+            if (extension.compareTo(".mp3") == 0 || extension.compareTo(".wav") == 0)
 			{
                 musicFile = file;
-                Log.v("a", "musicfile=" + musicFile);
+                Log.v(TAG, "musicfile=" + musicFile);
+            }
+            if(extension.compareTo(".mp4") == 0 || extension.compareTo(".avi")==0
+                ||extension.compareTo(".gif")==0 || extension.compareTo(".mkv")==0
+                ||extension.compareTo(".mov")==0 ||extension.compareTo(".wmv")==0 )
+            {
+                videoFile = file;
+                Log.v(TAG, "videofile="+videoFile);
                 break;
             }
         }
@@ -573,6 +583,7 @@ public class NoteFile implements Serializable
     //note form: list of balls?
     Queue<Ball> balls;
     File musicFile;
+    File videoFile;
     boolean isLoaded;
     File dir;
     String songName = "?";
@@ -583,8 +594,18 @@ public class NoteFile implements Serializable
 	{
         return songName;
     }
-	public String getPath()
+	public String getMusicPath()
 	{
+	    //anyway crash
+	    if(musicFile == null)
+	        return new File("Aquaria_Minibadass_OC_ReMix.mp3").getPath();
 		return musicFile.getPath();
 	}
+    public String getVideoPath()
+    {
+        if(videoFile == null)
+            return null;
+        return videoFile.getPath();
+    }
+
 }

@@ -25,6 +25,11 @@ public class RTMusic implements Music, OnCompletionListener, OnSeekCompleteListe
         return mediaPlayer.getCurrentPosition();
     }
 
+    public int getDuration()
+    {
+        return mediaPlayer.getDuration();
+    }
+
     public RTMusic(File file) {
         mediaPlayer = new MediaPlayer();
         try {

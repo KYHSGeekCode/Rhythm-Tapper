@@ -19,7 +19,8 @@ public class ChooseDeckActivity extends Activity {
         btStart= (Button) findViewById(R.id.chooseDeckBtStart);
         Intent intent=getIntent();
 		final NoteFile nf=(NoteFile) intent.getSerializableExtra("notefile");
-        final String path = nf.getPath(); //intent.getStringExtra("Name");
+        final String path = nf.getMusicPath(); //intent.getStringExtra("Name");
+        final String videoPath = nf.getVideoPath();
         final String difficulty = intent.getStringExtra("Difficulty");
 		final Deck deck=new Deck();
 		deck.SetCard(0,new Card(ColorType.CUTE,5000,5000,5000,30, new CenterSkill(CenterSkill.Condition.ANY,ColorType.CUTE, AppealType.ANY,30), new SkillHeal(7,100,7)));
@@ -43,7 +44,7 @@ public class ChooseDeckActivity extends Activity {
                     @Override
                     public void onClick(View view) {
                         Intent i = new Intent(ChooseDeckActivity.this, GameActivity.class);
-                        Difficulty difff=new Difficulty(Difficulties.valueOf(difficulty),path,100,np.getValue());
+                        Difficulty difff=new Difficulty(Difficulties.valueOf(difficulty),path,videoPath, 100,np.getValue());
                         i.putExtra("difficulty",difff);
 						i.putExtra("notefile",nf);
 						i.putExtra("deck",deck);

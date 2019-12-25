@@ -2,6 +2,8 @@ package sma.rhythmtapper.framework;
 
 import android.os.Vibrator;
 
+import wseemann.media.FFmpegMediaMetadataRetriever;
+
 /**
  * Created by Peter on 23.01.2017.
  */
@@ -30,4 +32,6 @@ public interface Game {
     public int getScreenY();
 
     public void goToActivity(Class<?> activity);
+
+    FFmpegMediaMetadataRetriever createVideo(String video);
 }

@@ -12,23 +12,32 @@ public class Difficulty implements Serializable{
     public static final String HARD_TAG = "hard";
 
     private String _music;
+    private String _video;
     private float _spawnInterval;
     private int _ballSpeed;
     private Difficulties _mode;
 
-    public Difficulty(Difficulties _mode, String music, float bpm, int ballSpeed) {
+    public Difficulty(Difficulties _mode, String music,String video, float bpm, int ballSpeed) {
         this._mode = _mode;
         this._music = music;
         this._spawnInterval = 60 / bpm * 100 / 2;
         this._ballSpeed = ballSpeed;
+        this._video = video;
     }
 
     public String getMusic() {
         return _music;
     }
+    public String getVideo() {
+        return _video;
+    }
 
     public void setMusic(String _music) {
         this._music = _music;
+    }
+
+    public void setVideo(String _video) {
+        this._video = _video;
     }
 
     public float getSpawnInterval() {

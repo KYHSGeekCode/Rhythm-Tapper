@@ -20,9 +20,8 @@ import sma.rhythmtapper.R;
 import sma.rhythmtapper.framework.Graphics;
 import sma.rhythmtapper.framework.Image;
 
-public class RTGraphics implements Graphics
-{
-	
+public class RTGraphics implements Graphics {
+
     private AssetManager assets;
     private Bitmap frameBuffer;
     private Canvas canvas;
@@ -91,9 +90,8 @@ public class RTGraphics implements Graphics
     }
 
     @Override
-    public void DrawPath(Path path)
-    {
-        canvas.drawPath(path,paint);
+    public void DrawPath(Path path) {
+        canvas.drawPath(path, paint);
     }
 
     @Override
@@ -146,17 +144,16 @@ public class RTGraphics implements Graphics
         canvas.drawARGB(a, r, g, b);
     }
 
-	@Override
+    @Override
     public void drawString(String text, int x, int y, Paint paint, boolean center) {
-		if(center == true)
-		{
-			int dx =(int)(paint.measureText(text)/2);
-			x-=dx;
-		}
+        if (center == true) {
+            int dx = (int) (paint.measureText(text) / 2);
+            x -= dx;
+        }
         canvas.drawText(text, x, y, paint);
     }
-	
-	
+
+
     @Override
     public void drawString(String text, int x, int y, Paint paint) {
         canvas.drawText(text, x, y, paint);
@@ -193,6 +190,11 @@ public class RTGraphics implements Graphics
         canvas.drawBitmap(((RTImage) Image).bitmap, x, y, null);
     }
 
+    @Override
+    public void drawImage(Bitmap bitmap, int x, int y) {
+        canvas.drawBitmap(bitmap, x, y, null);
+    }
+
     public void drawScaledImage(Image Image, int x, int y, int width, int height, int srcX, int srcY, int srcWidth, int srcHeight) {
 
 
@@ -209,6 +211,25 @@ public class RTGraphics implements Graphics
 
 
         canvas.drawBitmap(((RTImage) Image).bitmap, srcRect, dstRect, null);
+
+    }
+
+    public void drawScaledImage(Bitmap bitmap, int x, int y, int width, int height, int srcX, int srcY, int srcWidth, int srcHeight) {
+
+
+        srcRect.left = srcX;
+        srcRect.top = srcY;
+        srcRect.right = srcX + srcWidth;
+        srcRect.bottom = srcY + srcHeight;
+
+
+        dstRect.left = x;
+        dstRect.top = y;
+        dstRect.right = x + width;
+        dstRect.bottom = y + height;
+
+
+        canvas.drawBitmap(bitmap, srcRect, dstRect, null);
 
     }
 

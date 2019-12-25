@@ -1,6 +1,8 @@
 package sma.rhythmtapper.game;
 
 import android.os.*;
+import android.util.Log;
+
 import java.io.*;
 import sma.rhythmtapper.framework.*;
 import sma.rhythmtapper.game.models.*;
@@ -13,7 +15,7 @@ public class LoadingScreen extends Screen {
     private static final String IMAGE_PATH = "img/";
     private static final String SOUND_EFFECTS_PATH = "audio/";
     private static final String MUSIC_PATH = "music/";
-
+    private static final String TAG = "LoadingScreen";
 
     public LoadingScreen(Game game, Difficulty difficulty) {
         super(game);
@@ -47,6 +49,7 @@ public class LoadingScreen extends Screen {
         Assets.soundFlickOK= game.getAudio().createSound(SOUND_EFFECTS_PATH + "sound_flick_ok.ogg");
         Assets.soundMiss = game.getAudio().createSound(SOUND_EFFECTS_PATH + "sound_miss.ogg");
         Assets.musicTrack = game.getFileAudio().createMusic(_diff.getMusic());
+        Log.d(TAG, "musictrack"+Assets.musicTrack);
         //Deck deck=new Deck();
         
         game.setScreen(new GameScreen(game, _diff));

@@ -53,6 +53,8 @@ public class DifficultySelectionActivity extends Activity implements View.OnClic
         dir.mkdirs();
         ArrayList<NoteFile> noteFiles = new ArrayList<>();
         File[] songs = dir.listFiles();
+        if(songs==null)
+            return;
         if (songs.length == 0) {
             //unpack original songs to the dir
 

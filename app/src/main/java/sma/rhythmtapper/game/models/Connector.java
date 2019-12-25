@@ -39,8 +39,8 @@ public class Connector implements Serializable {
         //	{
         UpdateGhosts();
         //	}
-
-        g.drawLine(ghost1x, ghost1y, ghost2x, ghost2y, Color.LTGRAY,40);
+        if(ball1.alive)
+            g.drawLine(ghost1x, ghost1y, ghost2x, ghost2y, Color.LTGRAY,(int)(40 * GameScreen.getSizeCoeff(ball1.t)));
         /*if(ghost1y > EnvVar.HITBOX_CENTER && ghost2y <EnvVar.HITBOX_CENTER) {
             int helperx = (GameScreen.HITBOX_CENTER - ghost1y) * (ghost2x - ghost1x) / (ghost2y - ghost1y) + ghost1x;
             g.drawImage(Assets.ballHitpoint, (int) (helperx - SIZE_BALL), (int) (EnvVar.HITBOX_CENTER - SIZE_BALL)

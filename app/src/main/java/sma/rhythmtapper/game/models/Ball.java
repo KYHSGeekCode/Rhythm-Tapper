@@ -1,9 +1,11 @@
 package sma.rhythmtapper.game.models;
+
 import android.util.Log;
 
 import java.util.*;
 import java.io.*;
 
+import sma.rhythmtapper.framework.Graphics;
 import sma.rhythmtapper.game.EnvVar;
 import sma.rhythmtapper.game.GameScreen;
 import sma.rhythmtapper.game.HelperLine;
@@ -13,7 +15,11 @@ import static sma.rhythmtapper.game.EnvVar.speed;
 //This class may become a mammoth class!!
 public class Ball implements Serializable
 {
+	public static final int DEPTH = 1000;
+
     private static final String TAG = "Ball";
+	public float aOfZ;
+
 	public Ball(int id, int color, int mode, int flick, float time, float startLine, float endLine, int[] previds)
 	{
 		this.id = id;
@@ -90,6 +96,11 @@ public class Ball implements Serializable
 		return y >= -50 && y <= EnvVar.gameHeight + 50;
 	}
 
+	public boolean shouldDie() {
+		return z < -20;
+	}
+
+
 	public enum BallType {
         Normal, OneUp, Multiplier, Speeder, Bomb, Skull,
 		LongDown,LongUp,FlickLeft,FlickRight,Slide;
@@ -106,6 +117,7 @@ public class Ball implements Serializable
 	public boolean startOfFlick;
     public int x;
     public int y;
+    public int z;
     public BallType type;
     //private double speedMultiplier;
 	static Random random=new Random();
@@ -130,6 +142,71 @@ public class Ball implements Serializable
 	
 	public Connector connector;
 	public HelperLine helperLine;
+
+	public void OnGameStart(){
+	    //Log.v(TAG,"Width="+EnvVar.gameWidth);
+        OnScreenMeasured();
+        //this.y = (int)(GameScreen.BALL_INITIAL_Y + ( EnvVar.currentTime-this.time)* speed *100);
+        alive = true;
+        //Log.d("Ball","endline"+endLine+"startLine"+startLine+"origx"+origx+"endx"+endx);
+    }
+    public void update(int speed) {
+        // Bezier : p(t) = (1-t)^2A +t^2C
+        // t = 0 : A x = startlane
+        // t = 1: B x = endlane
+        //this.y += speed;
+		this.z = (int)(DEPTH * (this.time - EnvVar.currentTime)*EnvVar.speed /50 );
+		this.y = (int)(aOfZ*(z-alphaDepth)*(z-alphaDepth));
+		//this.y = (int)(/*GameScreen.BALL_INITIAL_Y*/ EnvVar.HITBOX_CENTER+ ( EnvVar.currentTime-this.time)* EnvVar.speed *100);
+		t = 1-((float)this.z / DEPTH);//(float)EnvVar.HITBOX_CENTER;
+		this.x= getXfromT(t);
+
+        //Log.v("Ballx","("+x+","+y+","+z+"),"+"alphaDEPTH 800 aOfZ 0.00154375alphaOfZ0.8");
+		//: Use bezier
+         // * speedMultiplier;
+		//this.x = origx+(int)(50*Math.sin(y));
+    }
+
+    public void Paint(Graphics g)
+	{
+
+	}
+
+	public int getXfromT(float tt)
+	{
+		if(this.origx==0)
+		{
+			OnScreenMeasured();
+		}
+		return getXfromT(origx,endx,tt);
+	}
+
+	static final float alphaOfZ = 0.7f;//0.95f;
+	static final float alphaDepth = alphaOfZ * DEPTH;
+	private void OnScreenMeasured() {
+		this.origx = (int)((EnvVar.gameWidth *0.8f / 5 / 2) * (2 * startLine - 1)+EnvVar.gameWidth*0.1f);
+		this.endx = (int)((EnvVar.gameWidth / 5 / 2) * (2 * endLine - 1));
+		this.aOfZ = EnvVar.HITBOX_CENTER/(alphaDepth*alphaDepth);
+	}
+
+	public static int getXfromT(int start, int end, float tt)
+	{
+		return getXfromTLinear(start,end,tt);
+/*		if(tt>=1f)
+			return end;
+		int a = start-end;
+		return (int)(a*(tt-1)*(tt-1)+end);
+		*/
+	}
+	public static int getXfromTLinear(int start, int end, float tt)
+	{
+		if(tt>=1f)
+			return end;
+		int a = start-end;
+		return (int)(a*(1-tt)+end);
+	}
+
+
 	/*
     public Ball(int x, int y, BallType type){
         this.x = x;
@@ -150,53 +227,4 @@ public class Ball implements Serializable
         this.thread=thread;
     }
 */
-	public void OnGameStart(){
-	    //Log.v(TAG,"Width="+EnvVar.gameWidth);
-        SetupXs();
-        this.y = (int)(GameScreen.BALL_INITIAL_Y + ( EnvVar.currentTime-this.time)* speed *100);
-        alive = true;
-        //Log.d("Ball","endline"+endLine+"startLine"+startLine+"origx"+origx+"endx"+endx);
-    }
-    public void update(int speed) {
-        // Bezier : p(t) = (1-t)^2A +t^2C
-        // t = 0 : A x = startlane
-        // t = 1: B x = endlane
-        //this.y += speed;
-		this.y = (int)(/*GameScreen.BALL_INITIAL_Y*/ EnvVar.HITBOX_CENTER+ ( EnvVar.currentTime-this.time)* EnvVar.speed *100);
-        t = (float)this.y / (float)EnvVar.HITBOX_CENTER;
-        this.x= getXfromT(t);
-        //Log.v("Ballx",""+x);
-		//: Use bezier
-         // * speedMultiplier;
-		//this.x = origx+(int)(50*Math.sin(y));
-    }
-
-	public int getXfromT(float tt)
-	{
-		if(this.origx==0)
-		{
-			SetupXs();
-		}
-		return getXfromT(origx,endx,tt);
-	}
-
-	private void SetupXs() {
-		this.origx = (int)((EnvVar.gameWidth *0.8f / 5 / 2) * (2 * startLine - 1)+EnvVar.gameWidth*0.1f);
-		this.endx = (int)((EnvVar.gameWidth / 5 / 2) * (2 * endLine - 1));
-	}
-
-	public static int getXfromT(int start, int end, float tt)
-	{
-		if(tt>=1f)
-			return end;
-		int a = start-end;
-		return (int)(a*(tt-1)*(tt-1)+end);
-	}
-	public static int getXfromTLinear(int start, int end, float tt)
-	{
-		if(tt>=1f)
-			return end;
-		int a = start-end;
-		return (int)(a*(1-tt)+end);
-	}
 }

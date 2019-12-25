@@ -40,6 +40,11 @@ public class NoteFile implements Serializable
         for (File file : files)
 		{
             String filename = file.getName();
+            if(file.isDirectory())
+            {
+                Log.w(TAG,"The file "+file.getName()+"is direcory");
+                continue;
+            }
             String extension = filename.substring(filename.lastIndexOf("."));
             if (extension.compareToIgnoreCase(".mp3") == 0 || extension.compareToIgnoreCase(".wav") == 0)
 			{

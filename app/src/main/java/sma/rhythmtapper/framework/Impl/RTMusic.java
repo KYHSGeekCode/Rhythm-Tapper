@@ -11,12 +11,14 @@ import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.media.MediaPlayer.OnSeekCompleteListener;
 import android.media.MediaPlayer.OnVideoSizeChangedListener;
+import android.util.Log;
 
 import sma.rhythmtapper.framework.Music;
 
 public class RTMusic implements Music, OnCompletionListener, OnSeekCompleteListener, OnPreparedListener, OnVideoSizeChangedListener {
     private MediaPlayer mediaPlayer;
     private boolean isPrepared = false;
+    private static String TAG = "RTMusic";
 
     @Override
     public int getCurrentPosition() {
@@ -27,8 +29,8 @@ public class RTMusic implements Music, OnCompletionListener, OnSeekCompleteListe
         mediaPlayer = new MediaPlayer();
         try {
             mediaPlayer.setDataSource(file.getPath());
-            Constructor();;
-        } catch (IOException e)
+            Constructor();
+        } catch (Exception e)
         {
             throw new RuntimeException("Couldn't load music");
         }
@@ -56,7 +58,8 @@ public class RTMusic implements Music, OnCompletionListener, OnSeekCompleteListe
             mediaPlayer.setOnSeekCompleteListener(this);
             mediaPlayer.setOnPreparedListener(this);
             mediaPlayer.setOnVideoSizeChangedListener(this);
-        } catch (IOException e) {
+            Log.v(TAG,"music prepared");
+        } catch (Exception e) {
             throw new RuntimeException("Couldn't load music");
         }
     }

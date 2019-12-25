@@ -288,7 +288,7 @@ public class GameScreen extends Screen
             deck.StartGame(bundle);
             touchEvents.clear();
             _currentTrack.setLooping(false);
-            _currentTrack.setVolume(0.25f);
+            _currentTrack.setVolume(0.75f);
             _currentTrack.play();
         }
     }
@@ -740,7 +740,7 @@ public class GameScreen extends Screen
             Ball b = iterator.next();
 			if (b.isFlick())
 			{
-				if (b.y > HITBOX_CENTER + HITBOX_HEIGHT)
+				if (b.shouldDie() /*> HITBOX_CENTER + HITBOX_HEIGHT*/)
 				{
 				    removeBall(iterator,b);
 					Log.d(TAG, "fail press");
@@ -751,7 +751,7 @@ public class GameScreen extends Screen
 			}
 			else
 			{
-				if (b.y > HITBOX_CENTER + HITBOX_HEIGHT / 2)
+				if (b.shouldDie()/* > HITBOX_CENTER + HITBOX_HEIGHT / 2*/)
 				{
 					removeBall(iterator,b);
 					Log.d(TAG, "fail press");
@@ -1026,7 +1026,7 @@ public class GameScreen extends Screen
         while(balls.peek()!=null)
         {
             Ball ball = balls.peek();
-            if(ball.time*1000 - 4000 >_currentTrack.getCurrentPosition())
+            if(ball.time*1000 - 3000 >_currentTrack.getCurrentPosition())
                 break;
             //Log.v(TAG,"Spawn ball:"+ball.time+"s; current:"+_currentTime+"s; music:"+_currentTrack.);
             ball = balls.remove();
@@ -1242,7 +1242,11 @@ public class GameScreen extends Screen
     public static final int SIZE_BALL = 50;
     private void paintBall(Graphics g, Ball b)
 	{
-	    //b.type ==normal
+        //b.type ==normal
+        //0.2보다 작은 것은 그리지 않습니다.
+        if(b.t <= 0.35f) {
+            return;
+        }
         int sizeCoeff = (int)(SIZE_BALL*getSizeCoeff(b.t));
         Image imgToDraw = Assets.ballNormal;
         switch(b.flick)
@@ -1272,6 +1276,7 @@ public class GameScreen extends Screen
         {
             aliveTails.add(b.connector);
         }
+
         g.drawImage(imgToDraw, (int)(b.x - sizeCoeff), (int)(b.y - sizeCoeff),sizeCoeff*2,sizeCoeff*2);
 /*        switch (b.type)
 		{
@@ -1305,7 +1310,7 @@ public class GameScreen extends Screen
     }
 
     public static float getSizeCoeff(float  t) {
-        return (1- (1-t)*(1-t));
+        return t;
     }
 
     private void nullify()

@@ -2,6 +2,7 @@ package sma.rhythmtapper.game;
 
 import android.content.*;
 import android.graphics.*;
+import android.media.MediaPlayer;
 import android.os.*;
 import android.util.*;
 import java.util.*;
@@ -201,6 +202,10 @@ public class GameScreen extends Screen
         _currentTrack = Assets.musicTrack;
         _isEnding = false;
 
+        videoPlayer = Assets.videoExtractor;
+        mvProvider = new MVProvider(game.getContext(),_currentTrack.getDuration(),videoPlayer,_gameWidth,_gameHeight);
+        mvProvider.start();
+
         // paints for text
         _paintScore = new Paint();
         _paintScore.setTextSize(60);
@@ -260,10 +265,7 @@ public class GameScreen extends Screen
         _paintScoreD = new Paint();
         _paintScoreD.setColor(Color.rgb(0xc6, 0x8a, 0x12));
 
-        videoPlayer = Assets.videoExtractor;
 
-        mvProvider = new MVProvider(_currentTrack.getDuration(),videoPlayer,_gameWidth,_gameHeight);
-        mvProvider.start();
 
         HITBOX_CENTER = (int)(game.getScreenY()*1.1f- HITBOX_HEIGHT);
         BALL_INITIAL_Y = HITBOX_CENTER;
@@ -272,7 +274,13 @@ public class GameScreen extends Screen
         EnvVar.gameWidth = _gameWidth;
         EnvVar.gameHeight = _gameHeight;
         EnvVar.HITBOX_CENTER = HITBOX_CENTER;
-
+        while(!mvProvider.isInitialized()) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -362,7 +370,7 @@ public class GameScreen extends Screen
         Assets.soundMiss.stop();
         Assets.soundFlickOK.stop();
         Assets.soundClick.stop();
-
+        mvProvider.release();
         // update highscore
         FileIO fileIO = game.getFileIO();
         SharedPreferences prefs = fileIO.getSharedPref();
@@ -1157,6 +1165,7 @@ public class GameScreen extends Screen
     }
 
 
+    int oldindex;
     Bitmap oldBitmap;
     @Override
     public void paint(float deltaTime)
@@ -1176,16 +1185,26 @@ public class GameScreen extends Screen
             Bitmap bitmap = mvProvider.getBitmap(index);
             if(bitmap!=null)
             {
-                g.drawImage(bitmap,0,0);
-                if(oldBitmap != bitmap)
-                {
-                    if(oldBitmap !=null)
-                        oldBitmap.recycle();
-                }
                 oldBitmap = bitmap;
+                if(!bitmap.isRecycled())
+                    g.drawImage(bitmap,0,0);
+                else{
+                    Log.e(TAG,"BItmap"+index+" is recycled");
+                    if (oldBitmap !=null&& !oldBitmap.isRecycled())
+                        g.drawImage(oldBitmap,0,0);
+                }
+                if(oldindex < index-10)
+                {
+                    mvProvider.recycle(oldindex);
+                }
+                oldindex = index;
             }
-            else
+            else if(oldBitmap !=null)
+            {
+                g.drawImage(oldBitmap,0,0);
+            } else {
                 g.drawScaledImage(Assets.background, 0, 0, _gameWidth, _gameHeight, 0, 0, Assets.background.getWidth(), Assets.background.getHeight());
+            }
         }
         //for (int i = 0; i < 5; i++)
         //    g.drawRect(_gameWidth / 5 * i, 0, _gameWidth / 5 + 1, _gameHeight, Color.argb(_laneHitAlpha[i], 255, 0, 0));

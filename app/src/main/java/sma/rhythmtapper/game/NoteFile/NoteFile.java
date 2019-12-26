@@ -45,7 +45,9 @@ public class NoteFile implements Serializable
                 Log.w(TAG,"The file "+file.getName()+"is direcory");
                 continue;
             }
+            Log.d(TAG,"file:"+filename);
             String extension = filename.substring(filename.lastIndexOf("."));
+            Log.d(TAG,"ext:"+extension);
             if(extension == null)
                 continue;
             extension = extension.toLowerCase();
@@ -60,7 +62,6 @@ public class NoteFile implements Serializable
             {
                 videoFile = file;
                 Log.v(TAG, "videofile="+videoFile);
-                break;
             }
         }
         File infoFile = new File(dir, "info.txt");

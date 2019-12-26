@@ -1,12 +1,18 @@
 package sma.rhythmtapper.game;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.util.Log;
-import android.view.Choreographer;
 
-import java.util.concurrent.ArrayBlockingQueue;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import wseemann.media.FFmpegMediaMetadataRetriever;
+
+import static android.os.Environment.isExternalStorageRemovable;
 
 public class MVProvider extends Thread {
     private final int sec;
@@ -15,42 +21,97 @@ public class MVProvider extends Thread {
     private final int frame;
     private final int _gameWidth;
     private final int _gameHeight;
+    private final File cacheDir;
     private Bitmap[] frames;
-    private int sleepDuration = 10;
     private static final String TAG = "MVProvider";
     private int alives= 0;
-    public MVProvider(int sec, FFmpegMediaMetadataRetriever videoReader, int width, int height)
+    private boolean initialized;
+    int lastindex=0;
+    public MVProvider(Context context, int sec, FFmpegMediaMetadataRetriever videoReader, int width, int height)
     {
         this.sec = sec;
         this.videoReader = videoReader;
-        this.frame = FRAMERATE * sec;
+        this.frame = FRAMERATE * sec/1000;
         this.frames = new Bitmap[frame];
         this._gameWidth = width;
         this._gameHeight = height;
-        this.sleepDuration = Math.max(1000/FRAMERATE - 300,10);
+        // Initialize memory cache
+        // Initialize disk cache on background thread
+        cacheDir = getDiskCacheDir(context, DISK_CACHE_SUBDIR);
+        initialized = false;
     }
     @Override
     public void run() {
-        try {
+        cacheDir.mkdirs();
+       /* try {
             for (int i = 0; i < frames.length; i++) {
                 Log.d(TAG, "i="+i);
-                frames[i] = videoReader.getScaledFrameAtTime((long) (i * 1000000.0f/FRAMERATE), FFmpegMediaMetadataRetriever.OPTION_CLOSEST, _gameWidth, _gameHeight);
-                //Thread.sleep(1000/ FRAMERATE - 400);
-                alives ++;
-                while(alives >100)
-                    sleep(1);
+                Bitmap frame = videoReader.getScaledFrameAtTime((long) (i * 1000000.0f/FRAMERATE), FFmpegMediaMetadataRetriever.OPTION_CLOSEST, _gameWidth, _gameHeight);
+                FileOutputStream out = new FileOutputStream(new File(cacheDir,String.valueOf(i)));
+                frame.compress(Bitmap.CompressFormat.PNG, 100, out);
+                if(i>frames.length/2)
+                    initialized = true;
             }
         }catch (Exception e)
         {
+            Log.e(TAG,"Error bitmap cache creating",e);
             Log.w(TAG,"error?",e);
+        }*/
+        //initialized = true;
+        for(int i=0;i<frames.length;i++)
+        {
+            if(lastindex >i)
+                i = lastindex +FRAMERATE;
+            if(i>=frames.length)
+                break;
+            Bitmap frame = videoReader.getScaledFrameAtTime((long) (i * 1000000.0f/FRAMERATE), FFmpegMediaMetadataRetriever.OPTION_CLOSEST, _gameWidth, _gameHeight);
+            //Bitmap frame = BitmapFactory.decodeFile(new File(cacheDir,String.valueOf(i)).getPath());
+            frames[i] = frame;
+            alives ++;
+            while(alives >80) {
+                try {
+                    sleep(1);
+                } catch (InterruptedException e) {
+                    break;
+                }
+            }
         }
     }
 
     public Bitmap getBitmap(int index)
     {
+        lastindex = index;
         alives--;
         if(index < frames.length)
             return frames[index];
         return null;
+    }
+    private static final String DISK_CACHE_SUBDIR = "thumbnails";
+    // Creates a unique subdirectory of the designated app cache directory. Tries to use external
+    // but if not mounted, falls back on internal storage.
+    public static File getDiskCacheDir(Context context, String uniqueName) {
+        // Check if media is mounted or storage is built-in, if so, try and use external cache dir
+        // otherwise use internal cache dir
+        final String cachePath =
+                Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) ||
+                        !isExternalStorageRemovable() ? context.getExternalCacheDir().getPath() :
+                        context.getCacheDir().getPath();
+
+        return new File(cachePath + File.separator + uniqueName);
+    }
+
+    public boolean isInitialized()
+    {
+        return true;
+//        return initialized;
+    }
+
+    public void recycle(int oldindex) {
+        if(oldindex<frames.length)
+            frames[oldindex].recycle();
+    }
+
+    public void release(){
+        videoReader.release();
     }
 }

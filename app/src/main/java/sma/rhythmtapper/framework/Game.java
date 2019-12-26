@@ -1,5 +1,6 @@
 package sma.rhythmtapper.framework;
 
+import android.content.Context;
 import android.os.Vibrator;
 
 import wseemann.media.FFmpegMediaMetadataRetriever;
@@ -34,4 +35,6 @@ public interface Game {
     public void goToActivity(Class<?> activity);
 
     FFmpegMediaMetadataRetriever createVideo(String video);
+
+    public Context getContext();
 }

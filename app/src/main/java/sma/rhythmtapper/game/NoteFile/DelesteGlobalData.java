@@ -3,13 +3,12 @@ package sma.rhythmtapper.game.NoteFile;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class DelesteGlobalData
-{
+public class DelesteGlobalData {
     public double CurrentBPM;
     public double SpeedMultiplier;
-    public double BeatMultiplier ;
-    public double EndScrollTime ;
-    public boolean IsScrollModified ;
+    public double BeatMultiplier;
+    public double EndScrollTime;
+    public boolean IsScrollModified;
 
     public ArrayList<Double> ChangeBPM = new ArrayList<Double>(), ChangeBPMPos = new ArrayList<Double>();
     public ArrayList<Double> Measure = new ArrayList<Double>(), MeasurePos = new ArrayList<Double>();
@@ -22,8 +21,7 @@ public class DelesteGlobalData
     public HashMap<Integer, Integer> TailPrev = new HashMap<Integer, Integer>();
     public HashMap<Double, Integer> HoldPrev = new HashMap<Double, Integer>(), BeforeFlickData = new HashMap<Double, Integer>();
 
-    public DelesteGlobalData()
-    {
+    public DelesteGlobalData() {
         BeatMultiplier = 1;
         SpeedMultiplier = 1;
         EndScrollTime = 0;

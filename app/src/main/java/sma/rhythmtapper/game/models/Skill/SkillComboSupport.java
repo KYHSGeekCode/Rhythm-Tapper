@@ -15,8 +15,7 @@ public class SkillComboSupport extends Skill {
 
     @Override
     public void PostTest(GameStatusBundle bundle) {
-        if(bundle.testResult.compareTo(TestResult.NICE)>=0)
-        {
+        if (bundle.testResult.compareTo(TestResult.NICE) >= 0) {
             bundle.continueCombo = true;
         }
     }

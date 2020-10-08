@@ -8,21 +8,22 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 
-import sma.rhythmtapper.framework.Image;
 import sma.rhythmtapper.framework.Graphics.ImageFormat;
+import sma.rhythmtapper.framework.Image;
 
 public class RTImage implements Image {
     Bitmap bitmap;
     ImageFormat format;
 
     int color;
+
     public RTImage(Bitmap bitmap, ImageFormat format) {
         this.bitmap = bitmap;
         this.format = format;
     }
 
     public Bitmap ChangeColor(int color) {
-        if(this.color == color)
+        if (this.color == color)
             return bitmap;
         this.color = color;
         Bitmap sourceBitmap = bitmap;

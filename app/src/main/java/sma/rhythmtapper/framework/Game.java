@@ -10,31 +10,31 @@ import wseemann.media.FFmpegMediaMetadataRetriever;
  */
 
 public interface Game {
-    public Audio getAudio();
+    Audio getAudio();
 
-    public Audio getFileAudio();
+    Audio getFileAudio();
 
-    public Input getInput();
+    Input getInput();
 
-    public FileIO getFileIO();
+    FileIO getFileIO();
 
-    public Graphics getGraphics();
+    Graphics getGraphics();
 
-    public Vibrator getVibrator();
+    Vibrator getVibrator();
 
-    public void setScreen(Screen screen);
+    void setScreen(Screen screen);
 
-    public Screen getCurrentScreen();
+    Screen getCurrentScreen();
 
-    public Screen getInitScreen();
+    Screen getInitScreen();
 
-    public int getScreenX();
+    int getScreenX();
 
-    public int getScreenY();
+    int getScreenY();
 
-    public void goToActivity(Class<?> activity);
+    void goToActivity(Class<?> activity);
 
     FFmpegMediaMetadataRetriever createVideo(String video);
 
-    public Context getContext();
+    Context getContext();
 }

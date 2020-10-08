@@ -15,17 +15,15 @@ public class SkillScoreUp extends Skill {
 
     @Override
     public void PostTest(GameStatusBundle bundle) {
-        if(bundle.testResult.compareTo(TestResult.GREAT)>=0)
-        {
+        if (bundle.testResult.compareTo(TestResult.GREAT) >= 0) {
             bundle.ApplyScoreBonus(17);
         }
     }
 
-	@Override
-	public boolean isAffectScore()
-	{
-		// TODO: Implement this method
-		return true;
-	}
-	
+    @Override
+    public boolean isAffectScore() {
+        // TODO: Implement this method
+        return true;
+    }
+
 }

@@ -8,8 +8,7 @@ import sma.rhythmtapper.framework.Graphics;
 import sma.rhythmtapper.game.models.Ball;
 
 public class HelperLine implements Serializable {
-    public void Paint(Graphics g)
-    {
+    public void Paint(Graphics g) {
         g.drawLine(ball1.x, ball1.y, ball2.x, ball2.y, Color.LTGRAY, 10);
     }
 

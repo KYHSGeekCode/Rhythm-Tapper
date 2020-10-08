@@ -17,9 +17,9 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        this._startBtn = (Button)this.findViewById(R.id.main_btn_start);
-        this._highscoreBtn = (Button)this.findViewById(R.id.main_btn_highscore);
-        this._aboutBtn = (Button)this.findViewById(R.id.main_btn_about);
+        this._startBtn = (Button) this.findViewById(R.id.main_btn_start);
+        this._highscoreBtn = (Button) this.findViewById(R.id.main_btn_highscore);
+        this._aboutBtn = (Button) this.findViewById(R.id.main_btn_about);
 
         this._startBtn.setOnClickListener(new View.OnClickListener() {
             @Override

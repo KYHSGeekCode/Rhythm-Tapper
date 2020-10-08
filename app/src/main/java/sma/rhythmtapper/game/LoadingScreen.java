@@ -2,8 +2,10 @@ package sma.rhythmtapper.game;
 
 import android.util.Log;
 
-import sma.rhythmtapper.framework.*;
-import sma.rhythmtapper.models.*;
+import sma.rhythmtapper.framework.Game;
+import sma.rhythmtapper.framework.Graphics;
+import sma.rhythmtapper.framework.Screen;
+import sma.rhythmtapper.models.Difficulty;
 
 
 public class LoadingScreen extends Screen {
@@ -35,23 +37,24 @@ public class LoadingScreen extends Screen {
         Assets.explosionBright = g.newImage(IMAGE_PATH + "explosion_bright.png", Graphics.ImageFormat.RGB565);
         Assets.ballSkull = g.newImage(IMAGE_PATH + "skull-ball-icon.png", Graphics.ImageFormat.RGB565);
         Assets.sirens = g.newImage(IMAGE_PATH + "sirens.png", Graphics.ImageFormat.RGB565);
-        Assets.ballHitpoint = g.newImage(IMAGE_PATH + "ball_hitpoint.png",Graphics.ImageFormat.RGB565);
-        Assets.ballFlickLeft = g.newImage(IMAGE_PATH + "ball_flickleft.png",Graphics.ImageFormat.RGB565);
-        Assets.ballFlickRight = g.newImage(IMAGE_PATH + "ball_flickright.png",Graphics.ImageFormat.RGB565);
+        Assets.ballHitpoint = g.newImage(IMAGE_PATH + "ball_hitpoint.png", Graphics.ImageFormat.RGB565);
+        Assets.ballFlickLeft = g.newImage(IMAGE_PATH + "ball_flickleft.png", Graphics.ImageFormat.RGB565);
+        Assets.ballFlickRight = g.newImage(IMAGE_PATH + "ball_flickright.png", Graphics.ImageFormat.RGB565);
 
         Assets.soundClick = game.getAudio().createSound(SOUND_EFFECTS_PATH + "sound_guiclick.ogg");
         Assets.soundExplosion = game.getAudio().createSound(SOUND_EFFECTS_PATH + "sound_explosion.ogg");
         Assets.soundCreepyLaugh = game.getAudio().createSound(SOUND_EFFECTS_PATH + "sound_creepy_laugh.mp3");
-        Assets.soundFlickOK= game.getAudio().createSound(SOUND_EFFECTS_PATH + "sound_flick_ok.ogg");
+        Assets.soundFlickOK = game.getAudio().createSound(SOUND_EFFECTS_PATH + "sound_flick_ok.ogg");
         Assets.soundMiss = game.getAudio().createSound(SOUND_EFFECTS_PATH + "sound_miss.ogg");
         Assets.musicTrack = game.getFileAudio().createMusic(_diff.getMusic());
         Assets.videoExtractor = game.createVideo(_diff.getVideo());
-        Log.d(TAG,"videoextractor:"+Assets.videoExtractor);
-        Log.d(TAG, "musictrack"+Assets.musicTrack);
+        Log.d(TAG, "videoextractor:" + Assets.videoExtractor);
+        Log.d(TAG, "musictrack" + Assets.musicTrack);
         //Deck deck=new Deck();
-        
+
         game.setScreen(new GameScreen(game, _diff));
     }
+
     @Override
     public void paint(float deltaTime) {
 

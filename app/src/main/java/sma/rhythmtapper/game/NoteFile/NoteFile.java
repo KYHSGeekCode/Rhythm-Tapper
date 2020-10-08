@@ -1,27 +1,33 @@
 package sma.rhythmtapper.game.NoteFile;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import org.json.JSONException;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 import sma.rhythmtapper.game.BallComparator;
-import sma.rhythmtapper.game.models.*;
+import sma.rhythmtapper.game.models.Ball;
+import sma.rhythmtapper.game.models.Difficulties;
 
-public class NoteFile implements Serializable
-{
+public class NoteFile implements Serializable {
     final String TAG = "NoteFile";
 
     //dir should end with /
-    public NoteFile(File dir)
-	{
+    public NoteFile(File dir) {
         this.dir = dir;
         isLoaded = false;
-        for(int it = 0;it<5;it++)
-        {
+        for (int it = 0; it < 5; it++) {
             notemapFiles.add(new ArrayList<File>());
         }
         //file is the root directory of the project
@@ -32,62 +38,53 @@ public class NoteFile implements Serializable
         //file/master.notemap2
         //file/master+.notemap2
         File[] files = dir.listFiles();
-		if (files == null)
-		{
-			Log.v(TAG, "Error " + dir.getPath());
-			return;
-		}
-        for (File file : files)
-		{
+        if (files == null) {
+            Log.v(TAG, "Error " + dir.getPath());
+            return;
+        }
+        for (File file : files) {
             String filename = file.getName();
-            if(file.isDirectory())
-            {
-                Log.w(TAG,"The file "+file.getName()+"is direcory");
+            if (file.isDirectory()) {
+                Log.w(TAG, "The file " + file.getName() + "is direcory");
                 continue;
             }
-            Log.d(TAG,"file:"+filename);
+            Log.d(TAG, "file:" + filename);
             String extension = filename.substring(filename.lastIndexOf("."));
-            Log.d(TAG,"ext:"+extension);
-            if(extension == null)
+            Log.d(TAG, "ext:" + extension);
+            if (extension == null)
                 continue;
             extension = extension.toLowerCase();
-            if (extension.compareTo(".mp3") == 0 || extension.compareTo(".wav") == 0)
-			{
+            if (extension.compareTo(".mp3") == 0 || extension.compareTo(".wav") == 0) {
                 musicFile = file;
                 Log.v(TAG, "musicfile=" + musicFile);
             }
-            if(extension.compareTo(".mp4") == 0 || extension.compareTo(".avi")==0
-                ||extension.compareTo(".gif")==0 || extension.compareTo(".mkv")==0
-                ||extension.compareTo(".mov")==0 ||extension.compareTo(".wmv")==0 )
-            {
+            if (extension.compareTo(".mp4") == 0 || extension.compareTo(".avi") == 0
+                    || extension.compareTo(".gif") == 0 || extension.compareTo(".mkv") == 0
+                    || extension.compareTo(".mov") == 0 || extension.compareTo(".wmv") == 0) {
                 videoFile = file;
-                Log.v(TAG, "videofile="+videoFile);
+                Log.v(TAG, "videofile=" + videoFile);
             }
         }
         File infoFile = new File(dir, "info.txt");
-		if(!infoFile.exists())
-		{
-		    songName = dir.getName();
-			//simple add
-			//parse possible tw5 files
+        if (!infoFile.exists()) {
+            songName = dir.getName();
+            //simple add
+            //parse possible tw5 files
             //Check for files end with .tw5
             //get affix split by _
-            for(File file : files)
-            {
+            for (File file : files) {
                 String filename = file.getName();
                 int litw5 = filename.lastIndexOf(".tw5");
-                if(litw5>0)
-                {
+                if (litw5 > 0) {
                     int li_ = filename.lastIndexOf('_');
-                    String affix = filename.substring(li_+1,litw5);
+                    String affix = filename.substring(li_ + 1, litw5);
                     int idx = 0;
-                    Log.v(TAG,"affix:"+affix);
-                    switch (affix.toLowerCase())
-                    {
+                    Log.v(TAG, "affix:" + affix);
+                    switch (affix.toLowerCase()) {
                         case "easy":
                         case "debut":
                         case "light":
-                            idx  = 0;
+                            idx = 0;
                             break;
                         case "regular":
                         case "normal":
@@ -107,25 +104,23 @@ public class NoteFile implements Serializable
                             idx = 4;
                             break;
                     }
-                    Log.v(TAG, "Adding "+idx+file.getName());
+                    Log.v(TAG, "Adding " + idx + file.getName());
                     notemapFiles.get(idx).add(file);
                 }
             }
 
             return;
             //balls = TWxFile.Read();
-		}
+        }
         //parse info.txt
         //String songName;
         String artist = "?";
-        int difficulties[] = new int[5];
+        int[] difficulties = new int[5];
 
-        try
-		{
+        try {
             BufferedReader br = new BufferedReader(new FileReader(infoFile));
             String line = br.readLine();
-            while (line != null)
-			{
+            while (line != null) {
                 Log.v(TAG, "line=" + line);
                 //I hate BOM!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 /*
@@ -150,49 +145,34 @@ public class NoteFile implements Serializable
                 line = line.replace("\uFFFE", "");
                 Log.v(TAG, Arrays.toString(line.getBytes()));
                 Log.v(TAG, Arrays.toString("#title".getBytes()));
-                if (line.startsWith("#title"))
-				{
+                if (line.startsWith("#title")) {
                     Log.v(TAG, "startswith");
                     line = line.replace("#title ", "").trim();
                     songName = line;
-                }
-				else if (line.startsWith("#artist"))
-				{
+                } else if (line.startsWith("#artist")) {
                     line = line.replace("#artist ", "").trim();
                     artist = line;
-                }
-				else if (line.startsWith("#easy"))
-				{
-					line = line.replaceAll("[^0-9]", "");
+                } else if (line.startsWith("#easy")) {
+                    line = line.replaceAll("[^0-9]", "");
                     difficulties[0] = Integer.parseInt(line.replace("#easy ", "").trim());
 
-                }
-				else if (line.startsWith("#normal"))
-				{
-					line = line.replaceAll("[^0-9]", "");
+                } else if (line.startsWith("#normal")) {
+                    line = line.replaceAll("[^0-9]", "");
                     difficulties[1] = Integer.parseInt(line.replace("#normal ", "").trim());
 
-                }
-				else if (line.startsWith("#hard"))
-				{
-					line = line.replaceAll("[^0-9]", "");
+                } else if (line.startsWith("#hard")) {
+                    line = line.replaceAll("[^0-9]", "");
                     difficulties[2] = Integer.parseInt(line.replace("#hard ", "").trim());
-                }
-				else if (line.startsWith("#master"))
-				{
-					line = line.replaceAll("[^0-9]", "");
+                } else if (line.startsWith("#master")) {
+                    line = line.replaceAll("[^0-9]", "");
                     difficulties[3] = Integer.parseInt(line.replace("#master ", "").trim());
-                }
-				else if (line.startsWith("#apex"))
-				{
-					line = line.replaceAll("[^0-9]", "");
+                } else if (line.startsWith("#apex")) {
+                    line = line.replaceAll("[^0-9]", "");
                     difficulties[4] = Integer.parseInt(line.replace("#apex ", "").trim());
                 }
                 line = br.readLine();
             }
-        }
-		catch (IOException | NumberFormatException e)
-		{
+        } catch (IOException | NumberFormatException e) {
             throw new RuntimeException(e);
         }
         //info.txt parse done.
@@ -202,26 +182,25 @@ public class NoteFile implements Serializable
         Log.v(TAG, "Artist=" + artist);
         Log.v(TAG, "Folder=" + dir.getName());
     }
-	/*
+
+    /*
      if (files[i].Extension.Equals(".tw1")) { ReadTWxMetadata(files[i].FullName, 4, ref hasError); }
-	 else if (files[i].Extension.Equals(".tw2")) { ReadTWxMetadata(files[i].FullName, 1, ref hasError); }
-	 else if (files[i].Extension.Equals(".tw4")) { ReadTWxMetadata(files[i].FullName, 2, ref hasError); }
-	 else if (files[i].Extension.Equals(".txt")) { ReadDelesteMetadata(files[i].FullName, ref hasError); }
-	 else if (files[i].Extension.Equals(".json")) { ReadSSTrainMetadata(files[i].FullName, ref hasError); }
-	 else if (files[i].Extension.Equals(".tw5")) { ReadTWxMetadata(files[i].FullName, 0, ref hasError); }
-	 else if (files[i].Extension.Equals(".tw6")) { ReadTWxMetadata(files[i].FullName, 3, ref hasError); }
-	 */
-    public void Load(Difficulties difficulty)
-    {
+     else if (files[i].Extension.Equals(".tw2")) { ReadTWxMetadata(files[i].FullName, 1, ref hasError); }
+     else if (files[i].Extension.Equals(".tw4")) { ReadTWxMetadata(files[i].FullName, 2, ref hasError); }
+     else if (files[i].Extension.Equals(".txt")) { ReadDelesteMetadata(files[i].FullName, ref hasError); }
+     else if (files[i].Extension.Equals(".json")) { ReadSSTrainMetadata(files[i].FullName, ref hasError); }
+     else if (files[i].Extension.Equals(".tw5")) { ReadTWxMetadata(files[i].FullName, 0, ref hasError); }
+     else if (files[i].Extension.Equals(".tw6")) { ReadTWxMetadata(files[i].FullName, 3, ref hasError); }
+     */
+    public void Load(Difficulties difficulty) {
         try {
-            List<Ball> lballs= TWxFile.Read(notemapFiles.get(difficulty.ordinal()).get(0));
+            List<Ball> lballs = TWxFile.Read(notemapFiles.get(difficulty.ordinal()).get(0));
             balls = new PriorityQueue<>(new BallComparator());
-            for(Ball bl:lballs)
-            {
+            for (Ball bl : lballs) {
                 balls.add(bl);
             }
-        } catch (FileNotFoundException|JSONException|IndexOutOfBoundsException e) {
-            Log.e(TAG, "error reading notefile",e);
+        } catch (FileNotFoundException | JSONException | IndexOutOfBoundsException e) {
+            Log.e(TAG, "error reading notefile", e);
             throw new RuntimeException("No such valid level file found");
         }
         /*
@@ -258,322 +237,321 @@ public class NoteFile implements Serializable
         }*/
     }
 
-    private void LoadTWX(File candidateFile)
-	{
+    private void LoadTWX(File candidateFile) {
 
     }
 
-    private void LoadSSTrain(File candidateFile)
-	{
+    private void LoadSSTrain(File candidateFile) {
 
     }
-/*
-    private void LoadDeleste(File candidateFile)
-	{
-        //1. parse metadata
-        try
-		{
-            BufferedReader br= new BufferedReader(new FileReader(candidateFile));
-            String line=br.readLine();
-            String title;
-            String lyricist;
-            String composer;
-            String background;
-            String song;
-            String lyrics;
-            double bpm;
-            int offset;
-            int movieoffset;
-            Difficulties difficulty;
-            int lv;
-            int bgmvol;
-            int sevol;
-            ColorType attribute;
-            while (line != null)
-            {
-                //process one line
-                //if (line.startsWith(blah) line= line.replace(blah); data= line; else if ......
-                char[] chs=line.toCharArray();
-                if (chs.length < 3)
-                {
-                    //ignore that line
-                    continue;
-                }
-                if (Character.isDigit(chs[1]))
-                {
-                    //maybe the note info, not metadata
-                    line = line.replace("#", "");
-                    String [] data=line.split(":");
-                    /*
-					 위 영상의 전주부분 채보코드
-					 #0,000:20202220:54555:41441
-					 #1,000:00200020:44:55
-					 #0,001:20202220:54555:41441
-					 #1,001:00200020:44:55
-					 #0,002:2000200011133333:5422222222:4143212345
-					 #1,002:0000200000000000:4:5
-					 [출처] 데레시뮤 채보 제작방법|작성자 Van Azure
-                     *
-                    //data[0]: 0,000 thread#, block
-                    //data[1]:20202220 type
-                    //data[2]:54555 start
-                    //data[3]:41441 end
-					String [] tb=data[0].split(",");
-					int thread= Integer.parseInt(tb[0]);
-					int block= Integer.parseInt(tb[1]);
-					char[] noteTypes=data[1].toCharArray();
-					//1. count thd notes
-					int cnt=0;
-					List<Ball> balls=new ArrayList<>();
-					char[] startPos=data[2].toCharArray();
-					char[] endPos=data[3].toCharArray();
-					/*if (cnt != startPos.length || cnt != endPos.length)
-					{
-						//Error
-					}* /
-					for (int i=0;i<noteTypes.length;i++)
-					{
-						char ch=noteTypes[i];
-						Ball.BallType bt=Ball.BallType.Normal;
-						if (ch != '0')
-						{
-							cnt++;
-							switch(ch) {
-                                case '1':
-                                    bt = Ball.BallType.FlickLeft;
-                                    break;
-                                case '2':
-                                    bt = Ball.BallType.Normal;
-                                    break;
-                                case '3':
-                                    bt = Ball.BallType.FlickRight;
-                                    break;
-                                case '4':
-                                    bt = Ball.BallType.LongUp;
-                                    break;
-                                case '5':
-                                    bt = Ball.BallType.Slide;
-                                    break;
-                            }
-							//start lane end lane
-							//balls.add(new Ball(startPos[cnt-1]-'0',endPos[cnt-1]-'0',bt,(int)(block * bpm +i),thread));
-						}
-					}
-                }
-				else
-				{
-                    //meta data
-                    String [] metadata=line.split("\\s");
-                    //metadata[1] is data [0] is index
-                    //expensive but convenient
-                    final String d=metadata[1];
-                    switch (metadata[0])
-                    {
-                        case "#Title":
-                            title = d;
-                            break;
-                        case "#Lyricist":
-                            lyricist = d;
-                            break;
-                        case "#Composer":
-                            composer = d;
-                            break;
-                        case"#BackGround":
-                            background = d;
-                            break;
-                        case "#Song":
-                            song = d;
-                            break;
-                        case "#Lyrics":
-                            lyrics = d;
-                            break;
-                        case "#BPM":
-                            bpm = Double.parseDouble(d);
-                            break;
-                        case "#Offset":
-                            offset = Integer.parseInt(d);
-                            break;
-                        case "#MovieOffset":
-                            movieoffset = Integer.parseInt(d);
-                            break;
-                        case "#Difficulty":
-                            difficulty = Difficulties.valueOf(d);
-                            break;
-                        case "#LV":
-                            lv = Integer.parseInt(d);
-                            break;
-                        case "#BGMVol":
-                            bgmvol = Integer.parseInt(d);
-                            break;
-                        case "#SEVol":
-                            sevol = Integer.parseInt(d);
-                            break;
-                        case "#Attribute":
-                            attribute = ColorType.valueOf(d);
-                            break;
 
-                    }
-                }
-                if (line.startsWith("#Title"))//キミと☆Are You Ready？
-					//read one line
-					line=br.readLine();
-            }
-        }
-		catch (IOException e)
-		{
-
-        }
-    }
-
-    public void LoadNotemap2(File candidateFile)
-	{
-        isLoaded = true;
-        File notemapFile = candidateFile;
-        try
-		{
-            BufferedReader br = new BufferedReader(new FileReader(notemapFile));
-            int bpm = -1;
-            int block = -1;
-            boolean lastWasBlock = false;
+    /*
+        private void LoadDeleste(File candidateFile)
+        {
+            //1. parse metadata
             try
-			{
-                //StringBuilder sb = new StringBuilder();
-                String line = br.readLine();
+            {
+                BufferedReader br= new BufferedReader(new FileReader(candidateFile));
+                String line=br.readLine();
+                String title;
+                String lyricist;
+                String composer;
+                String background;
+                String song;
+                String lyrics;
+                double bpm;
+                int offset;
+                int movieoffset;
+                Difficulties difficulty;
+                int lv;
+                int bgmvol;
+                int sevol;
+                ColorType attribute;
                 while (line != null)
-				{
-                    //use line here
-                    if (line.startsWith("# "))
-					{
-                        if (bpm < 0)
-                            throw new RuntimeException("#bpm must be specified at least once in the first block");
-                        lastWasBlock = false;
-                        line = line.replaceAll("# ", "").trim();
-                        //[종류][시작 라인][플릭][다음 라인]
-                        String[] notes = line.split("\\s");
-                        Ball[] notesProcessed = new Ball[5];
-                        for (int i = 0; i < notes.length; i++)
-						{
-                            notesProcessed[i] = getNote(notes[i]);
-                        }
-                        blocks.get(blocks.size() - 1).AddBalls(notesProcessed);
-                    }
-					else if (line.startsWith("#startframe"))
-					{
-                        lastWasBlock = false;
-                        line = line.replaceAll("#startframe", "").trim();
-                        try
-						{
-                            startframe = Integer.parseInt(line);
-                        }
-						catch (NumberFormatException e)
-						{
-                            throw new RuntimeException("#startframe error");
-                        }
-                    }
-					else if (line.startsWith("#block")) //4박자를 얼마나 쪼개나 악보에서 느낌 16비트면 16
+                {
+                    //process one line
+                    //if (line.startsWith(blah) line= line.replace(blah); data= line; else if ......
+                    char[] chs=line.toCharArray();
+                    if (chs.length < 3)
                     {
-                        lastWasBlock = true;
-                        line = line.replaceAll("#block", "").trim();
-                        try
-						{
-                            block = Integer.parseInt(line);
-                        }
-						catch (NumberFormatException e)
-						{
-                            throw new RuntimeException("#block error");
-                        }
-                        blocks.add(new Block(block));
+                        //ignore that line
+                        continue;
                     }
-					else if (line.startsWith("#setbpm"))
-					{
-                        if (!lastWasBlock)
-                            throw new RuntimeException("#setbpm must be right under the #block command");
-                        lastWasBlock = false;
-                        line = line.replaceAll("#setbpm", "").trim();
-                        try
-						{
-                            bpm = Integer.parseInt(line);
-                        }
-						catch (NumberFormatException e)
-						{
-                            throw new RuntimeException("#setbpm error");
+                    if (Character.isDigit(chs[1]))
+                    {
+                        //maybe the note info, not metadata
+                        line = line.replace("#", "");
+                        String [] data=line.split(":");
+                        /*
+                         위 영상의 전주부분 채보코드
+                         #0,000:20202220:54555:41441
+                         #1,000:00200020:44:55
+                         #0,001:20202220:54555:41441
+                         #1,001:00200020:44:55
+                         #0,002:2000200011133333:5422222222:4143212345
+                         #1,002:0000200000000000:4:5
+                         [출처] 데레시뮤 채보 제작방법|작성자 Van Azure
+                         *
+                        //data[0]: 0,000 thread#, block
+                        //data[1]:20202220 type
+                        //data[2]:54555 start
+                        //data[3]:41441 end
+                        String [] tb=data[0].split(",");
+                        int thread= Integer.parseInt(tb[0]);
+                        int block= Integer.parseInt(tb[1]);
+                        char[] noteTypes=data[1].toCharArray();
+                        //1. count thd notes
+                        int cnt=0;
+                        List<Ball> balls=new ArrayList<>();
+                        char[] startPos=data[2].toCharArray();
+                        char[] endPos=data[3].toCharArray();
+                        /*if (cnt != startPos.length || cnt != endPos.length)
+                        {
+                            //Error
+                        }* /
+                        for (int i=0;i<noteTypes.length;i++)
+                        {
+                            char ch=noteTypes[i];
+                            Ball.BallType bt=Ball.BallType.Normal;
+                            if (ch != '0')
+                            {
+                                cnt++;
+                                switch(ch) {
+                                    case '1':
+                                        bt = Ball.BallType.FlickLeft;
+                                        break;
+                                    case '2':
+                                        bt = Ball.BallType.Normal;
+                                        break;
+                                    case '3':
+                                        bt = Ball.BallType.FlickRight;
+                                        break;
+                                    case '4':
+                                        bt = Ball.BallType.LongUp;
+                                        break;
+                                    case '5':
+                                        bt = Ball.BallType.Slide;
+                                        break;
+                                }
+                                //start lane end lane
+                                //balls.add(new Ball(startPos[cnt-1]-'0',endPos[cnt-1]-'0',bt,(int)(block * bpm +i),thread));
+                            }
                         }
                     }
-                    //end
-                    //sb.append(System.lineSeparator());
-                    line = br.readLine();
+                    else
+                    {
+                        //meta data
+                        String [] metadata=line.split("\\s");
+                        //metadata[1] is data [0] is index
+                        //expensive but convenient
+                        final String d=metadata[1];
+                        switch (metadata[0])
+                        {
+                            case "#Title":
+                                title = d;
+                                break;
+                            case "#Lyricist":
+                                lyricist = d;
+                                break;
+                            case "#Composer":
+                                composer = d;
+                                break;
+                            case"#BackGround":
+                                background = d;
+                                break;
+                            case "#Song":
+                                song = d;
+                                break;
+                            case "#Lyrics":
+                                lyrics = d;
+                                break;
+                            case "#BPM":
+                                bpm = Double.parseDouble(d);
+                                break;
+                            case "#Offset":
+                                offset = Integer.parseInt(d);
+                                break;
+                            case "#MovieOffset":
+                                movieoffset = Integer.parseInt(d);
+                                break;
+                            case "#Difficulty":
+                                difficulty = Difficulties.valueOf(d);
+                                break;
+                            case "#LV":
+                                lv = Integer.parseInt(d);
+                                break;
+                            case "#BGMVol":
+                                bgmvol = Integer.parseInt(d);
+                                break;
+                            case "#SEVol":
+                                sevol = Integer.parseInt(d);
+                                break;
+                            case "#Attribute":
+                                attribute = ColorType.valueOf(d);
+                                break;
+
+                        }
+                    }
+                    if (line.startsWith("#Title"))//キミと☆Are You Ready？
+                        //read one line
+                        line=br.readLine();
                 }
-                //String everything = sb.toString();
             }
-			catch (IOException e)
-			{
+            catch (IOException e)
+            {
 
             }
-			finally
-			{
-                br.close();
+        }
+
+        public void LoadNotemap2(File candidateFile)
+        {
+            isLoaded = true;
+            File notemapFile = candidateFile;
+            try
+            {
+                BufferedReader br = new BufferedReader(new FileReader(notemapFile));
+                int bpm = -1;
+                int block = -1;
+                boolean lastWasBlock = false;
+                try
+                {
+                    //StringBuilder sb = new StringBuilder();
+                    String line = br.readLine();
+                    while (line != null)
+                    {
+                        //use line here
+                        if (line.startsWith("# "))
+                        {
+                            if (bpm < 0)
+                                throw new RuntimeException("#bpm must be specified at least once in the first block");
+                            lastWasBlock = false;
+                            line = line.replaceAll("# ", "").trim();
+                            //[종류][시작 라인][플릭][다음 라인]
+                            String[] notes = line.split("\\s");
+                            Ball[] notesProcessed = new Ball[5];
+                            for (int i = 0; i < notes.length; i++)
+                            {
+                                notesProcessed[i] = getNote(notes[i]);
+                            }
+                            blocks.get(blocks.size() - 1).AddBalls(notesProcessed);
+                        }
+                        else if (line.startsWith("#startframe"))
+                        {
+                            lastWasBlock = false;
+                            line = line.replaceAll("#startframe", "").trim();
+                            try
+                            {
+                                startframe = Integer.parseInt(line);
+                            }
+                            catch (NumberFormatException e)
+                            {
+                                throw new RuntimeException("#startframe error");
+                            }
+                        }
+                        else if (line.startsWith("#block")) //4박자를 얼마나 쪼개나 악보에서 느낌 16비트면 16
+                        {
+                            lastWasBlock = true;
+                            line = line.replaceAll("#block", "").trim();
+                            try
+                            {
+                                block = Integer.parseInt(line);
+                            }
+                            catch (NumberFormatException e)
+                            {
+                                throw new RuntimeException("#block error");
+                            }
+                            blocks.add(new Block(block));
+                        }
+                        else if (line.startsWith("#setbpm"))
+                        {
+                            if (!lastWasBlock)
+                                throw new RuntimeException("#setbpm must be right under the #block command");
+                            lastWasBlock = false;
+                            line = line.replaceAll("#setbpm", "").trim();
+                            try
+                            {
+                                bpm = Integer.parseInt(line);
+                            }
+                            catch (NumberFormatException e)
+                            {
+                                throw new RuntimeException("#setbpm error");
+                            }
+                        }
+                        //end
+                        //sb.append(System.lineSeparator());
+                        line = br.readLine();
+                    }
+                    //String everything = sb.toString();
+                }
+                catch (IOException e)
+                {
+
+                }
+                finally
+                {
+                    br.close();
+                }
+
             }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
 
+        private Ball getNote(String notes)
+        {
+            char[] chars = notes.toCharArray();
+            Ball.BallType ballTyoe;
+            int startLine;
+            int nextLine;
+            switch (chars[0])
+            {
+                case '-':
+                    return new Ball(0, 0,null Ball.BallType.Bomb);
+                case '1':
+                    ballTyoe = Ball.BallType.Normal;
+                    break;
+                case '2':
+                    ballTyoe = Ball.BallType.LongDown;
+                    break;
+                case '3':
+                    ballTyoe = Ball.BallType.Slide;
+                    break;
+                default:
+                    //???
+                    throw new RuntimeException();
+                    //break;
+            }
+            startLine = Character.getNumericValue(chars[1]);
+            nextLine = Character.getNumericValue(chars[3]);
+            boolean startOfFlick = false;
+            switch (chars[2])
+            {
+                case '0':
+                    break;
+                case '1':
+                    startOfFlick = true;
+                    ballTyoe = Ball.BallType.FlickLeft;
+                    break;
+                case '2':
+                    startOfFlick = false;
+                    ballTyoe = Ball.BallType.FlickLeft;
+                    break;
+                case '3':
+                    startOfFlick = true;
+                    ballTyoe = Ball.BallType.FlickRight;
+                    break;
+                case '4':
+                    startOfFlick = false;
+                    ballTyoe = Ball.BallType.FlickRight;
+                    break;
+            }
+            Ball ball = new Ball(0, 0, ballTyoe);
+            ball.startOfFlick = startOfFlick;
+            return ball;
         }
-		catch (IOException e)
-		{
-            e.printStackTrace();
-        }
-    }
-
-    private Ball getNote(String notes)
-	{
-        char[] chars = notes.toCharArray();
-        Ball.BallType ballTyoe;
-        int startLine;
-        int nextLine;
-        switch (chars[0])
-		{
-            case '-':
-                return new Ball(0, 0,null Ball.BallType.Bomb);
-            case '1':
-                ballTyoe = Ball.BallType.Normal;
-                break;
-            case '2':
-                ballTyoe = Ball.BallType.LongDown;
-                break;
-            case '3':
-                ballTyoe = Ball.BallType.Slide;
-                break;
-            default:
-                //???
-                throw new RuntimeException();
-                //break;
-        }
-        startLine = Character.getNumericValue(chars[1]);
-        nextLine = Character.getNumericValue(chars[3]);
-        boolean startOfFlick = false;
-        switch (chars[2])
-		{
-            case '0':
-                break;
-            case '1':
-                startOfFlick = true;
-                ballTyoe = Ball.BallType.FlickLeft;
-                break;
-            case '2':
-                startOfFlick = false;
-                ballTyoe = Ball.BallType.FlickLeft;
-                break;
-            case '3':
-                startOfFlick = true;
-                ballTyoe = Ball.BallType.FlickRight;
-                break;
-            case '4':
-                startOfFlick = false;
-                ballTyoe = Ball.BallType.FlickRight;
-                break;
-        }
-        Ball ball = new Ball(0, 0, ballTyoe);
-        ball.startOfFlick = startOfFlick;
-        return ball;
-    }
-*/
+    */
     int startframe;
     List<Block> blocks = new ArrayList<>();
 
@@ -591,20 +569,19 @@ public class NoteFile implements Serializable
 
     List<List<File>> notemapFiles = new ArrayList<List<File>>(5);
 
-    public String getName()
-	{
+    public String getName() {
         return songName;
     }
-	public String getMusicPath()
-	{
-	    //anyway crash
-	    if(musicFile == null)
-	        return new File("Aquaria_Minibadass_OC_ReMix.mp3").getPath();
-		return musicFile.getPath();
-	}
-    public String getVideoPath()
-    {
-        if(videoFile == null)
+
+    public String getMusicPath() {
+        //anyway crash
+        if (musicFile == null)
+            return new File("Aquaria_Minibadass_OC_ReMix.mp3").getPath();
+        return musicFile.getPath();
+    }
+
+    public String getVideoPath() {
+        if (videoFile == null)
             return null;
         return videoFile.getPath();
     }

@@ -1,11 +1,11 @@
 package sma.rhythmtapper.framework.Impl;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.view.MotionEvent;
 import android.view.View;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import sma.rhythmtapper.framework.Input.TouchEvent;
 import sma.rhythmtapper.framework.Pool;
@@ -38,7 +38,7 @@ public class SingleTouchHandler implements TouchHandler {
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        synchronized(this) {
+        synchronized (this) {
             TouchEvent touchEvent = touchEventPool.newObject();
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
@@ -56,8 +56,8 @@ public class SingleTouchHandler implements TouchHandler {
                     break;
             }
 
-            touchEvent.x = touchX = (int)(event.getX() * scaleX);
-            touchEvent.y = touchY = (int)(event.getY() * scaleY);
+            touchEvent.x = touchX = (int) (event.getX() * scaleX);
+            touchEvent.y = touchY = (int) (event.getY() * scaleY);
             touchEventsBuffer.add(touchEvent);
 
             return true;
@@ -66,30 +66,30 @@ public class SingleTouchHandler implements TouchHandler {
 
     @Override
     public boolean isTouchDown(int pointer) {
-        synchronized(this) {
+        synchronized (this) {
             return pointer == 0 && isTouched;
         }
     }
 
     @Override
     public int getTouchX(int pointer) {
-        synchronized(this) {
+        synchronized (this) {
             return touchX;
         }
     }
 
     @Override
     public int getTouchY(int pointer) {
-        synchronized(this) {
+        synchronized (this) {
             return touchY;
         }
     }
 
     @Override
     public List<TouchEvent> getTouchEvents() {
-        synchronized(this) {
+        synchronized (this) {
             int len = touchEvents.size();
-            for( int i = 0; i < len; i++ )
+            for (int i = 0; i < len; i++)
                 touchEventPool.free(touchEvents.get(i));
             touchEvents.clear();
             touchEvents.addAll(touchEventsBuffer);

@@ -17,10 +17,9 @@ public class SkillComboUp extends Skill {
         bundle.ApplyComboBonus(15);
     }
 
-	@Override
-	public boolean isAffectComboBonus()
-	{
-		// TODO: Implement this method
-		return true;
-	}
+    @Override
+    public boolean isAffectComboBonus() {
+        // TODO: Implement this method
+        return true;
+    }
 }

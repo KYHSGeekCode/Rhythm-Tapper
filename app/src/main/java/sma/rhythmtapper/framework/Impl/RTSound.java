@@ -25,5 +25,7 @@ public class RTSound implements Sound {
     }
 
     @Override
-    public void stop(){ soundPool.stop(soundId);}
+    public void stop() {
+        soundPool.stop(soundId);
+    }
 }

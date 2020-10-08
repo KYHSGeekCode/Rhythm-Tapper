@@ -1,10 +1,6 @@
 package sma.rhythmtapper.framework.Impl;
 
 
-import java.io.File;
-import java.io.FileDescriptor;
-import java.io.IOException;
-
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -12,6 +8,9 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.media.MediaPlayer.OnSeekCompleteListener;
 import android.media.MediaPlayer.OnVideoSizeChangedListener;
 import android.util.Log;
+
+import java.io.File;
+import java.io.IOException;
 
 import sma.rhythmtapper.framework.Music;
 
@@ -25,8 +24,7 @@ public class RTMusic implements Music, OnCompletionListener, OnSeekCompleteListe
         return mediaPlayer.getCurrentPosition();
     }
 
-    public int getDuration()
-    {
+    public int getDuration() {
         return mediaPlayer.getDuration();
     }
 
@@ -35,14 +33,12 @@ public class RTMusic implements Music, OnCompletionListener, OnSeekCompleteListe
         try {
             mediaPlayer.setDataSource(file.getPath());
             Constructor();
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             throw new RuntimeException("Couldn't load music");
         }
     }
 
-    public RTMusic(AssetFileDescriptor assetDescriptor)
-    {
+    public RTMusic(AssetFileDescriptor assetDescriptor) {
         mediaPlayer = new MediaPlayer();
         try {
             mediaPlayer.setDataSource(assetDescriptor.getFileDescriptor(),
@@ -54,8 +50,7 @@ public class RTMusic implements Music, OnCompletionListener, OnSeekCompleteListe
         }
     }
 
-    private void Constructor()
-    {
+    private void Constructor() {
         try {
             mediaPlayer.prepare();
             isPrepared = true;
@@ -63,15 +58,16 @@ public class RTMusic implements Music, OnCompletionListener, OnSeekCompleteListe
             mediaPlayer.setOnSeekCompleteListener(this);
             mediaPlayer.setOnPreparedListener(this);
             mediaPlayer.setOnVideoSizeChangedListener(this);
-            Log.v(TAG,"music prepared");
+            Log.v(TAG, "music prepared");
         } catch (Exception e) {
             throw new RuntimeException("Couldn't load music");
         }
     }
+
     @Override
     public void dispose() {
 
-        if (this.mediaPlayer.isPlaying()){
+        if (this.mediaPlayer.isPlaying()) {
             this.mediaPlayer.stop();
         }
         this.mediaPlayer.release();
@@ -97,7 +93,6 @@ public class RTMusic implements Music, OnCompletionListener, OnSeekCompleteListe
         if (this.mediaPlayer.isPlaying())
             mediaPlayer.pause();
     }
-
 
 
     @Override
@@ -130,12 +125,13 @@ public class RTMusic implements Music, OnCompletionListener, OnSeekCompleteListe
 
     @Override
     public void stop() {
-        if (this.mediaPlayer.isPlaying() == true){
+        if (this.mediaPlayer.isPlaying() == true) {
             this.mediaPlayer.stop();
 
             synchronized (this) {
                 isPrepared = false;
-            }}
+            }
+        }
     }
 
     @Override

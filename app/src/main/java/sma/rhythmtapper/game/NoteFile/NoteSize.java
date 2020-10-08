@@ -1,8 +1,6 @@
 package sma.rhythmtapper.game.NoteFile;
 
-public enum NoteSize
-
-{
+public enum NoteSize {
 
     Small, Large, ExtraLarge
 

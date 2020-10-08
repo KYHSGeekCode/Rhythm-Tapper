@@ -25,11 +25,11 @@ public class HomeView extends View {
     private float mTextWidth;
     private float mTextHeight;
 
-    public static enum DrawType
-    {
+    public enum DrawType {
         HOME,
 
     }
+
     public HomeView(Context context) {
         super(context);
         init(null, 0);

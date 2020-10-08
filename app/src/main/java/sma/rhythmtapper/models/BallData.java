@@ -5,11 +5,12 @@ public class BallData {
     private int _descId = -1;
     private int _imgId = -1;
 
-    public BallData(int titleId, int descId, int imgId){
+    public BallData(int titleId, int descId, int imgId) {
         this._titleId = titleId;
         this._descId = descId;
         this._imgId = imgId;
     }
+
     public int getTitleId() {
         return _titleId;
     }

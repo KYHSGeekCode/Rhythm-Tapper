@@ -6,10 +6,9 @@ public enum Difficulties {
     HARD,
     MASTER,
     MASTERPLUS;
-    public String getFileName()
-    {
-        switch (this)
-        {
+
+    public String getFileName() {
+        switch (this) {
             case EASY:
                 return "easy";
             case NORMAL:

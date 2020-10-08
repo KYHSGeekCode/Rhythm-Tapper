@@ -1,8 +1,6 @@
 package sma.rhythmtapper.game.NoteFile;
 
-public enum NoteInfo
-
-{
+public enum NoteInfo {
 
     NormalNote, LongNoteStart, LongNoteEnd, SlideNoteStart, SlideNoteCheckpoint, SlideNoteEnd, DamageNote, HiddenNote,
 

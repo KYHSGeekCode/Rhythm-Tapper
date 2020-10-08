@@ -1,9 +1,9 @@
 package sma.rhythmtapper.framework;
 
 public interface Sound {
-    public void play(float volume);
+    void play(float volume);
 
-    public void dispose();
+    void dispose();
 
-    public void stop();
+    void stop();
 }

@@ -3,10 +3,9 @@ package sma.rhythmtapper.game.models;
 import android.graphics.Color;
 import android.graphics.Path;
 
-import sma.rhythmtapper.framework.*;
-import sma.rhythmtapper.game.*;
+import sma.rhythmtapper.framework.Graphics;
+import sma.rhythmtapper.game.EnvVar;
 
-import static sma.rhythmtapper.game.EnvVar.SIZE_BALL;
 import static sma.rhythmtapper.game.models.Ball.DEPTH;
 
 //ㅇㅁㅇㅁㅇㅁㅇㅁㅇ
@@ -18,17 +17,14 @@ public class Tail extends Connector {
     public Tail(Ball ball1, Ball ball2) {
         super(ball1, ball2);
         created = false;
-        if (ball1.startLine == ball2.startLine && ball1.endLine == ball2.endLine) {
-            optimized = true;
-        } else {
-            optimized = false;
-        }
+        optimized = ball1.startLine == ball2.startLine && ball1.endLine == ball2.endLine;
     }
 
     float[] tailxs;
     transient Path path;// = new Path();
 
     final int numJoints = 6;
+
     @Override
     public void Paint(Graphics g) {
         //super.Paint(g);
@@ -38,22 +34,21 @@ public class Tail extends Connector {
         int prevX, prevY;
         prevX = ball1.x;
         prevY = ball1.y;
-        for(int k=1;k<numJoints-2; k++)
-        {
-            float alp = (float)k/(float)numJoints;
-            float z = alp*ball1.z+(1-alp)*ball2.z;
+        for (int k = 1; k < numJoints - 2; k++) {
+            float alp = (float) k / (float) numJoints;
+            float z = alp * ball1.z + (1 - alp) * ball2.z;
             int y;// = (int)(ball1.aOfZ*(z-Ball.alphaDepth)*(z-Ball.alphaDepth));
             //this.y = (int)(/*GameScreen.BALL_INITIAL_Y*/ EnvVar.HITBOX_CENTER+ ( EnvVar.currentTime-this.time)* EnvVar.speed *100);
-            float t = 1-((float)z / DEPTH);//(float)EnvVar.HITBOX_CENTER;
-            int x= (int)(alp*ball1.x+(1-alp)*ball2.x);//Ball.getXfromT(ball2.x,0,t);
-            y = (int)(alp*ball1.y+(1-alp)*ball2.y);
-            if(t<0.3f||t>1.0f)
+            float t = 1 - ((float) z / DEPTH);//(float)EnvVar.HITBOX_CENTER;
+            int x = (int) (alp * ball1.x + (1 - alp) * ball2.x);//Ball.getXfromT(ball2.x,0,t);
+            y = (int) (alp * ball1.y + (1 - alp) * ball2.y);
+            if (t < 0.3f || t > 1.0f)
                 continue;
-            g.drawLine(prevX,prevY,x,y, Color.WHITE,30);
+            g.drawLine(prevX, prevY, x, y, Color.WHITE, 30);
             prevX = x;
             prevY = y;
         }
-        g.drawLine(prevX,prevY, ball2.x, ball2.y,Color.WHITE, 30);
+        g.drawLine(prevX, prevY, ball2.x, ball2.y, Color.WHITE, 30);
 
 
 //        UpdateGhosts();
@@ -156,8 +151,8 @@ public class Tail extends Connector {
             tt += dt;
         }
     }
-    public void Draw(Graphics g)
-    {
+
+    public void Draw(Graphics g) {
         int x, y, z;
         int prevx, prevy, prevz;
         int startx, starty, startz;
@@ -172,14 +167,13 @@ public class Tail extends Connector {
         prevx = startx;
         prevy = starty;
         prevz = startz;
-        for(z = startz+deltaz; z<endz;z+=deltaz)
-        {
-        //    x = solvex(z); //직선
-        //    y = solvey(z); // 포물선
-        //    g.drawLine(x,y,prevx,prevy,ball1.color,STROKE);
-        //    prevx = x;
-        //    prevy = y;
-        //    prevz  =z;
+        for (z = startz + deltaz; z < endz; z += deltaz) {
+            //    x = solvex(z); //직선
+            //    y = solvey(z); // 포물선
+            //    g.drawLine(x,y,prevx,prevy,ball1.color,STROKE);
+            //    prevx = x;
+            //    prevy = y;
+            //    prevz  =z;
         }
         g.drawLine(prevx, prevy, endx, endy, ball1.color, STROKE);
     }

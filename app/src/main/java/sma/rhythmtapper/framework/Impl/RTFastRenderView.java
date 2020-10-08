@@ -31,17 +31,17 @@ public class RTFastRenderView extends SurfaceView implements Runnable {
     public void run() {
         Rect dstRect = new Rect();
         long startTime = System.nanoTime();
-        while(running) {
-            if(!holder.getSurface().isValid())
+        while (running) {
+            if (!holder.getSurface().isValid())
                 continue;
 
 
             float deltaTime = (System.nanoTime() - startTime) / 10000000.000f;      //천만 = 1e+7
-                                                                                    // 1ns = 1e-9 sec
-                                                                                    // deltatime = 1/100 sec
+            // 1ns = 1e-9 sec
+            // deltatime = 1/100 sec
             startTime = System.nanoTime();
 
-            if (deltaTime > 3.15){
+            if (deltaTime > 3.15) {
                 deltaTime = (float) 3.15;
             }
 
@@ -59,7 +59,7 @@ public class RTFastRenderView extends SurfaceView implements Runnable {
 
     public void pause() {
         running = false;
-        while(true) {
+        while (true) {
             try {
                 renderThread.join();
                 break;

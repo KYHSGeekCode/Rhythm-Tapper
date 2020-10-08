@@ -1,15 +1,27 @@
 package sma.rhythmtapper.framework.Impl;
 
-import android.app.*;
-import android.content.*;
-import android.content.res.*;
-import android.graphics.*;
-import android.os.*;
-import android.view.*;
-import sma.rhythmtapper.framework.*;
-import sma.rhythmtapper.game.*;
-import sma.rhythmtapper.game.NoteFile.*;
-import sma.rhythmtapper.game.models.*;
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.Point;
+import android.os.Bundle;
+import android.os.PowerManager;
+import android.os.Vibrator;
+import android.view.Window;
+import android.view.WindowManager;
+
+import sma.rhythmtapper.framework.Audio;
+import sma.rhythmtapper.framework.FileIO;
+import sma.rhythmtapper.framework.Game;
+import sma.rhythmtapper.framework.Graphics;
+import sma.rhythmtapper.framework.Input;
+import sma.rhythmtapper.framework.Screen;
+import sma.rhythmtapper.game.ChooseSongScreen;
+import sma.rhythmtapper.game.EnvVar;
+import sma.rhythmtapper.game.NoteFile.NoteFile;
+import sma.rhythmtapper.game.models.Deck;
 import wseemann.media.FFmpegMediaMetadataRetriever;
 
 
@@ -23,61 +35,53 @@ public class RTGame extends Activity implements Game {
     Screen screen;
     PowerManager.WakeLock wakeLock;
 
-    Point screensize=new Point();
+    Point screensize = new Point();
 
     public ChooseSongScreen chooseSongScreen;
 
-	int ballspeed;
-	NoteFile noteFile;
-	Deck deck;
+    int ballspeed;
+    NoteFile noteFile;
+    Deck deck;
 
-	public void setAutoPlay(boolean au)
-	{
-		EnvVar.autoPlay = au;
-	}
-	public void setBallspeed(int ballspeed)
-	{
-		this.ballspeed = ballspeed;
-	}
+    public void setAutoPlay(boolean au) {
+        EnvVar.autoPlay = au;
+    }
 
-	public int getBallspeed()
-	{
-		return ballspeed;
-	}
+    public void setBallspeed(int ballspeed) {
+        this.ballspeed = ballspeed;
+    }
 
-	public void setNoteFile(NoteFile noteFile)
-	{
-		this.noteFile = noteFile;
-	}
+    public int getBallspeed() {
+        return ballspeed;
+    }
 
-	public NoteFile getNoteFile()
-	{
-		return noteFile;
-	}
+    public void setNoteFile(NoteFile noteFile) {
+        this.noteFile = noteFile;
+    }
 
-	public void setDeck(Deck deck)
-	{
-		this.deck = deck;
-	}
+    public NoteFile getNoteFile() {
+        return noteFile;
+    }
 
-	public Deck getDeck()
-	{
-		return deck;
-	}
-	
-	//difficulty notefild deck speed
-	
-	
+    public void setDeck(Deck deck) {
+        this.deck = deck;
+    }
+
+    public Deck getDeck() {
+        return deck;
+    }
+
+    //difficulty notefild deck speed
+
+
     @Override
-    public int getScreenX()
-    {
-        return  screensize.x;
+    public int getScreenX() {
+        return screensize.x;
     }
 
     @Override
-    public int getScreenY()
-    {
-        return  screensize.y;
+    public int getScreenY() {
+        return screensize.y;
     }
 
     @Override
@@ -91,10 +95,10 @@ public class RTGame extends Activity implements Game {
 
     @Override
     public FFmpegMediaMetadataRetriever createVideo(String video) {
-	    if(video == null)
-	        return null;
-	    FFmpegMediaMetadataRetriever med = new FFmpegMediaMetadataRetriever();
-	    med.setDataSource(video);
+        if (video == null)
+            return null;
+        FFmpegMediaMetadataRetriever med = new FFmpegMediaMetadataRetriever();
+        med.setDataSource(video);
         return med;
     }
 
@@ -138,7 +142,7 @@ public class RTGame extends Activity implements Game {
         PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "RhythmTapper::wakelock");
 
-        chooseSongScreen=new ChooseSongScreen(this);
+        chooseSongScreen = new ChooseSongScreen(this);
     }
 
     @Override

@@ -3,8 +3,7 @@ package sma.rhythmtapper.framework;
 import java.util.List;
 
 public class HomeScreen extends Screen {
-    public HomeScreen(Game game)
-    {
+    public HomeScreen(Game game) {
         super(game);
     }
 

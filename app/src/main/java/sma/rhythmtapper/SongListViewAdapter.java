@@ -1,23 +1,22 @@
 package sma.rhythmtapper;
 
-import android.content.*;
-import android.graphics.*;
-import android.text.*;
-import android.text.style.*;
-import android.view.*;
-import android.widget.*;
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import android.util.*;
-import android.content.res.*;
-
-import sma.rhythmtapper.framework.Game;
-import sma.rhythmtapper.game.GameScreen;
-import sma.rhythmtapper.game.LoadingScreen;
-import sma.rhythmtapper.game.NoteFile.*;
+import sma.rhythmtapper.game.NoteFile.NoteFile;
 import sma.rhythmtapper.game.models.Difficulties;
-import sma.rhythmtapper.models.Difficulty;
 
 public class SongListViewAdapter extends BaseAdapter implements View.OnClickListener//implements ListView.OnScrollListener
 {
@@ -31,8 +30,7 @@ public class SongListViewAdapter extends BaseAdapter implements View.OnClickList
 
     List<NoteFile> items = new ArrayList<>();
 
-    public void Clear()
-	{
+    public void Clear() {
         items.clear();
     }
 
@@ -44,21 +42,18 @@ public class SongListViewAdapter extends BaseAdapter implements View.OnClickList
 	 }
 	 */
     //You should not modify
-    public List<NoteFile> itemList()
-	{
+    public List<NoteFile> itemList() {
         return items;///*listViewItemList;//*/new ArrayList<ListViewItem>().addAll(listViewItemList);
     }
 
     // position에 위치한 데이터를 화면에 출력하는데 사용될 View를 리턴. : 필수 구현
     @Override
-    public View getView(int position, View convertView, ViewGroup parent)
-	{
+    public View getView(int position, View convertView, ViewGroup parent) {
         // final int pos = position;
         final Context context = parent.getContext();
 
         // "listview_item" Layout을 inflate하여 convertView 참조 획득.
-        if (convertView == null)
-		{
+        if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.row_songs, parent, false);
         }
@@ -74,16 +69,16 @@ public class SongListViewAdapter extends BaseAdapter implements View.OnClickList
         NoteFile item = (NoteFile) getItem(position);
         tvTitle.setText(item.getName());
         btEasy.setOnClickListener(this);
-		btNormal.setOnClickListener(this);
-		btHard.setOnClickListener(this);
-		btMaster.setOnClickListener(this);
-		btApex.setOnClickListener(this);
+        btNormal.setOnClickListener(this);
+        btHard.setOnClickListener(this);
+        btMaster.setOnClickListener(this);
+        btApex.setOnClickListener(this);
 
-		btEasy.setTag(item);
-		btNormal.setTag(item);
-		btHard.setTag(item);
-		btMaster.setTag(item);
-		btApex.setTag(item);
+        btEasy.setTag(item);
+        btNormal.setTag(item);
+        btHard.setTag(item);
+        btMaster.setTag(item);
+        btApex.setTag(item);
         //listViewItemList/*[position];*/.get(position);
 
         //  iconImageView.setImageDrawable(listViewItem.getIcon());
@@ -91,47 +86,40 @@ public class SongListViewAdapter extends BaseAdapter implements View.OnClickList
         return convertView;
     }
 
-    public void addItem(NoteFile item)
-	{
+    public void addItem(NoteFile item) {
         items.add(item);
         notifyDataSetChanged();
     }
 
-    public void addAll(ArrayList<NoteFile> items)
-	{
+    public void addAll(ArrayList<NoteFile> items) {
         this.items.addAll(items);
         notifyDataSetChanged();
     }
 
     // Adapter에 사용되는 데이터의 개수를 리턴. : 필수 구현
     @Override
-    public int getCount()
-	{
+    public int getCount() {
         return items.size();// lvLength;//listViewItemList//size() ;
     }
 
     @Override
-    public Object getItem(int position)
-	{
+    public Object getItem(int position) {
         return items.get(position);
     }
 
     //?!!!
     // 지정한 위치(position)에 있는 데이터와 관계된 아이템(row)의 ID를 리턴. : 필수 구현
     @Override
-    public long getItemId(int position)
-	{
+    public long getItemId(int position) {
         return position;
     }
 
-    public SongListViewAdapter(Context context)
-	{
+    public SongListViewAdapter(Context context) {
         this.context = context;
     }
 
     //https://stackoverflow.com/a/48351453/8614565
-    public static int convertDpToPixel(float dp)
-	{
+    public static int convertDpToPixel(float dp) {
         DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
         float px = dp * (metrics.densityDpi / 160f);
         return Math.round(px);
@@ -141,11 +129,9 @@ public class SongListViewAdapter extends BaseAdapter implements View.OnClickList
     public int dp260 = convertDpToPixel(260);
 
     @Override
-    public void onClick(View view)
-	{
+    public void onClick(View view) {
         Difficulties diff = Difficulties.EASY;
-        switch (view.getId())
-		{
+        switch (view.getId()) {
             case R.id.rowsongsButtonEasy:
                 diff = Difficulties.EASY;
                 break;
@@ -161,23 +147,20 @@ public class SongListViewAdapter extends BaseAdapter implements View.OnClickList
             case R.id.rowsongsButtonApex:
                 diff = Difficulties.MASTERPLUS;
                 break;
-				//game.setScreen(new LoadingScreen(game, new Difficulty(Difficulties.EASY,(String)view.getTag(),0,0)));
+            //game.setScreen(new LoadingScreen(game, new Difficulty(Difficulties.EASY,(String)view.getTag(),0,0)));
         }
-		NoteFile nf=(NoteFile)view.getTag();
-		try
-		{
-			nf.Load(diff);
-		}
-		catch (RuntimeException e)
-		{
-			Toast.makeText(context,"No such level",Toast.LENGTH_SHORT).show();
-			return;
-		}
+        NoteFile nf = (NoteFile) view.getTag();
+        try {
+            nf.Load(diff);
+        } catch (RuntimeException e) {
+            Toast.makeText(context, "No such level", Toast.LENGTH_SHORT).show();
+            return;
+        }
         Intent i = new Intent(context, ChooseGuestActivity.class);
         // add flag, when activity already runs,
         // use it instead of launching a new instance
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		i.putExtra("notefile", nf);
+        i.putExtra("notefile", nf);
         i.putExtra("Difficulty", diff.name());
         //i.putExtra("Name", (String) view.getTag());
         //i.putExtra("bpm",(String));

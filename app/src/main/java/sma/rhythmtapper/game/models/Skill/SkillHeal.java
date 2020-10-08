@@ -15,17 +15,15 @@ public class SkillHeal extends Skill {
 
     @Override
     public void PostTest(GameStatusBundle bundle) {
-        if(bundle.testResult== TestResult.PERFECT)
-        {
+        if (bundle.testResult == TestResult.PERFECT) {
             bundle.ApplyDeltaLife(3);
         }
     }
 
-	@Override
-	public boolean isAffectLife()
-	{
-		// TODO: Implement this method
-		return true;
-	}
-	
+    @Override
+    public boolean isAffectLife() {
+        // TODO: Implement this method
+        return true;
+    }
+
 }

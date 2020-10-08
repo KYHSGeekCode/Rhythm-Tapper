@@ -1,8 +1,6 @@
 package sma.rhythmtapper.game.NoteFile;
 
-public  class DataSender
-
-{
+public class DataSender {
 
     private static String songName, songLevel, pathBasic, folderName, beatmapPath, wavPath, mp3Path, oggPath, bgaPath, backPath;
 
@@ -19,10 +17,7 @@ public  class DataSender
     private static GameMode gameMode;
 
 
-
-    public static void GetSongData(String fd, String sN, String sL, String basePath, String beatmap, String wav, String mp3, String ogg, String bga, String back)
-
-    {
+    public static void GetSongData(String fd, String sN, String sL, String basePath, String beatmap, String wav, String mp3, String ogg, String bga, String back) {
 
         folderName = fd;
 
@@ -47,10 +42,7 @@ public  class DataSender
     }
 
 
-
-    public static void GetGameOptionData(boolean aP, boolean nm, boolean nbga, boolean rW, boolean iM, float sA, int bf)
-
-    {
+    public static void GetGameOptionData(boolean aP, boolean nm, boolean nbga, boolean rW, boolean iM, float sA, int bf) {
 
         autoPlay = aP;
 
@@ -69,189 +61,154 @@ public  class DataSender
     }
 
 
-
-    public static void SetNotemapMode(NotemapMode mode)
-
-    {
+    public static void SetNotemapMode(NotemapMode mode) {
 
         notemapMode = mode;
 
 
-
-        if (mode.equals(NotemapMode.TW5) || mode.equals(NotemapMode.SSTrain) || mode.equals(NotemapMode.DelesteSimulator)) { gameMode = GameMode.Starlight; }
-
-        else if (mode.equals(NotemapMode.TW2))
-
-        {
+        if (mode.equals(NotemapMode.TW5) || mode.equals(NotemapMode.SSTrain) || mode.equals(NotemapMode.DelesteSimulator)) {
+            gameMode = GameMode.Starlight;
+        } else if (mode.equals(NotemapMode.TW2)) {
 
             //if (PlayerPrefs.HasKey("theater2") && PlayerPrefs.GetInt("theater2").equals(0)) { gameMode = GameMode.Theater2P; }
 
             //else
-             { gameMode = GameMode.Theater2L; }
+            {
+                gameMode = GameMode.Theater2L;
+            }
 
+        } else if (mode.equals(NotemapMode.TW4)) {
+            gameMode = GameMode.Theater4;
+        } else if (mode.equals(NotemapMode.TW6)) {
+            gameMode = GameMode.Theater;
+        } else if (mode.equals(NotemapMode.TW1)) {
+            gameMode = GameMode.Platinum;
         }
 
-        else if (mode.equals(NotemapMode.TW4)) { gameMode = GameMode.Theater4; }
-
-        else if (mode.equals(NotemapMode.TW6)) { gameMode = GameMode.Theater; }
-
-        else if (mode.equals(NotemapMode.TW1)) { gameMode = GameMode.Platinum; }
-
     }
-
 
 
     //public static void SetGameResult(GameDataArchiver get)
 
     //{
 
-      //  data = get;
+    //  data = get;
 
     //}
 
 
-
-    public static String ReturnSongName()
-
-    {
+    public static String ReturnSongName() {
 
         return songName;
 
     }
 
 
-
-    public static boolean ReturnAutoPlay()
-
-    {
+    public static boolean ReturnAutoPlay() {
 
         return autoPlay;
 
     }
 
 
-
-    public static boolean ReturnMusicNotPlay()
-
-    {
+    public static boolean ReturnMusicNotPlay() {
 
         return noMusic;
 
     }
 
 
-
-    public static boolean ReturnNoBGA()
-
-    {
+    public static boolean ReturnNoBGA() {
 
         return noBga;
 
     }
 
 
-
-    public static boolean ReturnMirror() { return isMirror; }
-
-
-
-    public static boolean ReturnRandWave() { return randWave; }
+    public static boolean ReturnMirror() {
+        return isMirror;
+    }
 
 
+    public static boolean ReturnRandWave() {
+        return randWave;
+    }
 
-    public static float ReturnSpeedAmp()
 
-    {
+    public static float ReturnSpeedAmp() {
 
         return speedAmp;
 
     }
 
 
-
-    public static String ReturnMobilePath(NotemapMode mode)
-
-    {
+    public static String ReturnMobilePath(NotemapMode mode) {
 
         return beatmapPath;
 
     }
 
 
-
-    public static NotemapMode ReturnNotemapMode()
-
-    {
+    public static NotemapMode ReturnNotemapMode() {
 
         return notemapMode;
 
     }
 
 
+    public static GameMode ReturnGameMode() {
+        return gameMode;
+    }
 
-    public static GameMode ReturnGameMode() { return gameMode; }
 
-
-
-    public static String ReturnMp3Path()
-
-    {
+    public static String ReturnMp3Path() {
 
         return mp3Path;
 
     }
 
 
-
-    public static String ReturnWavPath()
-
-    {
+    public static String ReturnWavPath() {
 
         return wavPath;
 
     }
 
 
-
-    public static String ReturnOggPath()
-
-    {
+    public static String ReturnOggPath() {
 
         return oggPath;
 
     }
 
 
+    public static String ReturnSongFolderPath() {
+        return pathBasic + folderName;
+    }
 
-    public static String ReturnSongFolderPath() { return pathBasic + folderName; }
 
-
-
-    public static String ReturnBasePath()
-
-    {
+    public static String ReturnBasePath() {
 
         return pathBasic + folderName + "/" + songName;
 
     }
 
 
-
-    public static int ReturnBGAFrame()
-
-    {
+    public static int ReturnBGAFrame() {
 
         return bgaFrame;
 
     }
 
 
+    public static String ReturnBGAPath() {
+        return bgaPath;
+    }
 
-    public static String ReturnBGAPath() { return bgaPath; }
 
-
-
-    public static String ReturnBackImgPath() { return backPath; }
+    public static String ReturnBackImgPath() {
+        return backPath;
+    }
 
 
 //
@@ -259,15 +216,12 @@ public  class DataSender
 //
 //    {
 
-  //      return data;
+    //      return data;
 
     //}
 
 
-
-    public static float DivideBetweenTwoPos(float left, float right, float m, float n)
-
-    {
+    public static float DivideBetweenTwoPos(float left, float right, float m, float n) {
 
         return (m * right + n * left) / (m + n);
 

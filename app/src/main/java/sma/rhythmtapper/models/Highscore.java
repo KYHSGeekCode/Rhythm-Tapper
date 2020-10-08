@@ -1,7 +1,5 @@
 package sma.rhythmtapper.models;
 
-import java.util.Date;
-
 /**
  * Created by andil on 23.01.2017.
  */
@@ -15,6 +13,7 @@ public class Highscore {
         this._score = score;
 
     }
+
     @Override
     public String toString() {
         return this.getDate() + " " + this.getScore();

@@ -1,14 +1,13 @@
 package sma.rhythmtapper.framework.Impl;
 
 
-import java.io.IOException;
-
 import android.app.Activity;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.media.AudioManager;
 import android.media.SoundPool;
 
+import java.io.IOException;
 
 import sma.rhythmtapper.framework.Audio;
 import sma.rhythmtapper.framework.Music;

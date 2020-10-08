@@ -1,13 +1,13 @@
 package sma.rhythmtapper.framework.Impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.view.MotionEvent;
 import android.view.View;
 
-import sma.rhythmtapper.framework.Pool;
+import java.util.ArrayList;
+import java.util.List;
+
 import sma.rhythmtapper.framework.Input.TouchEvent;
+import sma.rhythmtapper.framework.Pool;
 import sma.rhythmtapper.framework.Pool.PoolObjectFactory;
 
 public class MultiTouchHandler implements TouchHandler {

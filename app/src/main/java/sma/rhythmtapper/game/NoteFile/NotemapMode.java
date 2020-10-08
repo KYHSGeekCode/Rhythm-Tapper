@@ -1,7 +1,6 @@
 package sma.rhythmtapper.game.NoteFile;
 
-public enum NotemapMode
-{
+public enum NotemapMode {
     TW5,
     SSTrain,
     DelesteSimulator, // STARLIGHT

@@ -1,9 +1,6 @@
 package sma.rhythmtapper.framework.Impl;
 
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -16,7 +13,9 @@ import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.graphics.Rect;
 
-import sma.rhythmtapper.R;
+import java.io.IOException;
+import java.io.InputStream;
+
 import sma.rhythmtapper.framework.Graphics;
 import sma.rhythmtapper.framework.Image;
 

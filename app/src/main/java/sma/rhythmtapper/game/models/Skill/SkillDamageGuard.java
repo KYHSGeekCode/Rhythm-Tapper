@@ -14,19 +14,18 @@ public class SkillDamageGuard extends Skill {
 
     @Override
     public void PreTest(GameStatusBundle bundle) {
-        bundle.shouldDamage=false;
+        bundle.shouldDamage = false;
     }
 
     @Override
     public void Finish(GameStatusBundle bundle) {
-        bundle.shouldDamage=true;
+        bundle.shouldDamage = true;
     }
 
-	@Override
-	public boolean isAffectLife()
-	{
-		// TODO: Implement this method
-		return true;
-	}
-	
+    @Override
+    public boolean isAffectLife() {
+        // TODO: Implement this method
+        return true;
+    }
+
 }

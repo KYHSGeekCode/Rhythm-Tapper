@@ -17,14 +17,11 @@ public class SkillBoost extends Skill {
 
     @Override
     public void PreTest(GameStatusBundle bundle) {
-        List<Skill> runningSkills=bundle.runningSkills;
-        for(Skill skill:runningSkills)
-        {
-            if(skill instanceof SkillHeal)
-            {
+        List<Skill> runningSkills = bundle.runningSkills;
+        for (Skill skill : runningSkills) {
+            if (skill instanceof SkillHeal) {
                 bundle.ApplyDeltaLife(4);
-            } else if (skill instanceof  SkillPerfectSupport)
-            {
+            } else if (skill instanceof SkillPerfectSupport) {
                 //bundle.testResult= TestResult.PERFECT;
             }
         }
@@ -32,26 +29,24 @@ public class SkillBoost extends Skill {
 
     @Override
     public void PostTest(GameStatusBundle bundle) {
-        List<Skill> runningSkills=bundle.runningSkills;
-        for(Skill skill:runningSkills) {
+        List<Skill> runningSkills = bundle.runningSkills;
+        for (Skill skill : runningSkills) {
             if (skill instanceof SkillScoreUp) {
-                if(bundle.testResult.compareTo(TestResult.NICE)>=0)
+                if (bundle.testResult.compareTo(TestResult.NICE) >= 0)
                     bundle.ApplyScoreBonus(20);
             } else if (skill instanceof SkillComboSupport) {
-                if(bundle.testResult.compareTo(TestResult.BAD)>=0)
-                    bundle.continueCombo=true;
-            } else if(skill instanceof SkillComboUp)
-            {
+                if (bundle.testResult.compareTo(TestResult.BAD) >= 0)
+                    bundle.continueCombo = true;
+            } else if (skill instanceof SkillComboUp) {
                 bundle.ApplyComboBonus(17);
-            } else if (skill instanceof SkillDamageGuard)
-            {
+            } else if (skill instanceof SkillDamageGuard) {
                 bundle.ApplyDeltaLife(1);
-            } else if(skill instanceof SkillOverload) {
-                if (bundle.testResult.compareTo(TestResult.NICE) >= 0){
+            } else if (skill instanceof SkillOverload) {
+                if (bundle.testResult.compareTo(TestResult.NICE) >= 0) {
                     bundle.ApplyComboBonus(15);
                     bundle.ApplyScoreBonus(21);
                 }
-                bundle.continueCombo=true;
+                bundle.continueCombo = true;
             }
         }
     }

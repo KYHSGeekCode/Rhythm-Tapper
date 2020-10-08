@@ -7,26 +7,24 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.RadioGroup;
-
-import sma.rhythmtapper.game.NoteFile.NoteFile;
-import sma.rhythmtapper.game.models.Difficulties;
-import sma.rhythmtapper.models.Difficulty;
-
-import android.widget.*;
+import android.widget.ListView;
 
 import java.io.File;
 import java.util.ArrayList;
 
+import sma.rhythmtapper.game.NoteFile.NoteFile;
+
 
 public class DifficultySelectionActivity extends Activity implements View.OnClickListener {
 
+    private static final String TAG = "DifficultySelection";
     private Button btnEasy;
     private Button btnMid;
     private Button btnHard;
 
     private ListView lvSongs;
     private SongListViewAdapter adapter;
+
     /*private final Difficulty _diffEasy =
             new Difficulty(Difficulties.EASY, "Spyro_Year_of_the_Dragon_Acoustic_Fields_OC_ReMix.mp3", 115f / 2, 8);
     private final Difficulty _diffMid =
@@ -46,22 +44,24 @@ public class DifficultySelectionActivity extends Activity implements View.OnClic
         //this.btnHard = (Button) this.findViewById(R.id.diff_btn_hard);
         //this.btnHard.setOnClickListener(this);
         lvSongs = (ListView) findViewById(R.id.listViewSongs);
-        lvSongs.setAdapter(adapter=new SongListViewAdapter(this));
+        lvSongs.setAdapter(adapter = new SongListViewAdapter(this));
 
         File dir = new File(Environment.getExternalStorageDirectory(), "TempestWave");
-        dir=new File(dir,"Songs");
+        dir = new File(dir, "Songs");
         dir.mkdirs();
         ArrayList<NoteFile> noteFiles = new ArrayList<>();
         File[] songs = dir.listFiles();
-        if(songs==null)
+        if (songs == null) {
+            Log.d(TAG, "Cannot find songs");
             return;
+        }
         if (songs.length == 0) {
             //unpack original songs to the dir
-
+            Log.d(TAG, "No songs found");
         } else {
             for (File song : songs) {
-				if(song.isDirectory())
-                	noteFiles.add(new NoteFile(song));
+                if (song.isDirectory())
+                    noteFiles.add(new NoteFile(song));
                 //Toast.makeText(this,song.getName(),Toast.LENGTH_SHORT).show();
             }
         }

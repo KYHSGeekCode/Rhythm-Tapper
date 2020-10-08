@@ -2,13 +2,9 @@ package sma.rhythmtapper.game;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Environment;
-import android.util.Log;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import wseemann.media.FFmpegMediaMetadataRetriever;
 
@@ -24,14 +20,14 @@ public class MVProvider extends Thread {
     private final File cacheDir;
     private Bitmap[] frames;
     private static final String TAG = "MVProvider";
-    private int alives= 0;
+    private int alives = 0;
     private boolean initialized;
-    int lastindex=0;
-    public MVProvider(Context context, int sec, FFmpegMediaMetadataRetriever videoReader, int width, int height)
-    {
+    int lastindex = 0;
+
+    public MVProvider(Context context, int sec, FFmpegMediaMetadataRetriever videoReader, int width, int height) {
         this.sec = sec;
         this.videoReader = videoReader;
-        this.frame = FRAMERATE * sec/1000;
+        this.frame = FRAMERATE * sec / 1000;
         this.frames = new Bitmap[frame];
         this._gameWidth = width;
         this._gameHeight = height;
@@ -40,8 +36,11 @@ public class MVProvider extends Thread {
         cacheDir = getDiskCacheDir(context, DISK_CACHE_SUBDIR);
         initialized = false;
     }
+
     @Override
     public void run() {
+        if (videoReader == null)
+            return;
         cacheDir.mkdirs();
        /* try {
             for (int i = 0; i < frames.length; i++) {
@@ -58,17 +57,16 @@ public class MVProvider extends Thread {
             Log.w(TAG,"error?",e);
         }*/
         //initialized = true;
-        for(int i=0;i<frames.length;i++)
-        {
-            if(lastindex >i)
-                i = lastindex +FRAMERATE;
-            if(i>=frames.length)
+        for (int i = 0; i < frames.length; i++) {
+            if (lastindex > i)
+                i = lastindex + FRAMERATE;
+            if (i >= frames.length)
                 break;
-            Bitmap frame = videoReader.getScaledFrameAtTime((long) (i * 1000000.0f/FRAMERATE), FFmpegMediaMetadataRetriever.OPTION_CLOSEST, _gameWidth, _gameHeight);
+            Bitmap frame = videoReader.getScaledFrameAtTime((long) (i * 1000000.0f / FRAMERATE), FFmpegMediaMetadataRetriever.OPTION_CLOSEST, _gameWidth, _gameHeight);
             //Bitmap frame = BitmapFactory.decodeFile(new File(cacheDir,String.valueOf(i)).getPath());
             frames[i] = frame;
-            alives ++;
-            while(alives >80) {
+            alives++;
+            while (alives > 80) {
                 try {
                     sleep(1);
                 } catch (InterruptedException e) {
@@ -78,15 +76,16 @@ public class MVProvider extends Thread {
         }
     }
 
-    public Bitmap getBitmap(int index)
-    {
+    public Bitmap getBitmap(int index) {
         lastindex = index;
         alives--;
-        if(index < frames.length)
+        if (index < frames.length)
             return frames[index];
         return null;
     }
+
     private static final String DISK_CACHE_SUBDIR = "thumbnails";
+
     // Creates a unique subdirectory of the designated app cache directory. Tries to use external
     // but if not mounted, falls back on internal storage.
     public static File getDiskCacheDir(Context context, String uniqueName) {
@@ -100,18 +99,17 @@ public class MVProvider extends Thread {
         return new File(cachePath + File.separator + uniqueName);
     }
 
-    public boolean isInitialized()
-    {
+    public boolean isInitialized() {
         return true;
 //        return initialized;
     }
 
     public void recycle(int oldindex) {
-        if(oldindex<frames.length)
+        if (oldindex < frames.length)
             frames[oldindex].recycle();
     }
 
-    public void release(){
+    public void release() {
         videoReader.release();
     }
 }

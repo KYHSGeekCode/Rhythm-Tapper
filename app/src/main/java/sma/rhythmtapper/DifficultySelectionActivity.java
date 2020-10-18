@@ -46,8 +46,21 @@ public class DifficultySelectionActivity extends Activity implements View.OnClic
         lvSongs.setAdapter(adapter = new SongListViewAdapter(this));
 
         String path = getIntent().getStringExtra("path");
+        Log.d(TAG, "Path:" + path);
 //        File dir = new File(Environment.getExternalStorageDirectory(), "TempestWave");
         File dir = new File(path);
+        if (!dir.exists()) {
+            Log.d(TAG, "Dir does not exist");
+        } else {
+            File[] files = dir.listFiles();
+            if (files == null) {
+                Log.e(TAG, "WWWW");
+            } else {
+                for (File file : files) {
+                    Log.d(TAG, file.getName());
+                }
+            }
+        }
         dir = new File(dir, "Songs");
         dir.mkdirs();
         ArrayList<NoteFile> noteFiles = new ArrayList<>();

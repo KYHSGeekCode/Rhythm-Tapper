@@ -11,9 +11,6 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="sma.rhythmtapper.MainActivity">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -40,5 +37,11 @@
             android:layout_height="wrap_content"
             android:id="@+id/main_btn_about"
             android:text="@string/main_btn_about" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/etPath"
+            android:text="/sdcard/TempestWave"/>
     </LinearLayout>
 </RelativeLayout>

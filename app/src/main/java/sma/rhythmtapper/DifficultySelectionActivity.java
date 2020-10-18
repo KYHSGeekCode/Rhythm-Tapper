@@ -3,7 +3,6 @@ package sma.rhythmtapper;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -46,7 +45,9 @@ public class DifficultySelectionActivity extends Activity implements View.OnClic
         lvSongs = (ListView) findViewById(R.id.listViewSongs);
         lvSongs.setAdapter(adapter = new SongListViewAdapter(this));
 
-        File dir = new File(Environment.getExternalStorageDirectory(), "TempestWave");
+        String path = getIntent().getStringExtra("path");
+//        File dir = new File(Environment.getExternalStorageDirectory(), "TempestWave");
+        File dir = new File(path);
         dir = new File(dir, "Songs");
         dir.mkdirs();
         ArrayList<NoteFile> noteFiles = new ArrayList<>();

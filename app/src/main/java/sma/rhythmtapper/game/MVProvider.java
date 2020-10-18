@@ -110,6 +110,7 @@ public class MVProvider extends Thread {
     }
 
     public void release() {
-        videoReader.release();
+        if (videoReader != null)
+            videoReader.release();
     }
 }

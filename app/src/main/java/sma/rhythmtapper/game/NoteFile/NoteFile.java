@@ -196,9 +196,7 @@ public class NoteFile implements Serializable {
         try {
             List<Ball> lballs = TWxFile.Read(notemapFiles.get(difficulty.ordinal()).get(0));
             balls = new PriorityQueue<>(new BallComparator());
-            for (Ball bl : lballs) {
-                balls.add(bl);
-            }
+            balls.addAll(lballs);
         } catch (FileNotFoundException | JSONException | IndexOutOfBoundsException e) {
             Log.e(TAG, "error reading notefile", e);
             throw new RuntimeException("No such valid level file found");

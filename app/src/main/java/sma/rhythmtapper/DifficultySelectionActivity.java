@@ -74,8 +74,13 @@ public class DifficultySelectionActivity extends Activity implements View.OnClic
             Log.d(TAG, "No songs found");
         } else {
             for (File song : songs) {
-                if (song.isDirectory())
-                    noteFiles.add(new NoteFile(song));
+                if (song.isDirectory()) {
+                    try {
+                        noteFiles.add(new NoteFile(song));
+                    } catch (RuntimeException e) {
+                        Log.e(TAG, "Notefile: " + song.getName(), e);
+                    }
+                }
                 //Toast.makeText(this,song.getName(),Toast.LENGTH_SHORT).show();
             }
         }

@@ -170,8 +170,8 @@ public class Ball implements Serializable {
         return getXfromT(origx, endx, tt);
     }
 
-    static final float alphaOfZ = 0.7f;//0.95f;
-    static final float alphaDepth = alphaOfZ * DEPTH;
+    public static final float alphaOfZ = 0.7f;//0.95f;
+    public static final float alphaDepth = alphaOfZ * DEPTH;
 
     private void OnScreenMeasured() {
         this.origx = (int) ((EnvVar.gameWidth * 0.8f / 5 / 2) * (2 * startLine - 1) + EnvVar.gameWidth * 0.1f);

@@ -1086,7 +1086,8 @@ public class GameScreen extends Screen {
 
         // Example:
         if (videoPlayer == null)
-            g.drawScaledImage(Assets.background, 0, 0, _gameWidth, _gameHeight, 0, 0, Assets.background.getWidth(), Assets.background.getHeight());
+            g.drawRect(0,0,_gameWidth,_gameHeight, Color.BLACK);
+//            g.drawScaledImage(Assets.background, 0, 0, _gameWidth, _gameHeight, 0, 0, Assets.background.getWidth(), Assets.background.getHeight());
         else {
             _currentTime = _currentTrack.getCurrentPosition() / 1000.0f;
             //Bitmap bitmap =  videoPlayer.getScaledFrameAtTime((long)(_currentTime*1000000.0f),FFmpegMediaMetadataRetriever.OPTION_CLOSEST_SYNC,_gameWidth,_gameHeight);
@@ -1119,14 +1120,18 @@ public class GameScreen extends Screen {
 		 g.drawRect(_gameWidth / 5 * 3, 0, _gameWidth / 5 + 1, _gameHeight, Color.argb(_laneHitAlpha4, 255, 0, 0));
 		 g.drawRect(_gameWidth / 5 * 4, 0, _gameWidth / 5 + 1, _gameHeight, Color.argb(_laneHitAlpha5, 255, 0, 0));
 		 */
+        if(state == GameState.Running) {
+            //g.drawString(""+bundle.score, (int)(_gameWidth*0.52f), 80, _paintScore);
+            if (bundle.combo > 0)
+                DrawString(g, bundle.combo + "\nCOMBO", (int) (_gameWidth * 0.7f), (int) (EnvVar.gameHeight * 0.3f), _paintCombo, _paintComboShadow);
+            judgePopup.Paint(g);
+        }
+
         final int dx = _gameWidth / 10;
         for (int i = 0; i < 5; i++) {
             int n = 2 * i + 1;
             g.drawImage(Assets.ballHitpoint, (int) (dx * n - SIZE_BALL), (int) (HITBOX_CENTER - SIZE_BALL), SIZE_BALL * 2, SIZE_BALL * 2);
         }
-
-        if (state == GameState.Running)
-            drawRunningUI();
 
         for (HelperLine h : helperLines) {
             h.Paint(g);
@@ -1142,6 +1147,8 @@ public class GameScreen extends Screen {
                 }
             }
         }
+        if (state == GameState.Running)
+            drawRunningUI();
         //if (_explosionTicker > 0)
         //{
         //    if (_rand.nextDouble() > 0.05)
@@ -1284,9 +1291,9 @@ public class GameScreen extends Screen {
     private void drawRunningUI() {
         Graphics g = game.getGraphics();
 
-        if (_doubleMultiplierTicker > 0) {
-            g.drawImage(Assets.sirens, 0, 100);
-        }
+//        if (_doubleMultiplierTicker > 0) {
+//            g.drawImage(Assets.sirens, 0, 100);
+//        }
 
         g.drawRect(0, 0, _gameWidth, 50, Color.BLACK);
         float ratioOfLife1 = (float) bundle.life / bundle.totalLife;
@@ -1304,10 +1311,6 @@ public class GameScreen extends Screen {
         //        "   Multiplier: " + _multiplier * (_doubleMultiplierTicker > 0 ? 2 : 1) + "x" +
         //        "   Lifes remaining: " + _lives;
         DrawString(g, "" + bundle.score, (int) (_gameWidth * 0.55f), 80);
-        //g.drawString(""+bundle.score, (int)(_gameWidth*0.52f), 80, _paintScore);
-        if (bundle.combo > 0)
-            DrawString(g, bundle.combo + "\nCOMBO", (int) (_gameWidth * 0.7f), (int) (EnvVar.gameHeight * 0.3f), _paintCombo, _paintComboShadow);
-        judgePopup.Paint(g);
         //g.drawString(bundle.testResult.name(), (int) (_gameWidth * 0.5f), 350, _paintScore);
         List<Skill> skills = deck.getActivatedSkills();
         boolean boost = false;

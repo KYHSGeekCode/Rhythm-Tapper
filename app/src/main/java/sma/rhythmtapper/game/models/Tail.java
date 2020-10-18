@@ -13,7 +13,9 @@ import static sma.rhythmtapper.game.models.Ball.alphaDepth;
 public class Tail extends Connector {
     private final boolean optimized;
     private boolean created = false;
-    final int STROKE = 60;
+    final int STROKE = 70;
+
+    final int TAILCOLOR = Color.argb(0x99, 0xFF, 0xFF, 0xFF);
 
     public Tail(Ball ball1, Ball ball2) {
         super(ball1, ball2);
@@ -145,9 +147,11 @@ public class Tail extends Connector {
         float m2 = ball2.origx;
         float n2 = ball2.endx;
         float timeDelta = ball2.time - ball1.time;
-        final float dt = 0.05f;
+        final float dt = 0.04f;
         float prevX = ball1.x;
         float prevY = ball1.y;
+        float prevprevX = ball1.x;
+        float prevprevY = ball1.y;
         // m1...n1
         // ...
         // m2...n2
@@ -171,15 +175,17 @@ public class Tail extends Connector {
             float z = (int) (DEPTH * (time - EnvVar.currentTime) * EnvVar.speed / 50);
             float y = (int) (aOfZ * (z - alphaDepth) * (z - alphaDepth));
 
-            g.drawLine((int) prevX, (int) prevY, (int) x, (int) y, Color.WHITE, STROKE);
+            g.drawLine((int) prevprevX, (int) prevprevY, (int) x, (int) y, TAILCOLOR, STROKE);
 
+            prevprevX = prevX;
+            prevprevY = prevY;
             prevX = x;
             prevY = y;
 
         }
 //        if(time < ball2.time)
         if(ball2.y <= prevY)
-            g.drawLine((int) prevX, (int) prevY, ball2.x, ball2.y, Color.WHITE, STROKE);
+            g.drawLine((int) prevprevX, (int) prevprevY, ball2.x, ball2.y, TAILCOLOR, STROKE);
     }
 
     public float mn2x(float m, float n, float t) {

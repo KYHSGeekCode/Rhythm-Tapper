@@ -1136,9 +1136,6 @@ public class GameScreen extends Screen {
         for (HelperLine h : helperLines) {
             h.Paint(g);
         }
-        for (Connector tail : aliveTails) {
-            tail.Paint(g);
-        }
 
         for (List<Ball> bals : _balls) {
             for (Ball b : bals) {
@@ -1147,6 +1144,11 @@ public class GameScreen extends Screen {
                 }
             }
         }
+
+        for (Connector tail : aliveTails) {
+            tail.Paint(g);
+        }
+
         if (state == GameState.Running)
             drawRunningUI();
         //if (_explosionTicker > 0)

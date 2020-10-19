@@ -1,6 +1,7 @@
 package sma.rhythmtapper.game.models;
 
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Path;
 
 import sma.rhythmtapper.framework.Graphics;
@@ -13,7 +14,7 @@ import static sma.rhythmtapper.game.models.Ball.alphaDepth;
 public class Tail extends Connector {
     private final boolean optimized;
     private boolean created = false;
-    final int STROKE = 70;
+    final int STROKE = 100;
 
     final int TAILCOLOR = Color.argb(0x99, 0xFF, 0xFF, 0xFF);
 
@@ -24,7 +25,7 @@ public class Tail extends Connector {
     }
 
     float[] tailxs;
-    transient Path path;// = new Path();
+//    transient Path path;// = new Path();
 
     final int numJoints = 6;
 
@@ -147,11 +148,15 @@ public class Tail extends Connector {
         float m2 = ball2.origx;
         float n2 = ball2.endx;
         float timeDelta = ball2.time - ball1.time;
-        final float dt = 0.04f;
+        final float dt = 0.1f;
         float prevX = ball1.x;
         float prevY = ball1.y;
         float prevprevX = ball1.x;
         float prevprevY = ball1.y;
+        Paint paint = new Paint();
+        paint.setStrokeWidth(STROKE);
+        paint.setColor(TAILCOLOR);
+        paint.setStyle(Paint.Style.FILL);
         // m1...n1
         // ...
         // m2...n2
@@ -161,6 +166,16 @@ public class Tail extends Connector {
         // 먼저 이 가상 점들이 생성될 시간을 계산해야 한다.
         float aOfZ = EnvVar.HITBOX_CENTER / (alphaDepth * alphaDepth);
         float time;
+        final float initial_stroke_half = STROKE / 2.0f;
+        Path path = new Path();
+        path.moveTo(prevX - initial_stroke_half, prevY);
+        path.lineTo(prevX + initial_stroke_half, prevY);
+        int count = 0;
+        for (time = ball1.time; time <= ball2.time; time += dt)
+            count++;
+        float[] xs = new float[count];
+        float[] ys = new float[count];
+        int i = 0;
         for (time = ball1.time; time <= ball2.time; time += dt) {
             // time : 가상 점들이 도착하는 시간
             // m, n: 가상 점들의 시작점과 끝점
@@ -168,6 +183,10 @@ public class Tail extends Connector {
             float t = EnvVar.currentTime - time + 1;
             if (t <= 0)
                 continue;
+            // m = lerp(m1, m2, factor);
+            // n = lerp(n1, n2, factor);
+            // x = lerp(m, n, t);
+
             float factor = (time - ball1.time) / timeDelta;
             float m = m2 * factor + m1 * (1 - factor); // m1, m2를 배분
             float n = n2 * factor + n1 * (1 - factor); // m1, m2를 배분
@@ -175,7 +194,12 @@ public class Tail extends Connector {
             float z = (int) (DEPTH * (time - EnvVar.currentTime) * EnvVar.speed / 50);
             float y = (int) (aOfZ * (z - alphaDepth) * (z - alphaDepth));
 
-            g.drawLine((int) prevprevX, (int) prevprevY, (int) x, (int) y, TAILCOLOR, STROKE);
+            float stroke_half = initial_stroke_half * t;
+            path.lineTo(x + stroke_half, y);
+            xs[i] = x - stroke_half;
+            ys[i] = y;
+            i++;
+//            g.drawLine((int) prevprevX, (int) prevprevY, (int) x, (int) y, TAILCOLOR, STROKE);
 
             prevprevX = prevX;
             prevprevY = prevY;
@@ -184,8 +208,18 @@ public class Tail extends Connector {
 
         }
 //        if(time < ball2.time)
-        if(ball2.y <= prevY)
-            g.drawLine((int) prevprevX, (int) prevprevY, ball2.x, ball2.y, TAILCOLOR, STROKE);
+        if (ball2.y <= prevY) {
+//            g.drawLine((int) prevprevX, (int) prevprevY, ball2.x, ball2.y, TAILCOLOR, STROKE);
+            float t = EnvVar.currentTime - ball2.time + 1;
+            float stroke_half = initial_stroke_half * t;
+            path.lineTo(ball2.x + stroke_half, ball2.y);
+            path.lineTo(ball2.x - stroke_half, ball2.y);
+        }
+        for (int k = count - 1; k >= 0; k--) {
+            path.lineTo(xs[k], ys[k]);
+        }
+        path.close();
+        g.DrawPath(path, paint);
     }
 
     public float mn2x(float m, float n, float t) {

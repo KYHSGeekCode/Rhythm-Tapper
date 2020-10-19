@@ -92,6 +92,10 @@ public class RTGraphics implements Graphics {
     public void DrawPath(Path path) {
         canvas.drawPath(path, paint);
     }
+    @Override
+    public void DrawPath(Path path, Paint thePaint) {
+        canvas.drawPath(path, thePaint);
+    }
 
     @Override
     public void drawLine(int x, int y, int x2, int y2, int color, int stroke) {

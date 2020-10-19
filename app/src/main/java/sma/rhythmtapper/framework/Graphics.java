@@ -17,6 +17,7 @@ public interface Graphics {
     void clearScreen(int color);
 
     void DrawPath(Path path);
+    void DrawPath(Path path, Paint paint);
 
     void drawLine(int x, int y, int x2, int y2, int color, int stroke);
 
